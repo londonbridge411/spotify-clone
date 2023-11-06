@@ -1,0 +1,35 @@
+https://www.youtube.com/watch?v=SqcY0GlETPk&ab_channel=ProgrammingwithMosh
+
+tsx and ts are essentially the same thing. However, tsx allows the use of jsx stuff. This makes tsx very useful for creating components.
+* Use tsx for something that will be a component.
+
+Hooks: Useful for buttons or things that change in HTML code. It will update it realtime.
+If I wasn't to do this, I would need to find the element in the DOM and manually change it.
+const [count, setCount] = useState(0 //Initial Value);
+<button onClick={() => setCount(count+1)}>Count</button>
+count is the state, setCount is the changer.
+
+The reason we use an array for it is useState() returns two values. The first value is the initial value, the second is a function to change the first value.
+
+
+
+https://dev.to/mconner89/passing-props-in-react-using-typescript-20lm
+Props: Useful for lowering the amount of data reuse and code redudancy. This is the JS way
+<MyComponent someproperty={param} />
+The someproperty={param} is the prop. What it allows is for the param in the base component to be used in MyComponent.
+Ex:
+function CompA()
+{
+    name = "Johnny"
+    return <CompB someproperty={name} />
+}
+
+export default CompA;
+
+"Different File"
+
+function CompB(props)
+{
+    const myName = props.name;
+    console.log("My name is " + myName) // Prints My Name is Johnny
+}

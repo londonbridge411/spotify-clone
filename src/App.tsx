@@ -1,24 +1,19 @@
+import AuthProvider from './AuthProvider';
 import Home from './Home';
 import Login from './Login';
-import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-import supabase from './config/supabaseClient';
+import {Route, Routes} from 'react-router-dom';
 
 function App()
 {
   return (
-    <Router>
-      <div className="App">
-        Nav bar
-        <div className='content'>
-          <Routes>
-            Routes go here
-            example:
-            <Route path="/" element={<Home />}></Route>
-            <Route path="/login" element={<Login />}></Route>
-          </Routes>
-        </div>
-      </div>
-    </Router>
+    <div className="App">
+      <Routes>
+        Routes go here
+        example:
+        <Route path="/home" element={<Home />}></Route>
+        <Route path="/login"  element={<Login />}></Route>
+      </Routes>
+    </div>
   );
 }
 

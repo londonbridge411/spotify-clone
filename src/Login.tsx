@@ -1,31 +1,79 @@
 import { useState } from "react";
 import supabase from "./config/supabaseClient";
+import { useNavigate } from "react-router-dom";
+
+var isLoggedIn:boolean = false;
 
 function Login() {
-    return (
-        <div>
-            <label>Enter Email: <input id = "email"></input></label>
-            <label>Enter Password: <input id = "password"></input></label>
+    const [count, setCount] = useState(0);
+    const navigate = useNavigate();
+    
+    //console.log("Logged In: " + isLoggedIn);
+    
+    if (isLoggedIn)
+    {
+        return (
+            <>
+                <button onClick={CheckCurrentUser}>Check</button>
+                <button onClick={() => console.log("Logged In: " + isLoggedIn)}>Check log</button>
+    
+                <button onClick={SendTestData}>Send Data</button>
+    
+                <button onClick={Logout}>Logout</button>
+                <button onClick={() => setCount(count+1)}>Count</button>
+                <h1>{count}</h1>
+                <h1>Is Logged In: {isLoggedIn.toString()}</h1>
+            </>
+    
+        );
+    }
+    else
+    {
+        return (
+            <>
+                <label>Enter Email: <input id = "email"></input></label>
+                <label>Enter Password: <input id = "password"></input></label>
+    
+    
+                <button onClick={LoginUser}>Login</button>
+                <button onClick={RegisterUser}>SignUp</button>
+    
+                <button onClick={CheckCurrentUser}>Check</button>
+                <button onClick={() => console.log("Logged In: " + isLoggedIn)}>Check log</button>
+    
+                <button onClick={SendTestData}>Send Data</button>
+    
+                <button onClick={Logout}>Logout</button>
 
+                <button onClick={() => {
+                    
+                    navigate('/home');
+                }}>Redirect</button>
 
-            <button onClick={LoginUser}>Login</button>
-            <button onClick={RegisterUser}>SignUp</button>
-            <button onClick={CheckCurrentUser}>Check</button>
-            <button onClick={SendTestData}>Send Data</button>
-            <button onClick={Logout}>Logout</button>
-        </div>
-
-    );
+                <button onClick={() => setCount(count+1)}>Count</button>
+                <h1>{count}</h1>
+                <h1>Is Logged In: {isLoggedIn.toString()}</h1>
+            </>
+    
+        );
+    }
 }
-
 
 async function CheckCurrentUser()
 {
     //const [data, error] = await supabase.auth.getSession();
     if ((await supabase.auth.getSession()).data.session != null)
+    {
         console.log("There is an active session.");
+        isLoggedIn = true;
+        return true;
+    }
     else
+    {
         console.log("No session (null).");
+        isLoggedIn = false;
+        return false;
+    }
     //await console.log(await supabase.auth.getUser());
 }
 
