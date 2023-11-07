@@ -1,38 +1,30 @@
 import { useEffect, useState } from "react";
 import supabase from "./config/supabaseClient";
 import { useNavigate } from "react-router-dom";
+import { SetLoginStatus, isLoggedIn } from "./main";
  
-function Authentication(props:any)
+function Authentication()
 {
     console.log("Authenticating...");
-    const [loggedIn, setStatus] = useState(false);
     
-    function checkLoginStatus()
+    //const [loggedIn, setStatus] = useState(false);
+
+    const navigate = useNavigate();
+
+    useEffect(() =>
     {
+        navigate(isLoggedIn ? '/home' : '/login') 
+    });
 
-        supabase.auth.getSession().then((res) =>
-        {
-            setStatus(res.data.session != null);
-        });
-
-
-        const navigate = useNavigate();
-        navigate('/home');
-        return loggedIn;
-    }
-
-    if (checkLoginStatus())
-    {
-        console.log("Login Status: " + loggedIn);
-        //router.push('/login')
-        //route to home
-    }
+ 
+    //checkLoginStatus()
 
     return(
-        <>
+        <div>
         Auth Provider
-        </>
+        </div>
     );
 }
+
 
 export default Authentication;
