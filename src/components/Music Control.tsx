@@ -1,13 +1,13 @@
-export default function MusicControl()
-{
-    return (
-        <div style={{
-            background: "black",
-            display: "flex",
-            flexDirection: "row",
-            flex: "flex-grow",
-            }}>
-            Music Control
-        </div>
-    );
+import "./Music Control.css";
+
+export default function MusicControl() {
+  return (
+    <div className="Soundbar">
+      <ul>
+        <li>Previous</li>
+        <li>Play/Resume</li>
+        <li>Next</li>
+      </ul>
+    </div>
+  );
 }

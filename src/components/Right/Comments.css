@@ -1,0 +1,10 @@
+#CommentSection
+{
+    display: flex;
+    flex-direction: column;
+    background-color: purple;
+    position: relative;
+    max-width: 50%;
+    flex-wrap: nowrap;
+    align-self: flex-end;
+}

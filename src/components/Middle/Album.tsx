@@ -1,8 +1,3 @@
-export default function Album()
-{
-    return (
-        <div style={{background: "yellow"}}>
-            Album
-        </div>
-    );
+export default function Album() {
+  return <div style={{ background: "yellow" }}>Album</div>;
 }

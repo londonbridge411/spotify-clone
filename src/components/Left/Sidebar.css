@@ -1,0 +1,16 @@
+.Sidebar
+{
+  display: flex;
+  flex-direction: column;
+  background-color: red;
+  position: relative;
+  max-width: 50%;
+  flex-wrap: nowrap;
+  align-self: flex-start;
+}
+
+.Sidebar p
+{
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
