@@ -2,15 +2,36 @@
 {
   display: flex;
   flex-direction: column;
+  padding: 0px;
+  height: 100%;
+  width: 100%;
   background-color: red;
-  position: relative;
-  max-width: 50%;
+  /*position: relative;
+  /*width: 50%;
+  width: min-content;
+  height: 90vh;
   flex-wrap: nowrap;
   align-self: flex-start;
+  border-style: solid;
+  border-color: yellow;
+  margin: 10px;
+  padding: 20px;
+  padding-left: 33px;*/
 }
 
 .Sidebar p
 {
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.os-content
+{
+  direction: inherit;
+  display: block;
+  height: 100%;
+  position: relative;
+  visibility: visible;
+  width: 100%;
+
 }

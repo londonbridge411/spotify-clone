@@ -1,23 +1,37 @@
-import AuthProvider from './AuthProvider';
-import Home from './Home';
-import Login from './Login';
-import {Route, Routes} from 'react-router-dom';
-import Signup from './Signup';
+import { Link, useNavigate } from "react-router-dom";
+import supabase from "./config/supabaseClient";
+import { useCallback, useEffect } from "react";
+import { SetLoginStatus, isLoggedIn } from "./main";
+import Sidebar from "./components/Left/Sidebar";
+import Album from "./components/Middle/Album";
+import Comments from "./components/Right/Comments";
+import MusicControl from "./components/Music Control";
+import "./App.css";
+import MainView from "./components/Middle/Main View";
+function App() {
+  const navigate = useNavigate();
 
-function App()
-{
+  useEffect(() => {
+    if (isLoggedIn == false) {
+      navigate("/login");
+    }
+  });
+
   return (
     <div className="App">
-      <Routes>
-        Routes go here
-        example:
-        <Route path="/home" element={<Home />}></Route>
-        <Route path="/login"  element={<Login />}></Route>
-        <Route path="/signup"  element={<Signup />}></Route>
-        <Route path="/"  element={<AuthProvider />}></Route>
-      </Routes>
+      <section id="page">
+        <nav>
+          <Sidebar />
+        </nav>
+        <main>
+          <MainView />
+        </main>
+        <footer>
+          <MusicControl />
+        </footer>
+      </section>
     </div>
   );
 }
 
-export default App
+export default App;

@@ -1,6 +1,6 @@
 #MainView
 {
-  display: flex;
   flex-direction: column;
-  background-color: yellow;
+  background-color: green;
+  height: 100%;
 }
