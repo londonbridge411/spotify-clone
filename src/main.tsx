@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
@@ -15,6 +15,8 @@ export var isLoggedIn: Boolean =
 export function SetLoginStatus(b: Boolean) {
   isLoggedIn = b;
 }
+
+const [username, setUsername] = useState();
 
 console.log("Status " + isLoggedIn);
 //console.log((await supabase.auth.getSession()).data.session);

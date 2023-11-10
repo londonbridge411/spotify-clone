@@ -1,24 +1,53 @@
-.Soundbar
+#Soundbar
 {
+  display: flex;
   background: black;
   flex-direction: row;
   width: 100vw;
-  height: 75px;
+  height: 65px;
   overflow: hidden;
   background-color: black;
+  user-select: none;
+  justify-content: center;
   align-items: center;
 }
 
+
+#Soundbar .control-btn
+{
+  height: 45px;
+  filter: invert(100%);
+  margin-inline: 10px;
+}
+
+#Soundbar .control-btn:hover
+{
+  filter: invert(100%) sepia(79%) saturate(1000%) hue-rotate(86deg);
+}
+/*
 .Soundbar ul
 {
   list-style-type: none;
   display: flex;
   flex-direction: row;
-  align-items: center;
   justify-content: space-evenly;
+  gap: -12px;
 }
 
-li
+.Soundbar li
 {
   text-decoration: none;
 }
+
+.Soundbar img
+{
+  width:7.5%;
+
+  filter: invert(100%);
+}
+
+.Soundbar img:hover
+{
+  filter: invert(100%) sepia(79%) saturate(1000%) hue-rotate(86deg);
+}
+*/

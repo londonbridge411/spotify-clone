@@ -33,3 +33,5 @@ function CompB(props)
     const myName = props.name;
     console.log("My name is " + myName) // Prints My Name is Johnny
 }
+
+https://fontawesome.com/icons/

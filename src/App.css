@@ -1,5 +1,6 @@
 #page {
   display: grid;
+  gap: 0.75em;
   width: 100vw;
   height: 100vh;
   grid-template-areas:
@@ -11,16 +12,11 @@
 
 #page > nav {
   grid-area: nav;
-  background-color: orange;
 }
 
 #page > main {
-  grid-area: main;
-  background-color: #ffff64;
-}
+  grid-area: main;}
 
 #page > footer {
   grid-area: foot;
-  background-color: #8cffa0;
 }
-

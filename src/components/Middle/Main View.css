@@ -1,6 +1,7 @@
 #MainView
 {
   flex-direction: column;
-  background-color: green;
+  background-color: #242424;;
   height: 100%;
+  border-radius: 25px;
 }
