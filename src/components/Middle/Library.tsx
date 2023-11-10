@@ -1,8 +1,3 @@
-export default function Library()
-{
-    return (
-        <div style={{background: "red"}}>
-            Library
-        </div>
-    );
+export default function Library() {
+  return <div style={{ background: "red" }}>Library</div>;
 }

@@ -35,3 +35,4 @@ function CompB(props)
 }
 
 https://fontawesome.com/icons/
+https://stackoverflow.com/questions/72154421/using-react-router-to-change-certain-components

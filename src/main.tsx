@@ -16,8 +16,6 @@ export function SetLoginStatus(b: Boolean) {
   isLoggedIn = b;
 }
 
-const [username, setUsername] = useState();
-
 console.log("Status " + isLoggedIn);
 //console.log((await supabase.auth.getSession()).data.session);
 ReactDOM.createRoot(document.getElementById("root")!).render(
