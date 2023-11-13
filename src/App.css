@@ -8,6 +8,8 @@
     "foot  foot";
   grid-template-rows: 1fr 75px;
   grid-template-columns: 300px 1fr;
+
+  background-color: black;
 }
 
 #page > nav {
