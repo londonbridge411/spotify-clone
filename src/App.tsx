@@ -1,4 +1,9 @@
-import { Link, useNavigate } from "react-router-dom";
+import {
+  Link,
+  Outlet,
+  createBrowserRouter,
+  useNavigate,
+} from "react-router-dom";
 import supabase from "./config/supabaseClient";
 import { useCallback, useEffect } from "react";
 import { SetLoginStatus, isLoggedIn } from "./main";
@@ -7,8 +12,8 @@ import Album from "./components/Middle/Album";
 import Comments from "./components/Right/Comments";
 import MusicControl from "./components/Music Control";
 import "./App.css";
-import MainView from "./components/Middle/Main View";
-function App() {
+
+export default function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,13 +23,13 @@ function App() {
   });
 
   return (
-    <div className="App">
+    <div className="App root-layout">
       <section id="page">
         <nav>
           <Sidebar />
         </nav>
         <main>
-          <MainView />
+          <Outlet />
         </main>
         <footer>
           <MusicControl />
@@ -33,5 +38,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
