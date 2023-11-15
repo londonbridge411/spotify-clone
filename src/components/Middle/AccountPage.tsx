@@ -1,3 +1,5 @@
+import supabase from "../../config/supabaseClient";
+
 export default function AccountPage() {
   return (
     <>

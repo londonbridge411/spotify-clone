@@ -22,12 +22,20 @@ import Home from "./components/Middle/Home.tsx";
 export var isLoggedIn: Boolean =
   (await supabase.auth.getSession()).data.session != null;
 
-export var username: String = "jim.pickens";
+export var username = "temp";
+/*
+useEffect(() => {
+  const fetchUsername = async () => {
+    var data: any = await supabase.from("Users").select();
 
-export function getUsername() {
-  isLoggedIn;
-}
+    console.log(data);
+  };
+});
 
+export var username = async () => {
+  (await supabase.from("Users").select()).data;
+}; //is or eq(colName, value)
+*/
 export function SetLoginStatus(b: Boolean) {
   isLoggedIn = b;
 }
@@ -45,8 +53,9 @@ const router = createBrowserRouter(
     </Route>
   )
 );
-
 console.log("Status " + isLoggedIn);
+console.log(username);
+
 //console.log((await supabase.auth.getSession()).data.session);
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
