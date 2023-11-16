@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import supabase from "./config/supabaseClient";
 import { NavigateFunction, useNavigate } from "react-router-dom";
-import { SetLoginStatus, goHomePage, isLoggedIn } from "./main";
+import { SetLoginStatus, getInfo, isLoggedIn } from "./main";
 
 function Login() {
   const navigate = useNavigate();
@@ -43,7 +43,7 @@ function LoginUser(navigate: NavigateFunction) {
     // If there is no error run
     if (error == null) {
       SetLoginStatus(true); //This is technically done automatically, but this is a safeguard to make sure it works
-      await goHomePage();
+      await getInfo();
       navigate("/app");
     }
   };

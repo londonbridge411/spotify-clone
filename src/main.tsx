@@ -1,24 +1,20 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import Authentication from "./AuthProvider";
 import {
-  BrowserRouter,
   Route,
-  Router,
   RouterProvider,
-  Routes,
   createBrowserRouter,
   createRoutesFromElements,
-  useNavigate,
 } from "react-router-dom";
 import AuthProvider from "./AuthProvider";
 import supabase from "./config/supabaseClient.js";
 import Login from "./Login.tsx";
 import Signup from "./Signup.tsx";
 import App from "./App.tsx";
-import AccountPage from "./components/Middle/AccountPage.tsx";
+import AccountPage from "./components/Middle/Account/AccountPage.tsx";
 import Home from "./components/Middle/Home.tsx";
+import Discover from "./components/Middle/Discover.tsx";
 
 export var isLoggedIn: Boolean =
   (await supabase.auth.getSession()).data.session != null;
@@ -43,6 +39,7 @@ const router = createBrowserRouter(
       <Route path="app" element={<App />}>
         <Route path="home" element={<Home />} />
         <Route path="account" element={<AccountPage />} />
+        <Route path="discover" element={<Discover />} />
       </Route>
     </Route>
   )
@@ -56,13 +53,13 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   </React.StrictMode>
 );
 
-export async function goHomePage() {
+export async function getInfo() {
   console.log("Updating info");
   email = (await supabase.auth.getUser()).data.user?.email as String;
   username = (
     await supabase.from("Users").select("username").eq("email", email)
   ).data?.at(0)?.username;
 
-  console.log("Username: " + username);
-  console.log("Email: " + email);
+  //console.log("Username: " + username);
+  //console.log("Email: " + email);
 }
