@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import supabase from "./config/supabaseClient";
 import { NavigateFunction, useNavigate } from "react-router-dom";
-import { SetLoginStatus, isLoggedIn } from "./main";
+import { SetLoginStatus, goHomePage, isLoggedIn } from "./main";
 
 function Login() {
   const navigate = useNavigate();
@@ -26,6 +26,7 @@ function Login() {
   );
 }
 
+// Logs in the user and takes them to the home page.
 function LoginUser(navigate: NavigateFunction) {
   var email_element = document.getElementById("email") as HTMLInputElement;
   var email_text = email_element?.value;
@@ -39,8 +40,10 @@ function LoginUser(navigate: NavigateFunction) {
       password: pw_text,
     });
 
+    // If there is no error run
     if (error == null) {
-      SetLoginStatus(true);
+      SetLoginStatus(true); //This is technically done automatically, but this is a safeguard to make sure it works
+      await goHomePage();
       navigate("/app");
     }
   };

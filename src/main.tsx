@@ -10,6 +10,7 @@ import {
   Routes,
   createBrowserRouter,
   createRoutesFromElements,
+  useNavigate,
 } from "react-router-dom";
 import AuthProvider from "./AuthProvider";
 import supabase from "./config/supabaseClient.js";
@@ -22,20 +23,13 @@ import Home from "./components/Middle/Home.tsx";
 export var isLoggedIn: Boolean =
   (await supabase.auth.getSession()).data.session != null;
 
-export var username = "temp";
-/*
-useEffect(() => {
-  const fetchUsername = async () => {
-    var data: any = await supabase.from("Users").select();
+export var email: String = (await supabase.auth.getUser()).data.user
+  ?.email as String;
 
-    console.log(data);
-  };
-});
+export var username: String = (
+  await supabase.from("Users").select("username").eq("email", email)
+).data?.at(0)?.username;
 
-export var username = async () => {
-  (await supabase.from("Users").select()).data;
-}; //is or eq(colName, value)
-*/
 export function SetLoginStatus(b: Boolean) {
   isLoggedIn = b;
 }
@@ -53,8 +47,7 @@ const router = createBrowserRouter(
     </Route>
   )
 );
-console.log("Status " + isLoggedIn);
-console.log(username);
+console.log("Auth Status: " + isLoggedIn);
 
 //console.log((await supabase.auth.getSession()).data.session);
 ReactDOM.createRoot(document.getElementById("root")!).render(
@@ -62,3 +55,14 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <RouterProvider router={router} />
   </React.StrictMode>
 );
+
+export async function goHomePage() {
+  console.log("Updating info");
+  email = (await supabase.auth.getUser()).data.user?.email as String;
+  username = (
+    await supabase.from("Users").select("username").eq("email", email)
+  ).data?.at(0)?.username;
+
+  console.log("Username: " + username);
+  console.log("Email: " + email);
+}

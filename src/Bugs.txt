@@ -1,0 +1,2 @@
+When logging in for the first time, the app will not update the persons username. So if I logged in with account A, signed out, and then signed in with account B. It will show Account A's username until I refresh.
+
