@@ -1,20 +1,21 @@
+import { useEffect, useState } from "react";
 import { GetFollowerCount } from "../../../User Controls";
-import supabase from "../../../config/supabaseClient";
 import { email, username } from "../../../main";
 import "./AccountPage.css";
 
 /*
 Want to display icon, username, bio, followers, isVerified, upload song.
-
-*/
-/*
-var followerCount: number = (
-  await supabase.from("Users").select("followers").eq("email", email)
-).data?.at(0)?.followers as number;
 */
 
 export default function AccountPage() {
-  console.log(GetFollowerCount("londonbridge411@gmail.com"));
+  const [getFollowers, setFollowers] = useState(0);
+
+  useEffect(() => {
+    GetFollowerCount("londonbridge411@gmail.com").then((result) =>
+      setFollowers(result as number)
+    );
+  }, []);
+
   return (
     <>
       <div className="account-layout">
@@ -22,9 +23,9 @@ export default function AccountPage() {
           <h1>Account</h1>
         </header>
         <main>
-          Username: {username}
-          Followers: {}
-          Email: {email}
+          <h2> Username: {username}</h2>
+          <p> Followers: {getFollowers}</p>
+          <div> Email: {email}</div>
         </main>
       </div>
     </>

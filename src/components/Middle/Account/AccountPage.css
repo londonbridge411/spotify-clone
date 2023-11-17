@@ -15,5 +15,7 @@
 
 .account-layout > main
 {
-  background-color: red;
+  background-color: blue;
+  display: flex;
+  flex-direction: column;
 }

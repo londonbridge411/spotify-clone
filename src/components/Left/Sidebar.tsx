@@ -1,5 +1,4 @@
-import { NavLink, useNavigate } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import supabase from "../../config/supabaseClient";
 import { SetLoginStatus, username } from "../../main";
 import SidebarButton from "../Containers/SidebarButton";
