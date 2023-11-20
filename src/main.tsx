@@ -16,17 +16,17 @@ import AccountPage from "./components/Middle/Account/AccountPage.tsx";
 import Home from "./components/Middle/Home.tsx";
 import Discover from "./components/Middle/Discover.tsx";
 
-export var isLoggedIn: Boolean =
+export var isLoggedIn: boolean =
   (await supabase.auth.getSession()).data.session != null;
 
-export var email: String = (await supabase.auth.getUser()).data.user
-  ?.email as String;
+export var email: string = (await supabase.auth.getUser()).data.user
+  ?.email as string;
 
 export var username: String = (
   await supabase.from("Users").select("username").eq("email", email)
 ).data?.at(0)?.username;
 
-export function SetLoginStatus(b: Boolean) {
+export function SetLoginStatus(b: boolean) {
   isLoggedIn = b;
 }
 
@@ -55,7 +55,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 
 export async function getInfo() {
   console.log("Updating info");
-  email = (await supabase.auth.getUser()).data.user?.email as String;
+  email = (await supabase.auth.getUser()).data.user?.email as string;
   username = (
     await supabase.from("Users").select("username").eq("email", email)
   ).data?.at(0)?.username;

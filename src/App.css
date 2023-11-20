@@ -19,7 +19,7 @@
 #page > main {
   grid-area: main;
   flex-direction: column;
-  background-color: #242424;;
+  background-color: #242424;
   height: 100%;
   border-radius: 25px;
 }
