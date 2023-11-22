@@ -1,9 +1,6 @@
-import {
-  Outlet,
-  useNavigate
-} from "react-router-dom";
-import {  useEffect } from "react";
-import {  isLoggedIn } from "./main";
+import { Outlet, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { isLoggedIn } from "./main";
 import Sidebar from "./components/Left/Sidebar";
 import MusicControl from "./components/Music Control";
 import "./App.css";

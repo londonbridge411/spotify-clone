@@ -1,5 +1,4 @@
-.account-layout
-{
+.account-layout {
   margin-left: 100px;
   display: grid;
   gap: 0.75em;
@@ -8,13 +7,11 @@
     "main";
 }
 
-.account-layout > header
-{
+.account-layout > header {
   background-color: green;
 }
 
-.account-layout > main
-{
+.account-layout > main {
   background-color: blue;
   display: flex;
   flex-direction: column;

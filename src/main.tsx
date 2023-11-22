@@ -26,6 +26,10 @@ export var username: String = (
   await supabase.from("Users").select("username").eq("email", email)
 ).data?.at(0)?.username;
 
+export var isVerified: boolean = (
+  await supabase.from("Users").select("is_verified").eq("email", email)
+).data?.at(0)?.is_verified;
+
 export function SetLoginStatus(b: boolean) {
   isLoggedIn = b;
 }
@@ -56,9 +60,14 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 export async function getInfo() {
   console.log("Updating info");
   email = (await supabase.auth.getUser()).data.user?.email as string;
+
   username = (
     await supabase.from("Users").select("username").eq("email", email)
   ).data?.at(0)?.username;
+
+  isVerified = (
+    await supabase.from("Users").select("is_verified").eq("email", email)
+  ).data?.at(0)?.is_verified;
 
   //console.log("Username: " + username);
   //console.log("Email: " + email);
