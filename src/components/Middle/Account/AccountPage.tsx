@@ -3,6 +3,7 @@ import { User_GetFollowerCount, User_IsVerified } from "../../../User Controls";
 import { email, isVerified, username } from "../../../main";
 import "./AccountPage.css";
 import Popup from "../../Containers/Popup";
+import SongCreation from "../../Containers/SongCreation";
 
 /*
 Want to display icon, username, bio, followers, isVerified, upload song.
@@ -75,7 +76,7 @@ export default function AccountPage() {
             id="Popup_UploadSong"
             active={popupActive_UploadSong}
             setActive={setPopupState_UploadSong}
-            html={<div>Upload Song</div>}
+            html={<SongCreation />}
             requiresVerification={true}
           ></Popup>
         </main>

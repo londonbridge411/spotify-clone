@@ -13,3 +13,7 @@ export async function User_IsVerified(email: string): Promise<boolean> {
     await supabase.from("Users").select("is_verified").eq("email", email)
   ).data?.at(0)?.is_verified) as boolean;
 }
+
+export async function User_GetMyAlbums(email: string): Promise<any> {
+  return;
+}
