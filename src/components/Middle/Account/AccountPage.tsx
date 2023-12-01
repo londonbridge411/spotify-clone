@@ -4,12 +4,35 @@ import { email, isVerified, username } from "../../../main";
 import "./AccountPage.css";
 import Popup from "../../Containers/Popup";
 import SongCreation from "../../Containers/SongCreation";
+import PlaylistContainerHorizontal from "../../Containers/PlaylistContainerHorizontal";
+import supabase from "../../../config/supabaseClient";
+import PlaylistContainer from "../../Containers/PlaylistContainer";
 
 /*
 Want to display icon, username, bio, followers, isVerified, upload song.
 */
 
 export default function AccountPage() {
+  const [list, setList] = useState([null]);
+  useEffect(() => {
+    supabase
+      .from("Playlists")
+      .select("id")
+      .eq("owner", email)
+      .then((result) => {
+        var array = [];
+        var myData = result.data;
+
+        if (myData != null) {
+          for (let i = 0; i < myData.length; i++) {
+            array.push(myData.at(i)?.id);
+          }
+
+          setList(array);
+        }
+      });
+  }, []);
+
   const [getFollowers, setFollowers] = useState(0);
 
   const [popupActive_Verification, setPopupState_Verification] =
@@ -65,6 +88,9 @@ export default function AccountPage() {
           >
             Upload Song
           </button>
+
+          <PlaylistContainerHorizontal playlist_id={2} />
+
           <Popup
             id="Popup_Verification"
             active={popupActive_Verification}
@@ -79,6 +105,16 @@ export default function AccountPage() {
             html={<SongCreation />}
             requiresVerification={true}
           ></Popup>
+          <section>
+            <h2> My Music:</h2>
+            <ul className="myAlbums">
+              {list.map((item) => (
+                <li key={item}>
+                  <PlaylistContainer playlist_id={item} />
+                </li>
+              ))}
+            </ul>
+          </section>
         </main>
       </div>
     </>

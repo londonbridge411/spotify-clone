@@ -1,8 +1,7 @@
-.SidebarButton
-{
+.SidebarButton {
   border: none;
   color: white;
-  width:270px;
+  width: 270px;
   user-select: none;
   margin-top: 5px;
   margin-left: 10px;
@@ -11,15 +10,13 @@
   display: flex;
 }
 
-.SidebarButton p
-{
+.SidebarButton p {
   color: white;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 16px;
 }
 
-.SidebarButton img
-{
+.SidebarButton img {
   width: 10%;
   margin-right: 25px;
   margin-left: 15px;
@@ -27,22 +24,18 @@
   filter: invert(100%);
 }
 
-.SidebarButton:hover
-{
+.SidebarButton:hover {
   background-color: rgb(61, 61, 61); /* Green */
   cursor: pointer;
 }
 
-.SidebarButton:hover img
-{
+.SidebarButton:hover img {
   transition: all 0.12s ease-in;
   width: 12%;
-
   filter: invert(100%) sepia(79%) saturate(1000%) hue-rotate(86deg);
 }
 
-.SidebarLogo
-{
+.SidebarLogo {
   margin-left: 20px;
   margin-bottom: 15px;
   margin-top: 20px;

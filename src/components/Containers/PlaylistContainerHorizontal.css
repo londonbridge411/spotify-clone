@@ -1,0 +1,26 @@
+.PlaylistContainerHorizontal {
+  display: flex;
+  background-color: BLACK;
+  user-select: none;
+  width: 250px;
+  height: 70px;
+  align-items: center;
+}
+
+.PlaylistContainerHorizontal:hover {
+  cursor: pointer;
+  transition: all 0.12s ease-in;
+  filter: brightness(50%);
+}
+
+.PlaylistContainerHorizontal > img {
+  width: 70px;
+  height: 70px;
+  margin-right: 25px;
+}
+
+.PlaylistContainerHorizontal > p {
+  font-size: 25px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
