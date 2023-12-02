@@ -1,0 +1,43 @@
+.playlist-page img {
+  height: 200px;
+  width: 200px;
+  filter: drop-shadow(0 0 0.75rem black);
+}
+
+.playlist-page {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-self: center;
+  justify-self: center;
+  background-size: cover;
+}
+
+.Playlist-Layout {
+  margin-left: 50px;
+  margin-top: 50px;
+}
+
+.playlistHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.playlistHeader .info {
+  margin-left: 20px;
+  flex-direction: column;
+}
+
+.playlistHeader h1 {
+  margin: 0;
+}
+.playlistHeader .info h2 {
+  color: rgb(197, 197, 197);
+}
+
+.playlist-content
+{
+  
+}

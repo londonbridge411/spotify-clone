@@ -3,7 +3,7 @@ import { User_GetFollowerCount, User_IsVerified } from "../../../User Controls";
 import { email, isVerified, username } from "../../../main";
 import "./AccountPage.css";
 import Popup from "../../Containers/Popup";
-import SongCreation from "../../Containers/SongCreation";
+import PlaylistCreation from "../../Containers/PlaylistCreation";
 import PlaylistContainerHorizontal from "../../Containers/PlaylistContainerHorizontal";
 import supabase from "../../../config/supabaseClient";
 import PlaylistContainer from "../../Containers/PlaylistContainer";
@@ -63,13 +63,13 @@ export default function AccountPage() {
     <>
       <div className="account-layout">
         <header>
-          <h1>Account</h1>
+          <h1>{username}</h1>
         </header>
         <main>
-          <h2> Username: {username}</h2>
-          <p> Verified: {`${isVerified}`}</p>
-          <p> Followers: {getFollowers}</p>
-          <div> Email: {email}</div>
+          <div className="profileStats">
+            <p> Verified: {`${isVerified}`}</p>
+            <p> Followers: {getFollowers}</p>
+          </div>
 
           {/*Changes depending on verification level*/}
           <button
@@ -89,22 +89,9 @@ export default function AccountPage() {
             Upload Song
           </button>
 
-          <PlaylistContainerHorizontal playlist_id={2} />
 
-          <Popup
-            id="Popup_Verification"
-            active={popupActive_Verification}
-            setActive={setPopupState_Verification}
-            html={<div>Get Verified</div>}
-            requiresVerification={false}
-          ></Popup>
-          <Popup
-            id="Popup_UploadSong"
-            active={popupActive_UploadSong}
-            setActive={setPopupState_UploadSong}
-            html={<SongCreation />}
-            requiresVerification={true}
-          ></Popup>
+
+
           <section>
             <h2> My Music:</h2>
             <ul className="myAlbums">
@@ -117,6 +104,21 @@ export default function AccountPage() {
           </section>
         </main>
       </div>
+
+      <Popup
+            id="Popup_Verification"
+            active={popupActive_Verification}
+            setActive={setPopupState_Verification}
+            html={<div>Get Verified</div>}
+            requiresVerification={false}
+          ></Popup>
+          <Popup
+            id="Popup_UploadSong"
+            active={popupActive_UploadSong}
+            setActive={setPopupState_UploadSong}
+            html={<PlaylistCreation />}
+            requiresVerification={true}
+          ></Popup>
     </>
   );
 }

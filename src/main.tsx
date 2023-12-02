@@ -15,6 +15,7 @@ import App from "./App.tsx";
 import AccountPage from "./components/Middle/Account/AccountPage.tsx";
 import Home from "./components/Middle/Home.tsx";
 import Discover from "./components/Middle/Discover.tsx";
+import Playlist from "./components/Middle/Playlist.tsx";
 
 export var isLoggedIn: boolean =
   (await supabase.auth.getSession()).data.session != null;
@@ -44,6 +45,7 @@ const router = createBrowserRouter(
         <Route path="home" element={<Home />} />
         <Route path="account" element={<AccountPage />} />
         <Route path="discover" element={<Discover />} />
+        <Route path="playlist/:playlistID" element={<Playlist />} />
       </Route>
     </Route>
   )

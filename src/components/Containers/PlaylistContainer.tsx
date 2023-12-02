@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import supabase from "../../config/supabaseClient";
 import "./PlaylistContainer.css";
+import { NavLink } from "react-router-dom";
 
 export default function PlaylistContainer(props: any) {
   const [picID, setPicID] = useState(1);
@@ -17,21 +18,22 @@ export default function PlaylistContainer(props: any) {
       });
   }, []);
 
-  console.log("asasdf " + picID);
 
   const publicUrl = supabase.storage
     .from("music-files")
-    .getPublicUrl("pictures/" + picID);
+    .getPublicUrl("pictures/covers/" + picID);
 
   //
   return (
     <>
-      <div className="PlaylistContainer">
-        <img src={publicUrl.data.publicUrl} />
-        <div>
-          <span>{playlistName}</span>
+      <NavLink to={'/app/playlist/' + props.playlist_id}>
+        <div className="PlaylistContainer">
+          <img src={publicUrl.data.publicUrl} />
+          <div>
+            <span>{playlistName}</span>
+          </div>
         </div>
-      </div>
+      </NavLink>
     </>
   );
 }

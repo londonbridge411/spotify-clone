@@ -1,0 +1,14 @@
+#upload-song-menu {
+  display: flex;
+  flex-direction: column;
+}
+
+#upload-song-menu > ul {
+  display: flex;
+  flex-direction: column;
+  background-color: red;
+}
+
+#upload-song-menu > ul > li {
+  color: blue;
+}

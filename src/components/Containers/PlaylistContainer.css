@@ -1,15 +1,18 @@
 .PlaylistContainer {
-  background-color: BLACK;
+  background-color: black;
+  color: white;
+  
+  width: 150px;
+  height: 200px;
 
-  width: 200px;
-  height: 250px;
-
-  display: block;
+  display: flex;
   white-space: nowrap;
 
   user-select: none;
   position: relative;
-  overflow: hidden;
+  overflow: hidden;  
+  flex-direction: column;
+
 }
 
 .PlaylistContainer:hover {
@@ -20,22 +23,22 @@
 }
 
 .PlaylistContainer img {
-  width: 200px;
-  height: 200px;
+  width: 150px;
+  height: 150px;
 }
 
 .PlaylistContainer span {
-  min-width: 200px;
-  text-overflow: ellipsis;
 
+  text-align: center;
+  min-width: 150px;
   font-size: 25px;
   position: absolute;
   white-space: nowrap;
 
-  transform: translateX(0);
-  transition: 1s;
 }
+
+/*make sure that calc(x - 100%), x is equal to width of the object*/
 .PlaylistContainer:hover span {
-  transform: translateX(calc(200px - 100%));
+  transform: translateX(calc(150px - 100%));
   transition: 4s;
 }
