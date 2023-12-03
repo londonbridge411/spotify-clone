@@ -77,17 +77,6 @@ export default function Playlist() {
           });
 
         setPopupState_UploadSong(false);
-
-        /*
-        await supabase
-          .from("Playlists")
-          .select("song_ids")
-          .eq("id", parseInt(playlistID!)).then((result) => () result.data?.at(0)?.song_ids)
-        */
-       /*
-              await supabase.from("Playlists").update({
-                song_ids: 
-            }).eq("id", parseInt(playlistID!))*/
       };
 
       a();
@@ -115,16 +104,35 @@ export default function Playlist() {
               <h2>{playlistType}</h2>
             </div>
           </div>
-
+          <button
+            hidden={email != playlistEmail}
+            onClick={() => setPopupState_UploadSong(email == playlistEmail)}
+          >
+            Add Song
+          </button>
           <div className="playlist-content">
-            <button
-              hidden={email != playlistEmail}
-              onClick={() => setPopupState_UploadSong(email == playlistEmail)}
-            >
-              Add Song
-            </button>
+            <table>
+              <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Album</th>
+                <th>Created</th>
+                <th>Duration</th>
+              </tr>
+              <tr>
+                <td>Alfreds Futterkiste</td>
+                <td>Maria Anders</td>
+                <td>Germany</td>
+              </tr>
+              <tr>
+                <td>Centro comercial Moctezuma</td>
+                <td>Francisco Chang</td>
+                <td>Mexico</td>
+              </tr>
+            </table>
           </div>
         </div>
+
         <Popup
           id="uploadSongPopup"
           active={popupActive_UploadSong}
