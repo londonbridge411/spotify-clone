@@ -160,9 +160,19 @@ export default function Playlist() {
 
           <main className="playlist-content">
             <ul className="song-table">
-              {list.map((item) => (
-                <SongRow song_id={item} />
-              ))}
+              <div></div>
+              <div>Name</div>
+              <div>Album</div>
+              <div>Created</div>
+              {list.map((item) => {
+                console.log(item);
+                // item broke somehow
+                return (
+                  <>
+                    <SongRow song_id={item} />
+                  </>
+                );
+              })}
             </ul>
           </main>
         </div>
@@ -230,15 +240,13 @@ export function SongRow(props: any) {
 
   return (
     <>
-      <div className="song-row">
-        <img src={coverURL.data.publicUrl} />
-        <div className="song-row-name">
-          {songName}
-          <div>Artist</div>
-        </div>
-        <div className="song-row-album">{albumName}</div>
-        <div className="song-row-date">{dateCreated}</div>
+      <img src={coverURL.data.publicUrl} />
+      <div className="song-row-name">
+        {songName}
+        <div>Artist</div>
       </div>
+      <div className="song-row-album">{albumName}</div>
+      <div className="song-row-date">{dateCreated}</div>
     </>
   );
 }

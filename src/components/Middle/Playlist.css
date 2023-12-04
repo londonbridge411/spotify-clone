@@ -55,7 +55,7 @@
 
 .song-table {
   display: grid;
-  grid-template-columns: auto;
+  grid-template-columns: auto auto auto auto;
   /*
   row-gap: 10px;
   padding-right: 80px;
@@ -83,22 +83,19 @@
   filter: brightness(50%);
 }
 
-.song-row > img {
+.song-table > img {
   height: 50px;
   width: 50px;
 }
 
-.song-row > .song-row-name {
-  width: 40vw;
+.song-row-name {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.song-row > .song-row-album {
-  width: 25vw;
+.song-row-album {
 }
 
-.song-row > .song-row-date {
-  width: 10vw;
+.song-row-date {
 }
