@@ -89,9 +89,6 @@ export default function AccountPage() {
             Upload Song
           </button>
 
-
-
-
           <section>
             <h2> My Music:</h2>
             <ul className="myAlbums">
@@ -106,19 +103,19 @@ export default function AccountPage() {
       </div>
 
       <Popup
-            id="Popup_Verification"
-            active={popupActive_Verification}
-            setActive={setPopupState_Verification}
-            html={<div>Get Verified</div>}
-            requiresVerification={false}
-          ></Popup>
-          <Popup
-            id="Popup_UploadSong"
-            active={popupActive_UploadSong}
-            setActive={setPopupState_UploadSong}
-            html={<PlaylistCreation />}
-            requiresVerification={true}
-          ></Popup>
+        id="Popup_Verification"
+        active={popupActive_Verification}
+        setActive={setPopupState_Verification}
+        html={<div>Get Verified</div>}
+        requiresVerification={false}
+      ></Popup>
+      <Popup
+        id="Popup_UploadSong"
+        active={popupActive_UploadSong}
+        setActive={setPopupState_UploadSong}
+        html={<PlaylistCreation />}
+        requiresVerification={true}
+      ></Popup>
     </>
   );
 }

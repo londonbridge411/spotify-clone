@@ -41,6 +41,22 @@ export default function Playlist() {
       });
   }, []);
 
+  // Song List
+  const [list, setList] = useState([null]);
+  useEffect(() => {
+    supabase
+      .from("Playlists")
+      .select("song_ids")
+      .eq("owner", email)
+      .then((result) => {
+        var myData = result.data?.at(0)?.song_ids;
+
+        if (myData != null) {
+          setList(myData);
+        }
+      });
+  }, []);
+
   const coverUrl = supabase.storage
     .from("music-files")
     .getPublicUrl("pictures/covers/" + picID);
@@ -57,11 +73,13 @@ export default function Playlist() {
     let id = uuid.v4();
 
     if (uploaded_song != null) {
-      const a = async () => {
+      const insertIntoTable = async () => {
         var song_name = document.getElementById(
           "upload-song-name"
         ) as HTMLInputElement;
+
         var song_name_text = song_name?.value;
+
         await supabase.from("Songs").insert({
           id: id,
           title: song_name_text,
@@ -77,12 +95,41 @@ export default function Playlist() {
           });
 
         setPopupState_UploadSong(false);
+
+        // Now we need to append ID to array in playlist
+
+        await supabase
+          .from("Playlists")
+          .select("song_ids")
+          .eq("id", playlistID)
+          .then(async (result) => {
+            var array: string[] = result.data?.at(0)?.song_ids;
+
+            array.push(id);
+
+            console.log(array);
+            await supabase
+              .from("Playlists")
+              .update({ song_ids: array })
+              .eq("id", playlistID);
+
+            console.log(array);
+          });
       };
 
-      a();
+      insertIntoTable();
     }
   }
 
+  /*
+                <div className="song-table-header">HEADR</div>
+              <hr></hr>
+              {list.map((item) => (
+                <li key={item}>
+                  <SongRow song_id={item} />
+                </li>
+              ))}
+  */
   return (
     <>
       <div
@@ -96,41 +143,28 @@ export default function Playlist() {
         }}
       >
         <div className="Playlist-Layout">
-          <div className="playlistHeader">
+          <header className="playlistHeader">
             <img src={coverUrl.data.publicUrl} />
             <div className="info">
               <h1>{playlistName}</h1>
               <h2>{playlistAuthor}</h2>
               <h2>{playlistType}</h2>
             </div>
-          </div>
+          </header>
           <button
             hidden={email != playlistEmail}
             onClick={() => setPopupState_UploadSong(email == playlistEmail)}
           >
             Add Song
           </button>
-          <div className="playlist-content">
-            <table>
-              <tr>
-                <th>#</th>
-                <th>Title</th>
-                <th>Album</th>
-                <th>Created</th>
-                <th>Duration</th>
-              </tr>
-              <tr>
-                <td>Alfreds Futterkiste</td>
-                <td>Maria Anders</td>
-                <td>Germany</td>
-              </tr>
-              <tr>
-                <td>Centro comercial Moctezuma</td>
-                <td>Francisco Chang</td>
-                <td>Mexico</td>
-              </tr>
-            </table>
-          </div>
+
+          <main className="playlist-content">
+            <ul className="song-table">
+              {list.map((item) => (
+                <SongRow song_id={item} />
+              ))}
+            </ul>
+          </main>
         </div>
 
         <Popup
@@ -153,6 +187,57 @@ export default function Playlist() {
           }
           requiresVerification={() => playlistType != "Playlist"}
         ></Popup>
+      </div>
+    </>
+  );
+}
+
+export function SongRow(props: any) {
+  const [songName, setSongName] = useState("");
+  const [artistName, setArtistName] = useState("");
+  const [albumName, setAlbumName] = useState("");
+  const [dateCreated, setDateCreated] = useState("");
+  const [albumCoverID, setAlbumCoverID] = useState("");
+
+  var coverURL = supabase.storage
+    .from("music-files")
+    .getPublicUrl("pictures/covers/" + albumCoverID);
+  coverURL.data.publicUrl;
+
+  useEffect(() => {
+    supabase
+      .from("Songs")
+      .select("*")
+      .eq("id", props.song_id)
+      .then(async (result) => {
+        var row = result.data?.at(0);
+
+        if (row != null) {
+          setSongName(row.title);
+          setDateCreated(row.created_at);
+
+          await supabase
+            .from("Playlists")
+            .select("image_id, name")
+            .eq("id", row.album_id)
+            .then((result) => {
+              setAlbumCoverID(result.data?.at(0)?.image_id);
+              setAlbumName(result.data?.at(0)?.name);
+            });
+        }
+      });
+  }, []);
+
+  return (
+    <>
+      <div className="song-row">
+        <img src={coverURL.data.publicUrl} />
+        <div className="song-row-name">
+          {songName}
+          <div>Artist</div>
+        </div>
+        <div className="song-row-album">{albumName}</div>
+        <div className="song-row-date">{dateCreated}</div>
       </div>
     </>
   );

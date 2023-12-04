@@ -1,7 +1,7 @@
 .PlaylistContainer {
   background-color: black;
   color: white;
-  
+
   width: 150px;
   height: 200px;
 
@@ -10,9 +10,8 @@
 
   user-select: none;
   position: relative;
-  overflow: hidden;  
+  overflow: hidden;
   flex-direction: column;
-
 }
 
 .PlaylistContainer:hover {
@@ -28,14 +27,12 @@
 }
 
 .PlaylistContainer span {
-
   margin-top: 7.5px;
   text-align: center;
   min-width: 150px;
   font-size: 20px;
   position: absolute;
   white-space: nowrap;
-
 }
 
 /*make sure that calc(x - 100%), x is equal to width of the object*/

@@ -8,7 +8,7 @@ export default function PlaylistContainerHorizontal(props: any) {
 
   useEffect(() => {
     supabase
-      .from("Playlists")
+      .from("Albums")
       .select("name, image_id")
       .eq("id", props.playlist_id)
       .then((result) => {

@@ -18,7 +18,6 @@ export default function PlaylistContainer(props: any) {
       });
   }, []);
 
-
   const publicUrl = supabase.storage
     .from("music-files")
     .getPublicUrl("pictures/covers/" + picID);
@@ -26,7 +25,7 @@ export default function PlaylistContainer(props: any) {
   //
   return (
     <>
-      <NavLink to={'/app/playlist/' + props.playlist_id}>
+      <NavLink to={"/app/playlist/" + props.playlist_id}>
         <div className="PlaylistContainer">
           <img src={publicUrl.data.publicUrl} />
           <div>
