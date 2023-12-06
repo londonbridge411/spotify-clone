@@ -160,18 +160,23 @@ export default function Playlist() {
 
           <main className="playlist-content">
             <ul className="song-table">
-              <div></div>
-              <div>Name</div>
-              <div>Album</div>
-              <div>Created</div>
+              <div style={{ color: "rgba(0, 0, 0, 0)" }}>
+                ?<hr></hr>
+              </div>
+              <div className="text-bold">
+                Name <hr></hr>
+              </div>
+              <div className="text-bold">
+                Album <hr></hr>
+              </div>
+              <div className="text-bold">
+                Created <hr></hr>
+              </div>
+
               {list.map((item) => {
                 console.log(item);
                 // item broke somehow
-                return (
-                  <>
-                    <SongRow song_id={item} />
-                  </>
-                );
+                return <SongRow key={item} song_id={item} />;
               })}
             </ul>
           </main>
@@ -239,14 +244,18 @@ export function SongRow(props: any) {
   }, []);
 
   return (
-    <>
-      <img src={coverURL.data.publicUrl} />
-      <div className="song-row-name">
-        {songName}
+    <div className="song-row">
+      <div>
+        <img src={coverURL.data.publicUrl} />
+      </div>
+      <div className="grid-item song-row-name">
+        <div className="overflow-ellipsis text-bigger text-bold">
+          {songName}
+        </div>
         <div>Artist</div>
       </div>
       <div className="song-row-album">{albumName}</div>
       <div className="song-row-date">{dateCreated}</div>
-    </>
+    </div>
   );
 }
