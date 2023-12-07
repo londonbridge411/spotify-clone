@@ -41,6 +41,7 @@ const router = createBrowserRouter(
       <Route index element={<AuthProvider />}></Route>
       <Route path="login" element={<Login />}></Route>
       <Route path="signup" element={<Signup />}></Route>
+
       <Route path="app" element={<App />}>
         <Route path="home" element={<Home />} />
         <Route path="account" element={<AccountPage />} />

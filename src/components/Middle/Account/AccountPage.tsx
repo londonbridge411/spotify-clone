@@ -40,14 +40,12 @@ export default function AccountPage() {
   const [popupActive_UploadSong, setPopupState_UploadSong] = useState(false);
 
   useEffect(() => {
-    console.log("poop");
     if (!isVerified) {
       setPopupState_UploadSong(false);
     }
   }, [popupActive_UploadSong]);
 
   useEffect(() => {
-    console.log("poop");
     if (isVerified) {
       setPopupState_Verification(false);
     }
@@ -56,8 +54,6 @@ export default function AccountPage() {
   useEffect(() => {
     User_GetFollowerCount(email).then((result) => setFollowers(result));
   }, []);
-
-  console.log(isVerified);
 
   return (
     <>

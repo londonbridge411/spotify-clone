@@ -3,8 +3,6 @@ import "./Popup.css";
 import { isVerified } from "../../main";
 
 export default function Popup(props: any) {
-  console.log("Popup id is " + props.id);
-
   const [fadeIn, setFadeIn] = useState(false);
 
   useEffect(() => {

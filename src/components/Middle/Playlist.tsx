@@ -6,6 +6,7 @@ import "./Playlist.css";
 import Popup from "../Containers/Popup";
 import { email, isVerified } from "../../main";
 import * as uuid from "uuid";
+import MusicControl, { SetSongID } from "../Music Control";
 
 export default function Playlist() {
   const { playlistID } = useParams();
@@ -244,7 +245,7 @@ export function SongRow(props: any) {
   }, []);
 
   return (
-    <div className="song-row">
+    <div className="song-row" onClick={() => SetSongID("a")}>
       <div>
         <img src={coverURL.data.publicUrl} />
       </div>
