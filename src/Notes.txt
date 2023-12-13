@@ -40,3 +40,7 @@ https://stackoverflow.com/questions/72154421/using-react-router-to-change-certai
 
 https://www.youtube.com/watch?v=GkDxOmtKgvw&ab_channel=CBTNuggets
 Has something for url parameters. Good for songs and what not
+
+
+npm install @reduxjs/toolkit
+npm install react-redux

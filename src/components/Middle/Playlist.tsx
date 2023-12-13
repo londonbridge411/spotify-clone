@@ -6,7 +6,9 @@ import "./Playlist.css";
 import Popup from "../Containers/Popup";
 import { email, isVerified } from "../../main";
 import * as uuid from "uuid";
-import MusicControl, { SetSongID } from "../Music Control";
+import MusicControl from "../Music Control";
+import { setSongID } from "../../PlayerSlice";
+import { useDispatch } from "react-redux";
 
 export default function Playlist() {
   const { playlistID } = useParams();
@@ -81,12 +83,16 @@ export default function Playlist() {
 
         var song_name_text = song_name?.value;
 
-        await supabase.from("Songs").insert({
-          id: id,
-          title: song_name_text,
-          owner: email,
-          album_id: parseInt(playlistID!),
-        });
+        await supabase
+          .from("Songs")
+          .insert({
+            id: id,
+            title: song_name_text,
+            owner: email,
+            album_id: parseInt(playlistID!),
+            created_at: new Date(),
+          })
+          .then((result) => console.log(result.error));
 
         await supabase.storage
           .from("music-files")
@@ -215,37 +221,44 @@ export function SongRow(props: any) {
   const [dateCreated, setDateCreated] = useState("");
   const [albumCoverID, setAlbumCoverID] = useState("");
 
+  const dispatch = useDispatch();
+
   var coverURL = supabase.storage
     .from("music-files")
     .getPublicUrl("pictures/covers/" + albumCoverID);
   coverURL.data.publicUrl;
 
   useEffect(() => {
-    supabase
-      .from("Songs")
-      .select("*")
-      .eq("id", props.song_id)
-      .then(async (result) => {
-        var row = result.data?.at(0);
+    if (props.song_id != null) {
+      supabase
+        .from("Songs")
+        .select("*")
+        .eq("id", props.song_id)
+        .then(async (result) => {
+          var row = result.data?.at(0);
 
-        if (row != null) {
-          setSongName(row.title);
-          setDateCreated(row.created_at);
+          if (row != null) {
+            setSongName(row.title);
+            setDateCreated(row.created_at);
 
-          await supabase
-            .from("Playlists")
-            .select("image_id, name")
-            .eq("id", row.album_id)
-            .then((result) => {
-              setAlbumCoverID(result.data?.at(0)?.image_id);
-              setAlbumName(result.data?.at(0)?.name);
-            });
-        }
-      });
+            await supabase
+              .from("Playlists")
+              .select("image_id, name")
+              .eq("id", row.album_id)
+              .then((result) => {
+                setAlbumCoverID(result.data?.at(0)?.image_id);
+                setAlbumName(result.data?.at(0)?.name);
+              });
+          }
+        });
+    }
   }, []);
 
   return (
-    <div className="song-row" onClick={() => SetSongID("a")}>
+    <div
+      className="song-row"
+      onClick={() => dispatch(setSongID(props.song_id))}
+    >
       <div>
         <img src={coverURL.data.publicUrl} />
       </div>

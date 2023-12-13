@@ -16,6 +16,10 @@ import AccountPage from "./components/Middle/Account/AccountPage.tsx";
 import Home from "./components/Middle/Home.tsx";
 import Discover from "./components/Middle/Discover.tsx";
 import Playlist from "./components/Middle/Playlist.tsx";
+import { configureStore } from "@reduxjs/toolkit";
+import { Provider } from "react-redux";
+import playerSlice from "./PlayerSlice.ts";
+import { store } from "./store.ts";
 
 export var isLoggedIn: boolean =
   (await supabase.auth.getSession()).data.session != null;
@@ -56,7 +60,9 @@ console.log("Auth Status: " + isLoggedIn);
 //console.log((await supabase.auth.getSession()).data.session);
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   </React.StrictMode>
 );
 
