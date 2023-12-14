@@ -7,8 +7,9 @@ import Popup from "../Containers/Popup";
 import { email, isVerified } from "../../main";
 import * as uuid from "uuid";
 import MusicControl from "../Music Control";
-import { setSongID } from "../../PlayerSlice";
-import { useDispatch } from "react-redux";
+import { setSongID, setSongList } from "../../PlayerSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../store";
 
 export default function Playlist() {
   const { playlistID } = useParams();
@@ -181,9 +182,8 @@ export default function Playlist() {
               </div>
 
               {list.map((item) => {
-                console.log(item);
                 // item broke somehow
-                return <SongRow key={item} song_id={item} />;
+                return <SongRow key={item} song_id={item} song_list={list} />;
               })}
             </ul>
           </main>
@@ -221,6 +221,7 @@ export function SongRow(props: any) {
   const [dateCreated, setDateCreated] = useState("");
   const [albumCoverID, setAlbumCoverID] = useState("");
 
+  const player = useSelector((state: RootState) => state.player);
   const dispatch = useDispatch();
 
   var coverURL = supabase.storage
@@ -254,10 +255,30 @@ export function SongRow(props: any) {
     }
   }, []);
 
+  function changeColor(e: any) {
+    console.log(e.currentTarget.children);
+    e.currentTarget.children[1].children[0].style.color = "#7FFF00";
+  }
+
+  useEffect(() => {
+    if (props.song_id == null) return;
+    let nameArea = document.getElementById(props.song_id);
+
+    (nameArea?.children[0].children[0] as HTMLElement).style.filter =
+      player.song_id == nameArea?.id ? "brightness(50%)" : "none";
+
+    (nameArea?.children[1].children[0] as HTMLElement).style.color =
+      player.song_id == nameArea?.id ? "#8DFFFF" : "#FFFFFF";
+  }, [player.song_id]);
+
   return (
     <div
+      id={props.song_id}
       className="song-row"
-      onClick={() => dispatch(setSongID(props.song_id))}
+      onClick={() => {
+        dispatch(setSongList(props.song_list));
+        dispatch(setSongID(props.song_id));
+      }}
     >
       <div>
         <img src={coverURL.data.publicUrl} />
