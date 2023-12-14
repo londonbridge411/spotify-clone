@@ -1,3 +1,8 @@
+:root
+{
+  --progress: 0%;
+  --playback: hidden;
+}
 #Soundbar {
   display: flex;
   background: black;
@@ -20,6 +25,43 @@
 #Soundbar .control-btn:hover {
   filter: invert(100%) sepia(79%) saturate(1000%) hue-rotate(86deg);
 }
+
+#progress-bar-container {
+  position: relative;
+  display: flex;
+  cursor: pointer;
+  height: 5%;
+  width: 100%;
+  margin: 0;
+  outline: none;
+  background-color: #242424;
+}
+
+
+#progress-bar {
+  background-color: rgb(141, 255, 255);
+  width: var(--progress);
+}
+
+#progress-bar-handle
+{
+  background-color: white;
+  color: transparent;
+  visibility: hidden;
+  height: 15px;
+  width : 15px;
+  border-radius: 50%;
+  margin-top: -5px;
+  margin-left: -7.5px;
+  z-index: 2;
+}
+
+#progress-bar-container:hover #progress-bar-handle
+{
+  visibility: visible;
+}
+
+
 /*
 .Soundbar ul
 {

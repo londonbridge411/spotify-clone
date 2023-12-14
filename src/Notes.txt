@@ -44,3 +44,6 @@ Has something for url parameters. Good for songs and what not
 
 npm install @reduxjs/toolkit
 npm install react-redux
+
+npm install moment-duration-format
+

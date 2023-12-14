@@ -30,4 +30,5 @@
 
 #page > footer {
   grid-area: foot;
+  visibility: var(--playback);
 }
