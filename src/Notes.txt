@@ -47,3 +47,4 @@ npm install react-redux
 
 npm install moment-duration-format
 
+https://open.spotifycdn.com/cdn/images/equaliser-animated-green.f5eb96f2.gif

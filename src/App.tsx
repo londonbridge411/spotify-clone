@@ -21,6 +21,11 @@ export default function App() {
     document.documentElement.style.setProperty(`--playback`, (player.hasLoaded) ? "none" : "hidden");
   }, [player.hasLoaded])
 
+  window.onkeydown = function (e) {
+    if ((e.key == " " || e.code == "Space" || e.keyCode == 32) && e.target == document.body) {
+      e.preventDefault();
+    }
+  };
   return (
     <div className="App root-layout">
       <section id="page">

@@ -129,6 +129,10 @@ export default function MusicControl() {
                 setPlayIcon(pause);
               };
 
+              audio.onended = () => {
+                dispatch(nextSong());
+              }
+              
               audio.onvolumechange = () => {
                 let num = audio.volume * 100;
                 dispatch(setVolume(num.toString()));
@@ -155,8 +159,9 @@ export default function MusicControl() {
   }, [player.song_id]);
 
   document.body.onkeyup = function (e) {
-    if (e.key == " " || e.code == "Space" || e.keyCode == 32) {
-      TogglePlay();
+    if ((e.key == " " || e.code == "Space" || e.keyCode == 32) && e.target == document.body) {
+      if (player.hasLoaded)
+        TogglePlay();
     }
   };
 
@@ -201,16 +206,10 @@ export default function MusicControl() {
             id="prev-btn"
             className="control-btn"
             onClick={() => {
-              if (
-                parseInt(
-                  document.documentElement.style.getPropertyValue(`--progress`)
-                ) < 15
-              ) {
+              let a = document.getElementById("audioControl") as HTMLAudioElement;
+              if (a.currentTime < 15) {
                 dispatch(prevSong());
               } else {
-                let a = document.getElementById(
-                  "audioControl"
-                ) as HTMLAudioElement;
                 a.currentTime = 0;
               }
             }}

@@ -7,6 +7,7 @@ interface PlayerState {
   song_id: string; //The song that is currently playing
   volume: string;
   isPlaying: boolean;
+  isShuffled: boolean;
   hasLoaded: boolean;
   songList: string[];
   listPosition: number;
@@ -16,9 +17,10 @@ const initialState: PlayerState = {
   song_id: "",
   volume: "50",
   isPlaying: false,
+  isShuffled: false,
   hasLoaded: false,
   songList: [],
-  listPosition: 0,
+  listPosition: -1,
 };
 
 const playerSlice = createSlice({
@@ -28,13 +30,13 @@ const playerSlice = createSlice({
     setSongID(state, action: PayloadAction<string>) {
       state.song_id = action.payload;
 
+      state.isShuffled = false;
+
       if (state.songList.length > 0) {
         state.listPosition = state.songList.findIndex(
           (x) => x == state.song_id
         );
       }
-
-      console.log("Pos " + state.listPosition);
     },
 
     setVolume(state, action: PayloadAction<string>) {
@@ -50,6 +52,17 @@ const playerSlice = createSlice({
       state.songList = action.payload;
 
       console.log("List: " + state.songList);
+    },
+
+    shufflePlay(state)
+    {
+      if (state.songList.length == 0) return;
+      state.isShuffled = true;
+      state.songList.sort(() => Math.random() - 0.5);
+
+      state.song_id = state.songList[0];
+      state.listPosition = 0;
+
     },
 
     prevSong(state) {
@@ -82,5 +95,6 @@ export const {
   LoadPlayer,
   prevSong,
   nextSong,
+  shufflePlay,
 } = playerSlice.actions;
 export default playerSlice.reducer;

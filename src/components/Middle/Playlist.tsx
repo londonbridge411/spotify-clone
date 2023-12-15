@@ -7,11 +7,16 @@ import Popup from "../Containers/Popup";
 import { email, isVerified } from "../../main";
 import * as uuid from "uuid";
 import MusicControl from "../Music Control";
-import { setSongID, setSongList } from "../../PlayerSlice";
+import { setSongID, setSongList, shufflePlay } from "../../PlayerSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
+import pause from "../assets/circle-pause-solid.svg";
 
 export default function Playlist() {
+
+  const player = useSelector((state: RootState) => state.player);
+  const dispatch = useDispatch();
+
   const { playlistID } = useParams();
   const [picID, setPicID] = useState(null);
   const [bgID, setBgID] = useState(2);
@@ -46,7 +51,7 @@ export default function Playlist() {
   }, []);
 
   // Song List
-  const [list, setList] = useState([null]);
+  const [list, setList] = useState([]);
   useEffect(() => {
     supabase
       .from("Playlists")
@@ -122,6 +127,7 @@ export default function Playlist() {
               .eq("id", playlistID);
 
             console.log(array);
+            window.location.reload();
           });
       };
 
@@ -129,15 +135,6 @@ export default function Playlist() {
     }
   }
 
-  /*
-                <div className="song-table-header">HEADR</div>
-              <hr></hr>
-              {list.map((item) => (
-                <li key={item}>
-                  <SongRow song_id={item} />
-                </li>
-              ))}
-  */
   return (
     <>
       <div
@@ -164,6 +161,22 @@ export default function Playlist() {
             onClick={() => setPopupState_UploadSong(email == playlistEmail)}
           >
             Add Song
+          </button>
+
+          <button onClick={() => {
+            dispatch(setSongList(list as string[]));
+            dispatch(setSongID(list[0]));
+          }
+          }>
+            Play
+          </button>
+
+          <button onClick={() => {
+            dispatch(setSongList(list as string[]));
+            dispatch(shufflePlay());
+          }
+          }>
+            Shuffle
           </button>
 
           <main className="playlist-content">
@@ -255,21 +268,43 @@ export function SongRow(props: any) {
     }
   }, []);
 
-  function changeColor(e: any) {
-    console.log(e.currentTarget.children);
-    e.currentTarget.children[1].children[0].style.color = "#7FFF00";
-  }
+  useEffect(() => {
+    if (props.song_id == null) return;
+    let nameArea = document.getElementById(props.song_id);
+
+
+    if (player.song_id == nameArea?.id) {
+      (nameArea?.children[0].children[0] as HTMLElement).setAttribute("src", "https://open.spotifycdn.com/cdn/images/equaliser-animated-green.f5eb96f2.gif");
+      (nameArea?.children[0].children[0] as HTMLElement).classList.add("audioGIF");
+    }
+    else {
+      (nameArea?.children[0].children[0] as HTMLElement).setAttribute("src", coverURL.data.publicUrl);
+      (nameArea?.children[0].children[0] as HTMLElement).classList.remove("audioGIF");
+
+    }
+    //.filter =
+    //player.song_id == nameArea?.id ? "brightness(50%)" : "none";
+
+    (nameArea?.children[1].children[0] as HTMLElement).style.color =
+      player.song_id == nameArea?.id ? "#8DFFFF" : "#FFFFFF";
+  }, [player.song_id]);
+
 
   useEffect(() => {
     if (props.song_id == null) return;
     let nameArea = document.getElementById(props.song_id);
 
-    (nameArea?.children[0].children[0] as HTMLElement).style.filter =
-      player.song_id == nameArea?.id ? "brightness(50%)" : "none";
+    if (player.song_id == nameArea?.id) {
+      if (player.isPlaying) {
+        (nameArea?.children[0].children[0] as HTMLElement).setAttribute("src", "https://open.spotifycdn.com/cdn/images/equaliser-animated-green.f5eb96f2.gif");
+      }
+      else {
+        (nameArea?.children[0].children[0] as HTMLElement).setAttribute("src", "../../../src/assets/small-play.svg");
+      }
+    }
 
-    (nameArea?.children[1].children[0] as HTMLElement).style.color =
-      player.song_id == nameArea?.id ? "#8DFFFF" : "#FFFFFF";
-  }, [player.song_id]);
+  }, [player.isPlaying])
+
 
   return (
     <div
@@ -281,7 +316,7 @@ export function SongRow(props: any) {
       }}
     >
       <div>
-        <img src={coverURL.data.publicUrl} />
+        <img src={player.song_id != props.song_id ? coverURL.data.publicUrl : "../../../src/assets/small-play.svg"} />
       </div>
       <div className="grid-item song-row-name">
         <div className="overflow-ellipsis text-bigger text-bold">

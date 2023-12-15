@@ -109,13 +109,28 @@ div::-webkit-scrollbar-thumb {
   margin-right: 5px;
 }
 
+.audioGIF
+{
+  filter: brightness(100) sepia(79%) saturate(1000%) hue-rotate(86deg);
+  display: block;
+  padding-left: 15%;
+  padding-top: 15%;
+  max-width: 25px;
+  max-height: 25px;
+}
+
 .song-row-name {
   overflow: hidden;
   white-space: nowrap;
   padding-top: 7px;
   padding-right: 50px;
 }
+/*
+  filter: brightness(100) sepia(79%) saturate(1000%) hue-rotate(86deg);
 
+        <img className="audioGIF"src={"https://open.spotifycdn.com/cdn/images/equaliser-animated-green.f5eb96f2.gif"} />
+
+*/
 .song-row-album {
   padding-top: 18.2px;
   padding-right: 50px;

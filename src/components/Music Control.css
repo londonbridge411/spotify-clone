@@ -3,6 +3,7 @@
   --playback: hidden;
 }
 #Soundbar {
+  position: fixed;
   display: flex;
   background: black;
   flex-direction: row;
@@ -68,6 +69,7 @@
   filter: invert(100%) sepia(79%) saturate(1000%) hue-rotate(86deg);
 }
 #play-btn {
+
   height: 40px;
 }
 
