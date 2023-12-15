@@ -101,11 +101,7 @@ export default function MusicControl() {
               .then((result) => {
                 let albumID = result.data?.at(0)?.album_id;
 
-                supabase
-                  .from("Playlists")
-                  .select("image_id")
-                  .eq("id", albumID)
-                  .then((result2) => setImgID(result2.data?.at(0)?.image_id));
+                setImgID(albumID);
               });
 
             audio = document.getElementById("audioControl") as HTMLAudioElement;
@@ -129,10 +125,6 @@ export default function MusicControl() {
                 setPlayIcon(pause);
               };
 
-              audio.onended = () => {
-                dispatch(nextSong());
-              }
-              
               audio.onvolumechange = () => {
                 let num = audio.volume * 100;
                 dispatch(setVolume(num.toString()));
@@ -159,9 +151,8 @@ export default function MusicControl() {
   }, [player.song_id]);
 
   document.body.onkeyup = function (e) {
-    if ((e.key == " " || e.code == "Space" || e.keyCode == 32) && e.target == document.body) {
-      if (player.hasLoaded)
-        TogglePlay();
+    if (e.key == " " || e.code == "Space" || e.keyCode == 32) {
+      TogglePlay();
     }
   };
 
@@ -206,10 +197,17 @@ export default function MusicControl() {
             id="prev-btn"
             className="control-btn"
             onClick={() => {
-              let a = document.getElementById("audioControl") as HTMLAudioElement;
-              if (a.currentTime < 15) {
+              if (
+                parseInt(
+                  document.documentElement.style.getPropertyValue(`--progress`)
+                ) < 3 &&
+                player.listPosition > 0
+              ) {
                 dispatch(prevSong());
               } else {
+                let a = document.getElementById(
+                  "audioControl"
+                ) as HTMLAudioElement;
                 a.currentTime = 0;
               }
             }}

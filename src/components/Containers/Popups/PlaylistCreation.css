@@ -1,14 +1,14 @@
-#upload-song-menu {
+#upload-playlist-menu {
   display: flex;
   flex-direction: column;
 }
 
-#upload-song-menu > ul {
+#upload-playlist-menu > ul {
   display: flex;
   flex-direction: column;
   background-color: red;
 }
 
-#upload-song-menu > ul > li {
+#upload-playlist-menu > ul > li {
   color: blue;
 }

@@ -27,3 +27,9 @@
 
   background-color: black;
 }
+
+/* Random Popup Stuff */
+#upload-song-menu {
+  display: flex;
+  flex-direction: column;
+}

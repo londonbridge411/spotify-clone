@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import supabase from "../../config/supabaseClient";
 
 import "./Playlist.css";
+
 import Popup from "../Containers/Popup";
 import { email, isVerified } from "../../main";
 import * as uuid from "uuid";
@@ -11,19 +12,22 @@ import { setSongID, setSongList, shufflePlay } from "../../PlayerSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import pause from "../assets/circle-pause-solid.svg";
+import ContextMenu, { ViewContextMenu } from "../Containers/ContextMenu";
+import ContextMenuOption from "../Containers/ContextMenuOption";
 
 export default function Playlist() {
-
-  const player = useSelector((state: RootState) => state.player);
   const dispatch = useDispatch();
 
   const { playlistID } = useParams();
-  const [picID, setPicID] = useState(null);
-  const [bgID, setBgID] = useState(2);
+
+  if (playlistID == null) return;
   const [playlistName, setPlaylistName] = useState(null);
   const [playlistAuthor, setPlaylistAuthor] = useState(null);
   const [playlistEmail, setPlaylistEmail] = useState(null);
   const [playlistType, setPlaylistType] = useState(null);
+
+  const [popupActive_UploadingWait, setPopupState_UploadingWait] =
+    useState(false);
 
   const [popupActive_UploadSong, setPopupState_UploadSong] = useState(false);
   useEffect(() => {
@@ -35,10 +39,8 @@ export default function Playlist() {
         var row = result.data?.at(0);
 
         if (row != null) {
-          setPicID(row.image_id);
           setPlaylistName(row.name);
           setPlaylistType(row.type);
-          setBgID(row.background_id);
           setPlaylistEmail(row.owner);
 
           supabase
@@ -68,11 +70,11 @@ export default function Playlist() {
 
   const coverUrl = supabase.storage
     .from("music-files")
-    .getPublicUrl("pictures/covers/" + picID);
+    .getPublicUrl("pictures/covers/" + playlistID);
 
   const backgroundUrl = supabase.storage
     .from("music-files")
-    .getPublicUrl("pictures/backgrounds/" + bgID);
+    .getPublicUrl("pictures/backgrounds/" + playlistID);
 
   function UploadSong() {
     const uploaded_song = (
@@ -82,6 +84,7 @@ export default function Playlist() {
     let id = uuid.v4();
 
     if (uploaded_song != null) {
+      setPopupState_UploadingWait(true);
       const insertIntoTable = async () => {
         var song_name = document.getElementById(
           "upload-song-name"
@@ -95,7 +98,7 @@ export default function Playlist() {
             id: id,
             title: song_name_text,
             owner: email,
-            album_id: parseInt(playlistID!),
+            album_id: playlistID!,
             created_at: new Date(),
           })
           .then((result) => console.log(result.error));
@@ -118,15 +121,13 @@ export default function Playlist() {
           .then(async (result) => {
             var array: string[] = result.data?.at(0)?.song_ids;
 
-            array.push(id);
+            array.push(id as string);
 
-            console.log(array);
             await supabase
               .from("Playlists")
               .update({ song_ids: array })
               .eq("id", playlistID);
 
-            console.log(array);
             window.location.reload();
           });
       };
@@ -163,19 +164,21 @@ export default function Playlist() {
             Add Song
           </button>
 
-          <button onClick={() => {
-            dispatch(setSongList(list as string[]));
-            dispatch(setSongID(list[0]));
-          }
-          }>
+          <button
+            onClick={() => {
+              dispatch(setSongList(list as string[]));
+              dispatch(setSongID(list[0]));
+            }}
+          >
             Play
           </button>
 
-          <button onClick={() => {
-            dispatch(setSongList(list as string[]));
-            dispatch(shufflePlay());
-          }
-          }>
+          <button
+            onClick={() => {
+              dispatch(setSongList(list as string[]));
+              dispatch(shufflePlay());
+            }}
+          >
             Shuffle
           </button>
 
@@ -206,6 +209,7 @@ export default function Playlist() {
           id="uploadSongPopup"
           active={popupActive_UploadSong}
           setActive={setPopupState_UploadSong}
+          canClose={true}
           html={
             <div>
               <div id="upload-song-menu">
@@ -223,6 +227,31 @@ export default function Playlist() {
           requiresVerification={() => playlistType != "Playlist"}
         ></Popup>
       </div>
+
+      <Popup
+        id="uploadingWait"
+        active={popupActive_UploadingWait}
+        setActive={setPopupState_UploadingWait}
+        canClose={false}
+        html={<div>Uploading Song</div>}
+        requiresVerification={() => playlistType != "Playlist"}
+      ></Popup>
+
+      <ContextMenu
+        // About to leave but a thought is to store the selected song in a state
+        id={"Song_ContextMenu"}
+        html={
+          <>
+            <div>Add to playlist</div>
+            <div>Favorite</div>
+            <div>Remove from playlist</div>
+            <div>Move Up</div>
+            <div>Move Down</div>
+            <div>Delete Song</div>
+          </>
+        }
+        //requiresVerification={() => playlistType != "Playlist"}
+      ></ContextMenu>
     </>
   );
 }
@@ -237,10 +266,12 @@ export function SongRow(props: any) {
   const player = useSelector((state: RootState) => state.player);
   const dispatch = useDispatch();
 
-  var coverURL = supabase.storage
-    .from("music-files")
-    .getPublicUrl("pictures/covers/" + albumCoverID);
-  coverURL.data.publicUrl;
+  var coverURL =
+    albumCoverID != ""
+      ? supabase.storage
+          .from("music-files")
+          .getPublicUrl("pictures/covers/" + albumCoverID).data.publicUrl
+      : "../../../src/assets/record-vinyl-solid.svg";
 
   useEffect(() => {
     if (props.song_id != null) {
@@ -257,10 +288,10 @@ export function SongRow(props: any) {
 
             await supabase
               .from("Playlists")
-              .select("image_id, name")
+              .select("id, name")
               .eq("id", row.album_id)
               .then((result) => {
-                setAlbumCoverID(result.data?.at(0)?.image_id);
+                setAlbumCoverID(result.data?.at(0)?.id);
                 setAlbumName(result.data?.at(0)?.name);
               });
           }
@@ -272,15 +303,22 @@ export function SongRow(props: any) {
     if (props.song_id == null) return;
     let nameArea = document.getElementById(props.song_id);
 
-
     if (player.song_id == nameArea?.id) {
-      (nameArea?.children[0].children[0] as HTMLElement).setAttribute("src", "https://open.spotifycdn.com/cdn/images/equaliser-animated-green.f5eb96f2.gif");
-      (nameArea?.children[0].children[0] as HTMLElement).classList.add("audioGIF");
-    }
-    else {
-      (nameArea?.children[0].children[0] as HTMLElement).setAttribute("src", coverURL.data.publicUrl);
-      (nameArea?.children[0].children[0] as HTMLElement).classList.remove("audioGIF");
-
+      (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
+        "src",
+        "https://open.spotifycdn.com/cdn/images/equaliser-animated-green.f5eb96f2.gif"
+      );
+      (nameArea?.children[0].children[0] as HTMLElement).classList.add(
+        "audioGIF"
+      );
+    } else {
+      (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
+        "src",
+        coverURL
+      );
+      (nameArea?.children[0].children[0] as HTMLElement).classList.remove(
+        "audioGIF"
+      );
     }
     //.filter =
     //player.song_id == nameArea?.id ? "brightness(50%)" : "none";
@@ -289,43 +327,97 @@ export function SongRow(props: any) {
       player.song_id == nameArea?.id ? "#8DFFFF" : "#FFFFFF";
   }, [player.song_id]);
 
-
   useEffect(() => {
     if (props.song_id == null) return;
     let nameArea = document.getElementById(props.song_id);
 
     if (player.song_id == nameArea?.id) {
       if (player.isPlaying) {
-        (nameArea?.children[0].children[0] as HTMLElement).setAttribute("src", "https://open.spotifycdn.com/cdn/images/equaliser-animated-green.f5eb96f2.gif");
-      }
-      else {
-        (nameArea?.children[0].children[0] as HTMLElement).setAttribute("src", "../../../src/assets/small-play.svg");
+        (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
+          "src",
+          "https://open.spotifycdn.com/cdn/images/equaliser-animated-green.f5eb96f2.gif"
+        );
+      } else {
+        (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
+          "src",
+          "../../../src/assets/small-play.svg"
+        );
       }
     }
-
-  }, [player.isPlaying])
-
+  }, [player.isPlaying]);
 
   return (
-    <div
-      id={props.song_id}
-      className="song-row"
-      onClick={() => {
-        dispatch(setSongList(props.song_list));
-        dispatch(setSongID(props.song_id));
-      }}
-    >
-      <div>
-        <img src={player.song_id != props.song_id ? coverURL.data.publicUrl : "../../../src/assets/small-play.svg"} />
-      </div>
-      <div className="grid-item song-row-name">
-        <div className="overflow-ellipsis text-bigger text-bold">
-          {songName}
+    <>
+      <div
+        id={props.song_id}
+        className="song-row"
+        // On right click
+        onContextMenu={(e) => {
+          e.preventDefault();
+
+          // Don't even have to do this. Just send the song_id to state
+          let selectedID = e.currentTarget.getAttribute("id");
+          console.log("ID is " + selectedID);
+
+          ViewContextMenu("Song_ContextMenu", e);
+        }}
+        // On left click
+        onClick={() => {
+          dispatch(setSongList(props.song_list));
+          dispatch(setSongID(props.song_id));
+        }}
+      >
+        <div>
+          <img
+            src={
+              player.song_id != props.song_id
+                ? coverURL
+                : "../../../src/assets/small-play.svg"
+            }
+          />
         </div>
-        <div>Artist</div>
+        <div className="grid-item song-row-name">
+          <div className="overflow-ellipsis text-bigger text-bold">
+            {songName}
+          </div>
+          <div>Artist</div>
+        </div>
+        <div className="song-row-album">{albumName}</div>
+        <div className="song-row-date">{dateCreated}</div>
       </div>
-      <div className="song-row-album">{albumName}</div>
-      <div className="song-row-date">{dateCreated}</div>
-    </div>
+    </>
   );
 }
+
+/*
+ Goes in on right click
+
+          var menu = document.getElementById(
+            "Song_ContextMenu-" + props.id
+          ) as HTMLElement;
+          menu.style.setProperty("display", "block");
+          menu.style.setProperty("--mouse-x", e.clientX + "px");
+          menu.style.setProperty("--mouse-y", e.clientY + "px");
+
+
+
+
+      <ContextMenu
+        songName={songName}
+        id={"Song_ContextMenu-" + props.id}
+        html={
+          <>
+            <ContextMenuOption html={<div>Add to playlist</div>} />
+
+            <div>Favorite</div>
+            <div>Remove from playlist</div>
+            <div>Move Up</div>
+            <div>Move Down</div>
+            <div>Delete Song</div>
+          </>
+        }
+        //requiresVerification={() => playlistType != "Playlist"}
+      ></ContextMenu>
+
+
+  */

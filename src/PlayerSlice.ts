@@ -50,24 +50,21 @@ const playerSlice = createSlice({
 
     setSongList(state, action: PayloadAction<string[]>) {
       state.songList = action.payload;
-
-      console.log("List: " + state.songList);
     },
 
-    shufflePlay(state)
-    {
+    shufflePlay(state) {
       if (state.songList.length == 0) return;
       state.isShuffled = true;
       state.songList.sort(() => Math.random() - 0.5);
 
       state.song_id = state.songList[0];
       state.listPosition = 0;
-
     },
 
     prevSong(state) {
       // Guard Statements
       if (state.songList.length == 0) return;
+      if (state.songList.length == 1) state.song_id = state.songList[0];
       if (state.listPosition - 1 < 0) return;
 
       state.song_id = state.songList[--state.listPosition];

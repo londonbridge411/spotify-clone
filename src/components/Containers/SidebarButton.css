@@ -25,7 +25,7 @@
 }
 
 .SidebarButton:hover {
-  background-color: rgb(61, 61, 61); /* Green */
+  background-color: rgb(61, 61, 61);
   cursor: pointer;
 }
 

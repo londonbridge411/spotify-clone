@@ -13,6 +13,7 @@
     "main";
 
   overflow-y: auto;
+  user-select: none;
 }
 div::-webkit-scrollbar-track {
   border-radius: 10px;
@@ -93,6 +94,7 @@ div::-webkit-scrollbar-thumb {
   display: contents;
   user-select: none;
   background-color: rgba(136, 136, 136, 0.177);
+  cursor: pointer;
 }
 
 .song-row:hover > div {
@@ -109,8 +111,7 @@ div::-webkit-scrollbar-thumb {
   margin-right: 5px;
 }
 
-.audioGIF
-{
+.audioGIF {
   filter: brightness(100) sepia(79%) saturate(1000%) hue-rotate(86deg);
   display: block;
   padding-left: 15%;

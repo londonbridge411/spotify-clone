@@ -4,23 +4,23 @@ import "./PlaylistContainer.css";
 import { NavLink } from "react-router-dom";
 
 export default function PlaylistContainer(props: any) {
-  const [picID, setPicID] = useState(1);
+  if (props.playlist_id == null) return;
+
   const [playlistName, setPlaylistName] = useState(null);
 
   useEffect(() => {
     supabase
       .from("Playlists")
-      .select("name, image_id")
+      .select("name")
       .eq("id", props.playlist_id)
       .then((result) => {
-        setPicID(result.data?.at(0)?.image_id);
         setPlaylistName(result.data?.at(0)?.name);
       });
   }, []);
 
   const publicUrl = supabase.storage
     .from("music-files")
-    .getPublicUrl("pictures/covers/" + picID);
+    .getPublicUrl("pictures/covers/" + props.playlist_id);
 
   //
   return (
