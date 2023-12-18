@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./ContextMenu.css";
 import { isVerified } from "../../main";
 
+var targ:string = "";
 export default function ContextMenu(props: any) {
   // This is to avoid people from accessing states and popups they shouldn't be able to see
   if (props.active && props.requiresVerification && !isVerified) {
@@ -19,12 +20,14 @@ export default function ContextMenu(props: any) {
     }
   };
 
+  // If you save and then press the button it will not work because the page gets screwed up.
   return (
     <>
       <div id={props.id} className="context-box">
         <div className="context-content">
           {props.id}
           {props.html}
+          <button onClick={() => console.log(targ)}>Click</button>
         </div>
       </div>
     </>
@@ -32,9 +35,13 @@ export default function ContextMenu(props: any) {
 }
 
 export function ViewContextMenu(id: string, event: any) {
-  var menu = document.getElementById(id) as HTMLElement;
-  console.log(menu);
+  let selectedID = event.currentTarget.getAttribute("id");
+  //console.log("ID is " + selectedID);
 
+  var menu = document.getElementById(id) as HTMLElement;
+  //console.log(menu);
+  targ = selectedID;
+  menu.setAttribute("display", "block");
   menu.style.setProperty("display", "block");
   menu.style.setProperty("--mouse-x", event.clientX + "px");
   menu.style.setProperty("--mouse-y", event.clientY + "px");

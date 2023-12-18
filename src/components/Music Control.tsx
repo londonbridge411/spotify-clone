@@ -50,7 +50,6 @@ export default function MusicControl() {
   function ClickProgressBar(event: any) {
     var a = document.getElementById("audioControl") as HTMLAudioElement;
     var clickPercent = event.nativeEvent.offsetX / window.innerWidth;
-    console.log("Percent: " + clickPercent);
     a.currentTime = clickPercent * a.duration;
 
     ChangeProgress(clickPercent);
@@ -151,7 +150,7 @@ export default function MusicControl() {
   }, [player.song_id]);
 
   document.body.onkeyup = function (e) {
-    if (e.key == " " || e.code == "Space" || e.keyCode == 32) {
+    if ((e.key == " " || e.code == "Space" || e.keyCode == 32) && e.target == document.body) {
       TogglePlay();
     }
   };
