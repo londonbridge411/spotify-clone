@@ -28,7 +28,7 @@ export default function Sidebar() {
         <SidebarButton label="Home" to="home" icon={house} />
         <SidebarButton label="Discover" to="discover" icon={search} />
         <SidebarButton label="Artists" to="account" icon={music} />
-        <SidebarButton label="Playlists" to="account" icon={bars} />
+        <SidebarButton label="Playlists" to="playlists" icon={bars} />
 
         <SidebarButton label={username} to="account" icon={user} />
         <SidebarButton label="Settings" icon={gear} />

@@ -1,31 +1,29 @@
 import { useEffect, useState } from "react";
-import supabase from "../../config/supabaseClient";
+import supabase from "../../../config/supabaseClient";
 import "./PlaylistContainerHorizontal.css";
 
 export default function PlaylistContainerHorizontal(props: any) {
-  const [picID, setPicID] = useState(1);
-  const [playlistName, setPlaylistName] = useState(1);
+  const [playlistName, setPlaylistName] = useState();
 
   useEffect(() => {
     supabase
-      .from("Albums")
-      .select("name, image_id")
+      .from("Playlists")
+      .select("name")
       .eq("id", props.playlist_id)
       .then((result) => {
-        setPicID(result.data?.at(0)?.image_id);
         setPlaylistName(result.data?.at(0)?.name);
       });
   }, []);
 
-  console.log("asasdf " + picID);
+  console.log("asasdf " + playlistName);
 
   const publicUrl = supabase.storage
     .from("music-files")
-    .getPublicUrl("pictures/" + picID);
+    .getPublicUrl("pictures/covers/" + props.playlist_id);
 
   return (
     <>
-      <div className="PlaylistContainerHorizontal">
+      <div className="PlaylistContainerHorizontal" onClick={props.onClick!}>
         <img src={publicUrl.data.publicUrl} />
         <p>{playlistName}</p>
       </div>

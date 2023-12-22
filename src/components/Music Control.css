@@ -14,7 +14,7 @@
   user-select: none;
   justify-content: center;
   align-items: center;
-  margin-top: -5px;
+  margin-top: -4px;
 }
 
 #Soundbar > .name-area {
@@ -69,7 +69,6 @@
   filter: invert(100%) sepia(79%) saturate(1000%) hue-rotate(86deg);
 }
 #play-btn {
-
   height: 40px;
 }
 
@@ -84,6 +83,8 @@
   cursor: pointer;
   height: 20px;
   background-color: black;
+  margin-top: -5px;
+
   display: flex;
   align-items: center;
 }
@@ -91,7 +92,7 @@
 #progress-bar-container {
   position: relative;
   display: flex;
-  height: 20%;
+  height: 30%;
   width: 100%;
 
   margin-bottom: 5px;
@@ -111,7 +112,7 @@
   height: 15px;
   width: 15px;
   border-radius: 50%;
-  margin-top: -5px;
+  margin-top: -4px;
   margin-left: -7.5px;
   z-index: 2;
 }

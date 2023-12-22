@@ -129,6 +129,10 @@ export default function MusicControl() {
                 dispatch(setVolume(num.toString()));
               };
 
+              audio.onended = () => {
+                dispatch(nextSong());
+              };
+
               let cookie_volume = document.cookie.split("volume=").at(1);
 
               if (cookie_volume != undefined) {
@@ -150,7 +154,10 @@ export default function MusicControl() {
   }, [player.song_id]);
 
   document.body.onkeyup = function (e) {
-    if ((e.key == " " || e.code == "Space" || e.keyCode == 32) && e.target == document.body) {
+    if (
+      (e.key == " " || e.code == "Space" || e.keyCode == 32) &&
+      e.target == document.body
+    ) {
       TogglePlay();
     }
   };

@@ -7,7 +7,7 @@
     "header"
     "main";
 
-    user-select: none;
+  user-select: none;
 }
 
 .account-layout header {
@@ -19,8 +19,7 @@
   flex-direction: column;
 }
 
-.account-layout .profileStats
-{
+.account-layout .profileStats {
   display: flex;
 }
 
@@ -34,8 +33,7 @@
   overflow: auto;
 }
 
-.myAlbums
-{
+.myAlbums {
   overflow: hidden;
   max-height: 250px;
 }
@@ -55,4 +53,3 @@
   background-color: #737272;
   border: 1px solid #000;
 }
-

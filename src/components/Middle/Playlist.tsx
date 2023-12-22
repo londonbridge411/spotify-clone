@@ -9,9 +9,9 @@ import { email } from "../../main";
 import * as uuid from "uuid";
 import { setSongID, setSongList, shufflePlay } from "../../PlayerSlice";
 import { useDispatch } from "react-redux";
-import ContextMenu from "../Containers/ContextMenu";
 import SongRow from "../Containers/SongRow";
 import ContextMenuOption from "../Containers/ContextMenuOption";
+import SongContextMenu from "../Containers/ContextMenus/SongContextMenu";
 
 export default function Playlist() {
   const dispatch = useDispatch();
@@ -23,7 +23,6 @@ export default function Playlist() {
   const [playlistAuthor, setPlaylistAuthor] = useState(null);
   const [playlistEmail, setPlaylistEmail] = useState(null);
   const [playlistType, setPlaylistType] = useState(null);
-
 
   const [songContextID, setSongContextID] = useState("");
 
@@ -237,25 +236,9 @@ export default function Playlist() {
         html={<div>Uploading Song</div>}
         requiresVerification={() => playlistType != "Playlist"}
       ></Popup>
-
-      <ContextMenu
-        // About to leave but a thought is to store the selected song in a state
-        id={"Song_ContextMenu"}
-        html={
-          <>
-            <ContextMenuOption html={<div onMouseEnter={() => console.log("Gay")}>Add to playlist</div>}/>
-            <div>Favorite</div>
-            <div>Remove from playlist</div>
-            <div>Move Up</div>
-            <div>Move Down</div>
-            <div>Delete Song</div>
-          </>
-        }
-        //requiresVerification={() => playlistType != "Playlist"}
-      ></ContextMenu>
     </>
   );
-} 
+}
 
 /*
  Goes in on right click

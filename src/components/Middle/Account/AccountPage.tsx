@@ -4,9 +4,9 @@ import { email, isVerified, username } from "../../../main";
 import "./AccountPage.css";
 import Popup from "../../Containers/Popup";
 import PlaylistCreation from "../../Containers/Popups/PlaylistCreation";
-import PlaylistContainerHorizontal from "../../Containers/PlaylistContainerHorizontal";
+import PlaylistContainerHorizontal from "../../Containers/Playlist Containers/PlaylistContainerHorizontal";
 import supabase from "../../../config/supabaseClient";
-import PlaylistContainer from "../../Containers/PlaylistContainer";
+import PlaylistContainer from "../../Containers/Playlist Containers/PlaylistContainer";
 
 /*
 Want to display icon, username, bio, followers, isVerified, upload song.
@@ -19,6 +19,7 @@ export default function AccountPage() {
       .from("Playlists")
       .select("id")
       .eq("owner", email)
+      .eq("type", "Album")
       .then((result) => {
         var array = [];
         var myData = result.data;

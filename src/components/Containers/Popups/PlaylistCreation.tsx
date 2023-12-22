@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./PlaylistCreation.css";
-import PlaylistContainerHorizontal from "../PlaylistContainerHorizontal";
+import PlaylistContainerHorizontal from "../Playlist Containers/PlaylistContainerHorizontal";
 import supabase from "../../../config/supabaseClient";
 import { email } from "../../../main";
 import * as uuid from "uuid";

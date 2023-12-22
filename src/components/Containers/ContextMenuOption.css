@@ -1,0 +1,15 @@
+.extended-context-box {
+  display: none;
+}
+
+#AdditionalOptions {
+  color: aqua;
+  background-color: blue;
+  font-size: large;
+}
+
+.extended-context-content {
+}
+
+.extended-context-content > div:hover {
+}

@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
-import supabase from "../../config/supabaseClient";
+import supabase from "../../../config/supabaseClient";
 import "./PlaylistContainer.css";
 import { NavLink } from "react-router-dom";
+import PlaylistContextMenu, {
+  ViewPlaylistContextMenu,
+} from "../ContextMenus/PlaylistContextMenu";
+import ContextMenuOption from "../ContextMenuOption";
 
 export default function PlaylistContainer(props: any) {
   if (props.playlist_id == null) return;
@@ -26,13 +30,24 @@ export default function PlaylistContainer(props: any) {
   return (
     <>
       <NavLink to={"/app/playlist/" + props.playlist_id}>
-        <div className="PlaylistContainer">
+        <div
+          className="PlaylistContainer"
+          id={props.playlist_id}
+          onContextMenu={(e) => {
+            e.preventDefault();
+
+            // Don't even have to do this. Just send the song_id to state
+            ViewPlaylistContextMenu("Playlist_ContextMenu", e);
+          }}
+        >
           <img src={publicUrl.data.publicUrl} />
           <div>
             <span>{playlistName}</span>
           </div>
         </div>
       </NavLink>
+
+      <PlaylistContextMenu />
     </>
   );
 }
