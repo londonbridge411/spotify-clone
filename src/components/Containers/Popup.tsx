@@ -9,6 +9,7 @@ export default function Popup(props: any) {
     setFadeIn(props.active);
   }, [props.active]);
 
+  if (props.blockElement) return;
   // This is to avoid people from accessing states and popups they shouldn't be able to see
   if (props.active && props.requiresVerification && !isVerified) {
     return;

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import supabase from "../../config/supabaseClient";
-import { email } from "../../main";
+import { authUserID, email } from "../../main";
 import PlaylistContainer from "../Containers/Playlist Containers/PlaylistContainer";
 import "./Account/AccountPage.css";
 import "./MyPlaylistPage.css";
@@ -12,7 +12,7 @@ export default function MyPlaylistPage() {
     supabase
       .from("Playlists")
       .select("id")
-      .eq("owner", email)
+      .eq("owner_id", authUserID)
       .eq("type", "Playlist")
       .then((result) => {
         var array = [];

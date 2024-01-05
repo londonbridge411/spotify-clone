@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import supabase from "../../config/supabaseClient";
-import { SetLoginStatus, username } from "../../main";
+import { SetLoginStatus, authUserID, email, username } from "../../main";
 import SidebarButton from "../Containers/SidebarButton";
 import "./Sidebar.css";
 import logo from "../../assets/react.svg";
@@ -11,6 +11,7 @@ import search from "../../assets/magnifying-glass-solid.svg";
 import music from "../../assets/music-solid.svg";
 import user from "../../assets/user-solid.svg";
 import exit from "../../assets/right-from-bracket-solid.svg";
+import { useEffect, useState } from "react";
 
 export default function Sidebar() {
   const navigate = useNavigate();
@@ -27,10 +28,14 @@ export default function Sidebar() {
         <img className="SidebarLogo" src={logo} />
         <SidebarButton label="Home" to="home" icon={house} />
         <SidebarButton label="Discover" to="discover" icon={search} />
-        <SidebarButton label="Artists" to="account" icon={music} />
+        <SidebarButton label="Artists" to="playlists" icon={music} />
         <SidebarButton label="Playlists" to="playlists" icon={bars} />
 
-        <SidebarButton label={username} to="account" icon={user} />
+        <SidebarButton
+          label={username}
+          to={"account/" + authUserID}
+          icon={user}
+        />
         <SidebarButton label="Settings" icon={gear} />
         <SidebarButton label="Logout" icon={exit} onClick={Logout} />
       </div>

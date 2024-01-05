@@ -41,6 +41,7 @@ function Signup() {
     if (error) return;
 
     await supabase.from("Users").insert({
+      id: (await supabase.auth.getUser()).data.user?.id,
       email: email_text,
       first_name: fn_text,
       last_name: ln_text,

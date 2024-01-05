@@ -37,7 +37,7 @@ export default function PlaylistCreation(props: any) {
         .insert({
           id: id,
           name: playlist_name_text,
-          owner: email,
+          owner_id: (await supabase.auth.getUser()).data.user?.id,
           song_ids: [],
           type: props.playlistType, //Figure out a way to change this
           private: false,

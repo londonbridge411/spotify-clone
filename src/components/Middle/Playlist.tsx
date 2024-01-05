@@ -5,7 +5,7 @@ import supabase from "../../config/supabaseClient";
 import "./Playlist.css";
 
 import Popup from "../Containers/Popup";
-import { email } from "../../main";
+import { authUserID, email } from "../../main";
 import * as uuid from "uuid";
 import { setSongID, setSongList, shufflePlay } from "../../PlayerSlice";
 import { useDispatch } from "react-redux";
@@ -19,9 +19,23 @@ export default function Playlist() {
   const { playlistID } = useParams();
 
   if (playlistID == null) return;
+
+  const [isOwner, setOwner] = useState(false);
+
+  useEffect(() => {
+    supabase
+      .from("Playlists")
+      .select("owner_id")
+      .eq("id", playlistID)
+      .then((result) => {
+        setOwner(authUserID == result.data?.at(0)?.owner_id);
+        if (isOwner) console.log("I own this");
+      });
+  }, []);
+
   const [playlistName, setPlaylistName] = useState(null);
   const [playlistAuthor, setPlaylistAuthor] = useState(null);
-  const [playlistEmail, setPlaylistEmail] = useState(null);
+  const [playlistOwner, setPlaylistOwner] = useState(null);
   const [playlistType, setPlaylistType] = useState(null);
 
   const [songContextID, setSongContextID] = useState("");
@@ -41,12 +55,12 @@ export default function Playlist() {
         if (row != null) {
           setPlaylistName(row.name);
           setPlaylistType(row.type);
-          setPlaylistEmail(row.owner);
+          //setPlaylistOwner(row.owner);
 
           supabase
             .from("Users")
             .select("username")
-            .eq("email", row.owner)
+            .eq("id", row.owner_id)
             .then((result) => setPlaylistAuthor(result.data?.at(0)?.username));
         }
       });
@@ -97,7 +111,7 @@ export default function Playlist() {
           .insert({
             id: id,
             title: song_name_text,
-            owner: email,
+            owner_id: (await supabase.auth.getUser()).data.user?.id,
             album_id: playlistID!,
             created_at: new Date(),
           })
@@ -158,12 +172,11 @@ export default function Playlist() {
             </div>
           </header>
           <button
-            hidden={email != playlistEmail}
-            onClick={() => setPopupState_UploadSong(email == playlistEmail)}
+            hidden={!isOwner || playlistType == "Playlist"}
+            onClick={() => setPopupState_UploadSong(isOwner)}
           >
             Add Song
           </button>
-
           <button
             onClick={() => {
               dispatch(setSongList(list as string[]));
@@ -239,36 +252,3 @@ export default function Playlist() {
     </>
   );
 }
-
-/*
- Goes in on right click
-
-          var menu = document.getElementById(
-            "Song_ContextMenu-" + props.id
-          ) as HTMLElement;
-          menu.style.setProperty("display", "block");
-          menu.style.setProperty("--mouse-x", e.clientX + "px");
-          menu.style.setProperty("--mouse-y", e.clientY + "px");
-
-
-
-
-      <ContextMenu
-        songName={songName}
-        id={"Song_ContextMenu-" + props.id}
-        html={
-          <>
-            <ContextMenuOption html={<div>Add to playlist</div>} />
-
-            <div>Favorite</div>
-            <div>Remove from playlist</div>
-            <div>Move Up</div>
-            <div>Move Down</div>
-            <div>Delete Song</div>
-          </>
-        }
-        //requiresVerification={() => playlistType != "Playlist"}
-      ></ContextMenu>
-
-
-  */

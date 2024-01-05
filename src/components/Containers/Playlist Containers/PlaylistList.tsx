@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import supabase from "../../../config/supabaseClient";
-import { email } from "../../../main";
+import { authUserID, email } from "../../../main";
 import PlaylistContainerHorizontal from "./PlaylistContainerHorizontal";
 import "./PlaylistList.css";
 import { targ } from "../ContextMenus/SongContextMenu";
@@ -10,7 +10,7 @@ export default function PlaylistList(props: any) {
     supabase
       .from("Playlists")
       .select("id")
-      .eq("owner", email)
+      .eq("owner_id", authUserID)
       .eq("type", "Playlist")
       .then((result) => {
         var array = [];

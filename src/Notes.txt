@@ -46,5 +46,6 @@ npm install @reduxjs/toolkit
 npm install react-redux
 
 npm install moment-duration-format
+npm i react-usestateref
 
 https://open.spotifycdn.com/cdn/images/equaliser-animated-green.f5eb96f2.gif

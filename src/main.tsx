@@ -32,6 +32,10 @@ export var username: String = (
   await supabase.from("Users").select("username").eq("email", email)
 ).data?.at(0)?.username;
 
+export var authUserID: String = (
+  await supabase.from("Users").select("id").eq("email", email)
+).data?.at(0)?.id;
+
 export var isVerified: boolean = (
   await supabase.from("Users").select("is_verified").eq("email", email)
 ).data?.at(0)?.is_verified;
@@ -49,7 +53,7 @@ const router = createBrowserRouter(
 
       <Route path="app" element={<App />}>
         <Route path="home" element={<Home />} />
-        <Route path="account" element={<AccountPage />} />
+        <Route path="account/:userID" element={<AccountPage />} />
         <Route path="discover" element={<Discover />} />
         <Route path="playlists" element={<MyPlaylistPage />} />
         <Route path="playlist/:playlistID" element={<Playlist />} />
@@ -80,6 +84,9 @@ export async function getInfo() {
     await supabase.from("Users").select("is_verified").eq("email", email)
   ).data?.at(0)?.is_verified;
 
+  authUserID = (
+    await supabase.from("Users").select("id").eq("email", email)
+  ).data?.at(0)?.id;
   //console.log("Username: " + username);
   //console.log("Email: " + email);
 }
