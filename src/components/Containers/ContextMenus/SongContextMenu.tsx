@@ -29,7 +29,7 @@ export default function SongContextMenu(props: any) {
     removeBtn = document.getElementById("RemoveSong_Button") as HTMLElement;
     deleteBtn = document.getElementById("DeleteSong_Button") as HTMLElement;
 
-    console.log("\nupdating");
+    //console.log("\nupdating");
     await supabase
       .from("Playlists")
       .select("owner_id, type")
@@ -37,8 +37,8 @@ export default function SongContextMenu(props: any) {
       .then((result) => {
         isPlaylistOwner = result.data?.at(0)?.owner_id == authUserID;
         playlistType = result.data?.at(0)?.type;
-        console.log("isOwner: " + isPlaylistOwner);
-        console.log("Type: " + playlistType);
+        //console.log("isOwner: " + isPlaylistOwner);
+        //console.log("Type: " + playlistType);
       });
 
     if (isPlaylistOwner) {
@@ -51,7 +51,7 @@ export default function SongContextMenu(props: any) {
       }
     }
 
-    console.log(playlistType == "Album" ? "delete" : "remove");
+    //console.log(playlistType == "Album" ? "delete" : "remove");
   };
 
   run();
@@ -70,7 +70,7 @@ export default function SongContextMenu(props: any) {
     }
   };
 
-  function RemoveSong() {
+  function RemoveSong(song_id: string) {
     if (isPlaylistOwner && playlistType == "Playlist") {
       supabase
         .from("Playlists")
@@ -79,7 +79,7 @@ export default function SongContextMenu(props: any) {
         .then(async (result) => {
           let songs: string[] = result.data?.at(0)?.song_ids;
           //delete songs[songs.indexOf(targ)];
-          songs.splice(songs.indexOf(targ), 1); // Remove the song from the index
+          songs.splice(songs.indexOf(song_id), 1); // Remove the song from the index
           console.log(songs);
 
           await supabase
@@ -92,18 +92,87 @@ export default function SongContextMenu(props: any) {
       console.log("yay");
     } else {
       // Safeguard from modifying
-      alert("Hoe ass mofo");
+      alert("Violation");
       window.location.reload();
     }
   }
 
   // Not done
-  function DeleteSong() {
+  function DeleteSong(song_id: string) {
     if (isPlaylistOwner && playlistType == "Album") {
+      // Remove from each playlist that has it.
+
+      supabase
+        .from("Playlists")
+        .select("id, song_ids")
+        .contains("song_ids", [song_id])
+        .then(async (result) => {
+          let playlists_with_song: object[] = result.data!;
+          console.log(playlists_with_song);
+
+          for (let i = 0; i < playlists_with_song.length; i++) {
+            // Printing out the first list
+            let songs: any = playlists_with_song[i];
+            console.log(songs.song_ids);
+            songs.song_ids.splice(songs.song_ids.indexOf(song_id), 1); // Remove the song from the index
+            console.log(songs.song_ids);
+
+            await supabase
+              .from("Playlists")
+              .update({ song_ids: songs.song_ids })
+              .eq("id", songs.id);
+          }
+
+          // Remove Song from Songs Table
+          await supabase.from("Songs").delete().eq("id", targ);
+
+          // Remove file associated with it.
+          supabase.storage.from("music-files").remove(["audio-files/" + targ]);
+
+          window.location.reload();
+        });
+
+      /*
+      .then(async (result) => {
+        let songs: string[] = result.data?.at(0)?.song_ids;
+        //delete songs[songs.indexOf(targ)];
+        songs.splice(songs.indexOf(song_id), 1); // Remove the song from the index
+        console.log(songs);
+
+        await supabase
+          .from("Playlists")
+          .update({ song_ids: songs })
+          .eq("id", playlistID);
+
+        window.location.reload();
+      });
+*/
+
+      // Then drop it
+
+      /*
+      supabase
+        .from("Playlists")
+        .select("song_ids")
+        .eq("id", playlistID)
+        .then(async (result) => {
+          let songs: string[] = result.data?.at(0)?.song_ids;
+          //delete songs[songs.indexOf(targ)];
+          songs.splice(songs.indexOf(song_id), 1); // Remove the song from the index
+          console.log(songs);
+
+          await supabase
+            .from("Playlists")
+            .update({ song_ids: songs })
+            .eq("id", playlistID);
+
+          window.location.reload();
+        });
+*/
       console.log("yay");
     } else {
       // Safeguard from modifying
-      alert("Hoe ass mofo");
+      alert("Violation");
       window.location.reload();
     }
   }
@@ -125,10 +194,10 @@ export default function SongContextMenu(props: any) {
             <div>Add to queue</div>
             <div>Move Up</div>
             <div>Move Down</div>
-            <div id="RemoveSong_Button" onClick={() => RemoveSong()}>
+            <div id="RemoveSong_Button" onClick={() => RemoveSong(targ)}>
               Remove Song
             </div>
-            <div id="DeleteSong_Button" onClick={() => DeleteSong()}>
+            <div id="DeleteSong_Button" onClick={() => DeleteSong(targ)}>
               Delete Song
             </div>
           </>
