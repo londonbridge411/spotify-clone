@@ -73,6 +73,11 @@ export default function PlaylistCreation(props: any) {
     insertIntoTable();
   }
 
+  const [checked, setChecked] = useState(false);
+  const handleChange = () => {
+    setChecked(!checked);
+  };
+
   return (
     <>
       <div id="upload-playlist-menu">
@@ -81,21 +86,35 @@ export default function PlaylistCreation(props: any) {
           <input id="upload-playlist-name" />
         </div>
 
-        <label>Upload Cover</label>
-        <input
-          id="upload-playlist-cover"
-          type="file"
-          accept=".jpg, .jpeg, .png"
-        />
+        <div>
+          <label>Use local files</label>
+          <input type="checkbox" checked={checked} onChange={handleChange} />
+        </div>
 
-        <label>Upload Background</label>
-        <input
-          id="upload-playlist-background"
-          type="file"
-          accept=".jpg, .jpeg, .png"
-        />
+        <div hidden={checked}>
+          <label>Cover URL</label>
+          <input id="url-playlist-cover" />
 
-        <button onClick={UploadPlaylist}>Upload</button>
+          <label>Background URL</label>
+          <input id="url-playlist-background" />
+        </div>
+
+        <div hidden={!checked}>
+          <label>Upload Cover</label>
+          <input
+            id="upload-playlist-cover"
+            type="file"
+            accept=".jpg, .jpeg, .png"
+          />
+          <label>Upload Background</label>
+          <input
+            id="upload-playlist-background"
+            type="file"
+            accept=".jpg, .jpeg, .png"
+          />
+        </div>
+
+        <button onClick={UploadPlaylist}>Create</button>
       </div>
 
       <Popup

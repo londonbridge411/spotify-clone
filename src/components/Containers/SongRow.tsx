@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setSongList, setSongID } from "../../PlayerSlice";
+import { setSongList, setSongID, setIsPlaying } from "../../PlayerSlice";
 import supabase from "../../config/supabaseClient";
 import { RootState } from "../../store";
 import SongContextMenu, {
   ViewSongContextMenu,
 } from "./ContextMenus/SongContextMenu";
 import ContextMenuOption from "./ContextMenuOption";
+import { NavLink } from "react-router-dom";
 
 // Song Row
 export default function SongRow(props: any) {
@@ -26,6 +27,7 @@ export default function SongRow(props: any) {
           .getPublicUrl("pictures/covers/" + albumCoverID).data.publicUrl
       : "../../../src/assets/record-vinyl-solid.svg";
 
+  const [albumID, setAlbumID] = useState();
   useEffect(() => {
     if (props.song_id != null) {
       supabase
@@ -39,6 +41,7 @@ export default function SongRow(props: any) {
             setSongName(row.title);
             setDateCreated(row.created_at);
 
+            setAlbumID(row.album_id);
             await supabase
               .from("Playlists")
               .select("id, name")
@@ -62,7 +65,8 @@ export default function SongRow(props: any) {
         "https://open.spotifycdn.com/cdn/images/equaliser-animated-green.f5eb96f2.gif"
       );
       (nameArea?.children[0].children[0] as HTMLElement).classList.add(
-        "audioGIF"
+        "audioGIF",
+        "smallIcon"
       );
     } else {
       (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
@@ -70,7 +74,8 @@ export default function SongRow(props: any) {
         coverURL
       );
       (nameArea?.children[0].children[0] as HTMLElement).classList.remove(
-        "audioGIF"
+        "audioGIF",
+        "smallIcon"
       );
     }
     //.filter =
@@ -112,12 +117,63 @@ export default function SongRow(props: any) {
           ViewSongContextMenu("Song_ContextMenu", e);
         }}
         // On left click
-        onClick={() => {
-          dispatch(setSongList(props.song_list));
-          dispatch(setSongID(props.song_id));
+        onDoubleClick={() => {
+          let nameArea = document.getElementById(props.song_id);
+          if (player.song_id != nameArea?.id) {
+            dispatch(setSongList(props.song_list));
+            dispatch(setSongID(props.song_id));
+          } else {
+            let a = document.getElementById("audioControl") as HTMLAudioElement;
+            a.currentTime = 0;
+            a.play();
+          }
+        }}
+        onMouseEnter={() => {
+          if (props.song_id == null) return;
+
+          let nameArea = document.getElementById(props.song_id);
+          if (player.song_id != nameArea?.id) {
+            (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
+              "src",
+              "../../../src/assets/small-play.svg"
+            );
+
+            (nameArea?.children[0].children[0] as HTMLElement).classList.add(
+              "smallIcon"
+            );
+          }
+        }}
+        onMouseLeave={() => {
+          if (props.song_id == null) return;
+
+          let nameArea = document.getElementById(props.song_id);
+          if (player.song_id != nameArea?.id) {
+            (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
+              "src",
+              coverURL
+            );
+
+            (nameArea?.children[0].children[0] as HTMLElement).classList.remove(
+              "smallIcon"
+            );
+          }
         }}
       >
-        <div>
+        <div
+          onClick={() => {
+            let nameArea = document.getElementById(props.song_id);
+            let a = document.getElementById("audioControl") as HTMLAudioElement;
+            if (player.song_id == nameArea?.id) {
+              if (player.isPlaying) a.pause();
+              else a.play();
+              //setPlayIcon(play);
+            } else {
+              a.play();
+              dispatch(setSongID(props.song_id));
+              dispatch(setIsPlaying(!player.isPlaying));
+            }
+          }}
+        >
           <img
             src={
               player.song_id != props.song_id
@@ -132,7 +188,9 @@ export default function SongRow(props: any) {
           </div>
           <div>Artist</div>
         </div>
-        <div className="song-row-album">{albumName}</div>
+        <div className="song-row-album">
+          <NavLink to={"../playlist/" + albumID}>{albumName}</NavLink>
+        </div>
         <div className="song-row-date">{dateCreated}</div>
       </div>
 

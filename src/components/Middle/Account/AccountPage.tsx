@@ -19,21 +19,24 @@ export default function AccountPage() {
   let isOwner: boolean = false;
   isOwner = userID == authUserID;
 
-  if (isOwner) console.log("I am the owner");
+  //if (isOwner) console.log("I am the owner");
   // Account stuff
-  const [getFollowers, setFollowers] = useState(0);
+  const [getFollowerCount, setFollowerCount] = useState(0);
+  const [isFollowing, setIsFollowing] = useState(false);
   const [userVerified, setVerified] = useState(false);
   const [username, setUsername] = useState("");
 
   useEffect(() => {
     supabase
       .from("Users")
-      .select("followers, is_verified, username")
+      .select("subscribers, is_verified, username")
       .eq("id", userID)
       .then((result) => {
-        setFollowers(result.data?.at(0)?.followers);
+        setFollowerCount(result.data?.at(0)?.subscribers.length);
         setVerified(result.data?.at(0)?.is_verified);
         setUsername(result.data?.at(0)?.username);
+
+        setIsFollowing(result.data?.at(0)?.subscribers.includes(authUserID));
       });
   }, [userID]);
 
@@ -76,6 +79,82 @@ export default function AccountPage() {
     }
   }, [popupActive_UploadPlaylist]);
 
+  function FollowUser() {
+    if (isFollowing == false && isOwner == false) {
+      // Add user as a sub
+      supabase
+        .from("Users")
+        .select("subscribers")
+        .eq("id", userID)
+        .then(async (result) => {
+          let subs: string[] = result.data?.at(0)?.subscribers;
+
+          subs.push(authUserID as string);
+
+          await supabase
+            .from("Users")
+            .update({ subscribers: subs })
+            .eq("id", userID);
+        });
+
+      // Add subscribed user into user row
+      supabase
+        .from("Users")
+        .select("subscribed_artists")
+        .eq("id", authUserID)
+        .then(async (result) => {
+          let subbed_artists: string[] = result.data?.at(0)?.subscribed_artists;
+
+          subbed_artists.push(userID as string);
+
+          await supabase
+            .from("Users")
+            .update({ subscribed_artists: subbed_artists })
+            .eq("id", authUserID);
+        });
+
+      setIsFollowing(true);
+    }
+  }
+
+  function UnfollowUser() {
+    if (isFollowing == true && isOwner == false) {
+      // Remove user as a sub
+      supabase
+        .from("Users")
+        .select("subscribers")
+        .eq("id", userID)
+        .then(async (result) => {
+          let subs: string[] = result.data?.at(0)?.subscribers;
+
+          subs.splice(subs.indexOf(authUserID as string), 1);
+
+          await supabase
+            .from("Users")
+            .update({ subscribers: subs })
+            .eq("id", userID);
+        });
+
+      // Remove subscribed user into user row
+      supabase
+        .from("Users")
+        .select("subscribed_artists")
+        .eq("id", authUserID)
+        .then(async (result) => {
+          let subbed_artists: string[] = result.data?.at(0)?.subscribed_artists;
+
+          subbed_artists.splice(subbed_artists.indexOf(userID as string), 1);
+
+          await supabase
+            .from("Users")
+            .update({ subscribed_artists: subbed_artists })
+            .eq("id", authUserID);
+        });
+
+      setIsFollowing(false);
+    }
+  }
+
   return (
     <>
       <div className="account-layout">
@@ -85,16 +164,25 @@ export default function AccountPage() {
         <main>
           <div className="profileStats">
             <p> Verified: {`${userVerified}`}</p>
-            <p> Followers: {getFollowers}</p>
+            <p> Followers: {getFollowerCount}</p>
           </div>
 
           <button
-            hidden={isOwner}
+            hidden={isOwner || isFollowing}
             onClick={() => {
-              // Do following stuff
+              FollowUser();
             }}
           >
             Follow
+          </button>
+
+          <button
+            hidden={!isFollowing}
+            onClick={() => {
+              UnfollowUser();
+            }}
+          >
+            Unfollow
           </button>
 
           {/*Changes depending on verification level*/}

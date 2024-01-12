@@ -31,14 +31,17 @@ export default function Playlist() {
         setOwner(authUserID == result.data?.at(0)?.owner_id);
         if (isOwner) console.log("I own this");
       });
-  }, []);
+  }, [playlistID]);
 
   const [playlistName, setPlaylistName] = useState(null);
   const [playlistAuthor, setPlaylistAuthor] = useState(null);
   const [playlistOwner, setPlaylistOwner] = useState(null);
   const [playlistType, setPlaylistType] = useState(null);
+  const [isFollowing, setIsFollowing] = useState(false);
 
   const [songContextID, setSongContextID] = useState("");
+
+  const [hideTable, setHideTable] = useState(true);
 
   const [popupActive_UploadingWait, setPopupState_UploadingWait] =
     useState(false);
@@ -51,7 +54,6 @@ export default function Playlist() {
       .eq("id", playlistID)
       .then((result) => {
         var row = result.data?.at(0);
-
         if (row != null) {
           setPlaylistName(row.name);
           setPlaylistType(row.type);
@@ -64,7 +66,19 @@ export default function Playlist() {
             .then((result) => setPlaylistAuthor(result.data?.at(0)?.username));
         }
       });
-  }, []);
+  }, [playlistID]);
+
+  useEffect(() => {
+    supabase
+      .from("Users")
+      .select("subscribed_playlists")
+      .eq("id", authUserID)
+      .then((result) => {
+        setIsFollowing(
+          result.data?.at(0)?.subscribed_playlists.includes(playlistID)
+        );
+      });
+  }, [playlistID]);
 
   // Song List
   const [list, setList] = useState([]);
@@ -77,10 +91,15 @@ export default function Playlist() {
         var myData = result.data?.at(0)?.song_ids;
 
         if (myData != null) {
-          setList(myData);
+          if (myData.length == 0) {
+            setHideTable(true);
+          } else {
+            setHideTable(false);
+            setList(myData);
+          }
         }
       });
-  }, []);
+  }, [playlistID]);
 
   const coverUrl = supabase.storage
     .from("music-files")
@@ -150,6 +169,50 @@ export default function Playlist() {
     }
   }
 
+  function FollowPlaylist() {
+    if (isFollowing == false && isOwner == false) {
+      // Add subscribed user into user row
+      supabase
+        .from("Users")
+        .select("subscribed_playlists")
+        .eq("id", authUserID)
+        .then(async (result) => {
+          let list: string[] = result.data?.at(0)?.subscribed_playlists;
+
+          list.push(playlistID as string);
+
+          await supabase
+            .from("Users")
+            .update({ subscribed_playlists: list })
+            .eq("id", authUserID);
+        });
+
+      setIsFollowing(true);
+    }
+  }
+
+  function UnfollowPlaylist() {
+    if (isFollowing == true && isOwner == false) {
+      // Remove user as a sub
+      supabase
+        .from("Users")
+        .select("subscribed_playlists")
+        .eq("id", authUserID)
+        .then(async (result) => {
+          let list: string[] = result.data?.at(0)?.subscribed_playlists;
+
+          list.splice(list.indexOf(playlistID as string), 1);
+
+          await supabase
+            .from("Users")
+            .update({ subscribed_playlists: list })
+            .eq("id", authUserID);
+        });
+
+      setIsFollowing(false);
+    }
+  }
+
   return (
     <>
       <div
@@ -195,26 +258,54 @@ export default function Playlist() {
             Shuffle
           </button>
 
-          <main className="playlist-content">
-            <ul className="song-table">
-              <div style={{ color: "rgba(0, 0, 0, 0)" }}>
-                ?<hr></hr>
-              </div>
-              <div className="text-bold">
-                Name <hr></hr>
-              </div>
-              <div className="text-bold">
-                Album <hr></hr>
-              </div>
-              <div className="text-bold">
-                Created <hr></hr>
-              </div>
+          <button
+            hidden={isOwner || isFollowing}
+            onClick={() => {
+              FollowPlaylist();
+            }}
+          >
+            Follow
+          </button>
 
-              {list.map((item) => {
-                // item broke somehow
-                return <SongRow key={item} song_id={item} song_list={list} />;
-              })}
-            </ul>
+          <button
+            hidden={!isFollowing}
+            onClick={() => {
+              UnfollowPlaylist();
+            }}
+          >
+            Unfollow
+          </button>
+          <main>
+            <div hidden={hideTable} className="playlist-content">
+              <ul className="song-table">
+                <div style={{ color: "rgba(0, 0, 0, 0)" }}>
+                  ?<hr></hr>
+                </div>
+                <div className="text-bold">
+                  Name <hr></hr>
+                </div>
+                <div className="text-bold">
+                  Album <hr></hr>
+                </div>
+                <div className="text-bold">
+                  Created <hr></hr>
+                </div>
+
+                {list.map((item) => {
+                  // item broke somehow
+                  return <SongRow key={item} song_id={item} song_list={list} />;
+                })}
+              </ul>
+            </div>
+            <div
+              hidden={!hideTable}
+              style={{
+                textAlign: "center",
+                marginTop: "25vh",
+              }}
+            >
+              <h2>No music</h2>
+            </div>
           </main>
         </div>
 

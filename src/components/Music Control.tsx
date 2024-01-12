@@ -215,6 +215,7 @@ export default function MusicControl() {
                   "audioControl"
                 ) as HTMLAudioElement;
                 a.currentTime = 0;
+                a.play();
               }
             }}
             src={prev}

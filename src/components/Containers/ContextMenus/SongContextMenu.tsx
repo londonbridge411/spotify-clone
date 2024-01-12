@@ -7,6 +7,9 @@ import PlaylistList from "../Playlist Containers/PlaylistList";
 import { useParams } from "react-router-dom";
 
 export var targ: string = "";
+var isPlaylistOwner: boolean = false;
+var playlistType: string = "undefined";
+
 export default function SongContextMenu(props: any) {
   // This is to avoid people from accessing states and popups they shouldn't be able to see
   if (props.active && props.requiresVerification && !isVerified) {
@@ -15,9 +18,6 @@ export default function SongContextMenu(props: any) {
   const { playlistID } = useParams();
 
   if (playlistID == null) return;
-
-  var isPlaylistOwner: boolean = false;
-  var playlistType: string = "undefined";
 
   var removeBtn = document.getElementById("RemoveSong_Button") as HTMLElement;
   var deleteBtn = document.getElementById("DeleteSong_Button") as HTMLElement;
@@ -37,8 +37,6 @@ export default function SongContextMenu(props: any) {
       .then((result) => {
         isPlaylistOwner = result.data?.at(0)?.owner_id == authUserID;
         playlistType = result.data?.at(0)?.type;
-        //console.log("isOwner: " + isPlaylistOwner);
-        //console.log("Type: " + playlistType);
       });
 
     if (isPlaylistOwner) {
@@ -56,8 +54,15 @@ export default function SongContextMenu(props: any) {
 
   run();
 
+  useEffect(() => {
+    console.log("Change albums");
+    run();
+  }, [playlistID]);
+
   const [popupActive_AddToPlaylist, setPopupState_AddToPlaylist] =
     useState(false);
+
+  const [popupActive_DeleteSong, setPopupActive_DeleteSong] = useState(false);
 
   // Clicking outside the context container sets it inactive
   document.onmouseup = function (e) {
@@ -70,6 +75,7 @@ export default function SongContextMenu(props: any) {
     }
   };
 
+  // Removes the song from the playlist
   function RemoveSong(song_id: string) {
     if (isPlaylistOwner && playlistType == "Playlist") {
       supabase
@@ -97,7 +103,7 @@ export default function SongContextMenu(props: any) {
     }
   }
 
-  // Not done
+  // Removes song from everything and deletes files.
   function DeleteSong(song_id: string) {
     if (isPlaylistOwner && playlistType == "Album") {
       // Remove from each playlist that has it.
@@ -124,53 +130,18 @@ export default function SongContextMenu(props: any) {
           }
 
           // Remove Song from Songs Table
-          await supabase.from("Songs").delete().eq("id", targ);
+          await supabase.from("Songs").delete().eq("id", song_id);
 
           // Remove file associated with it.
-          supabase.storage.from("music-files").remove(["audio-files/" + targ]);
+          supabase.storage
+            .from("music-files")
+            .remove(["audio-files/" + song_id]);
 
           window.location.reload();
         });
-
-      /*
-      .then(async (result) => {
-        let songs: string[] = result.data?.at(0)?.song_ids;
-        //delete songs[songs.indexOf(targ)];
-        songs.splice(songs.indexOf(song_id), 1); // Remove the song from the index
-        console.log(songs);
-
-        await supabase
-          .from("Playlists")
-          .update({ song_ids: songs })
-          .eq("id", playlistID);
-
-        window.location.reload();
-      });
-*/
-
-      // Then drop it
-
-      /*
-      supabase
-        .from("Playlists")
-        .select("song_ids")
-        .eq("id", playlistID)
-        .then(async (result) => {
-          let songs: string[] = result.data?.at(0)?.song_ids;
-          //delete songs[songs.indexOf(targ)];
-          songs.splice(songs.indexOf(song_id), 1); // Remove the song from the index
-          console.log(songs);
-
-          await supabase
-            .from("Playlists")
-            .update({ song_ids: songs })
-            .eq("id", playlistID);
-
-          window.location.reload();
-        });
-*/
       console.log("yay");
     } else {
+      // Sometimes happens if the page hasn't fully loaded
       // Safeguard from modifying
       alert("Violation");
       window.location.reload();
@@ -190,6 +161,7 @@ export default function SongContextMenu(props: any) {
             <div onClick={() => setPopupState_AddToPlaylist(true)}>
               Add to Playlist
             </div>
+            <div>Go to Artist</div>
             <div>Favorite</div>
             <div>Add to queue</div>
             <div>Move Up</div>
@@ -197,11 +169,14 @@ export default function SongContextMenu(props: any) {
             <div id="RemoveSong_Button" onClick={() => RemoveSong(targ)}>
               Remove Song
             </div>
-            <div id="DeleteSong_Button" onClick={() => DeleteSong(targ)}>
+            <div
+              id="DeleteSong_Button"
+              onClick={() => setPopupActive_DeleteSong(true)}
+            >
               Delete Song
             </div>
           </>
-          <button /*onMouseEnter={() => run()}*/>Click</button>
+          <button onClick={() => run()}>Click</button>
         </div>
       </div>
       <Popup
@@ -214,6 +189,37 @@ export default function SongContextMenu(props: any) {
           <>
             <div className="AddToPlaylist-content">
               <PlaylistList setActive={setPopupState_AddToPlaylist} />
+            </div>
+          </>
+        }
+      />
+
+      <Popup
+        id="DeleteSong"
+        active={popupActive_DeleteSong}
+        setActive={setPopupActive_DeleteSong}
+        canClose={false}
+        requiresVerification={true}
+        html={
+          <>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <h2>Are you sure?</h2>
+              <div>
+                This will permanently delete the song and remove it from the
+                platform.
+              </div>
+              <div style={{ display: "flex", flexDirection: "row" }}>
+                <button onClick={() => DeleteSong(targ)}>Yes</button>
+                <button onClick={() => setPopupActive_DeleteSong(false)}>
+                  No
+                </button>
+              </div>
             </div>
           </>
         }

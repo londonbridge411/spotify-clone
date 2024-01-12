@@ -14,7 +14,7 @@ export default function MyPlaylistPage() {
       .select("id")
       .eq("owner_id", authUserID)
       .eq("type", "Playlist")
-      .then((result) => {
+      .then(async (result) => {
         var array = [];
         var myData = result.data;
 
@@ -24,6 +24,27 @@ export default function MyPlaylistPage() {
           }
 
           setList(array);
+        }
+      });
+  }, []);
+
+  const [sharedList, setSharedList] = useState([null]);
+  useEffect(() => {
+    supabase
+      .from("Users")
+      .select("subscribed_playlists")
+      .eq("id", authUserID)
+      .then(async (result) => {
+        let resultList = result.data?.at(0)?.subscribed_playlists;
+
+        var array = [];
+
+        if (resultList != null || resultList.length == 0) {
+          for (let i = 0; i < resultList.length; i++) {
+            array.push(resultList.at(i));
+          }
+
+          setSharedList(array);
         }
       });
   }, []);
@@ -47,6 +68,17 @@ export default function MyPlaylistPage() {
             <h2> My Playlists:</h2>
             <ul className="myAlbums">
               {list.map((item) => (
+                <li key={item}>
+                  <PlaylistContainer playlist_id={item} />
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section>
+            <h2> Shared Playlists:</h2>
+            <ul className="myAlbums">
+              {sharedList.map((item) => (
                 <li key={item}>
                   <PlaylistContainer playlist_id={item} />
                 </li>
