@@ -169,6 +169,7 @@ export default function SongRow(props: any) {
               //setPlayIcon(play);
             } else {
               a.play();
+              dispatch(setSongList(props.song_list));
               dispatch(setSongID(props.song_id));
               dispatch(setIsPlaying(!player.isPlaying));
             }

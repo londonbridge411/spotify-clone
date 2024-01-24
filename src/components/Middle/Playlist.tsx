@@ -43,11 +43,15 @@ export default function Playlist() {
 
   const [hideTable, setHideTable] = useState(true);
 
+  const [backgroundUrl, setBG_URL] = useState("");
+  const [coverUrl, setCover_URL] = useState("");
+
   const [popupActive_UploadingWait, setPopupState_UploadingWait] =
     useState(false);
 
   const [popupActive_UploadSong, setPopupState_UploadSong] = useState(false);
   useEffect(() => {
+    console.log("Updating");
     supabase
       .from("Playlists")
       .select("*")
@@ -57,6 +61,9 @@ export default function Playlist() {
         if (row != null) {
           setPlaylistName(row.name);
           setPlaylistType(row.type);
+          setBG_URL(row.bg_url);
+          setCover_URL(row.cover_url);
+
           //setPlaylistOwner(row.owner);
 
           supabase
@@ -101,13 +108,9 @@ export default function Playlist() {
       });
   }, [playlistID]);
 
-  const coverUrl = supabase.storage
+  /*const coverUrl = supabase.storage
     .from("music-files")
-    .getPublicUrl("pictures/covers/" + playlistID);
-
-  const backgroundUrl = supabase.storage
-    .from("music-files")
-    .getPublicUrl("pictures/backgrounds/" + playlistID);
+    .getPublicUrl("pictures/covers/" + playlistID);*/
 
   function UploadSong() {
     const uploaded_song = (
@@ -213,6 +216,7 @@ export default function Playlist() {
     }
   }
 
+  //list = [""]
   return (
     <>
       <div
@@ -221,19 +225,26 @@ export default function Playlist() {
           backgroundImage:
             "linear-gradient(rgba(0,0,0,.6), rgba(0,0,0,1)), " +
             "url(" +
-            backgroundUrl.data.publicUrl +
+            backgroundUrl +
             ")",
         }}
       >
         <div className="Playlist-Layout">
           <header className="playlistHeader">
-            <img src={coverUrl.data.publicUrl} />
+            <img src={coverUrl} />
             <div className="info">
               <h1>{playlistName}</h1>
               <h2>{playlistAuthor}</h2>
               <h2>{playlistType}</h2>
             </div>
           </header>
+          <button
+            onClick={() => {
+              console.log(coverUrl);
+            }}
+          >
+            asdfasdf
+          </button>
           <button
             hidden={!isOwner || playlistType == "Playlist"}
             onClick={() => setPopupState_UploadSong(isOwner)}

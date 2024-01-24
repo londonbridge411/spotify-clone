@@ -10,17 +10,6 @@ export default function PlaylistCreation(props: any) {
   const [popupActive_UploadingWait, setPopupActive_UploadingWait] =
     useState(false);
   function UploadPlaylist() {
-    const uploaded_cover = (
-      document.getElementById("upload-playlist-cover") as HTMLInputElement
-    ).files![0];
-
-    const uploaded_bg = (
-      document.getElementById("upload-playlist-background") as HTMLInputElement
-    ).files![0];
-
-    // Guard Statement
-    if (uploaded_bg == null || uploaded_cover == null) return;
-
     setPopupActive_UploadingWait(true);
 
     let id = uuid.v4();
@@ -32,6 +21,66 @@ export default function PlaylistCreation(props: any) {
 
       var playlist_name_text = playlist_name?.value;
 
+      var cover_url = "";
+      var bg_url = "";
+
+      console.log("Wow");
+
+      // Guard Statement
+      if (playlist_name_text == "") return;
+
+      if (useCustom) {
+        if (useLocal) {
+          const uploaded_cover = (
+            document.getElementById("upload-playlist-cover") as HTMLInputElement
+          ).files![0];
+
+          const uploaded_bg = (
+            document.getElementById(
+              "upload-playlist-background"
+            ) as HTMLInputElement
+          ).files![0];
+
+          await supabase.storage
+            .from("music-files")
+            .upload("/pictures/backgrounds/" + id, uploaded_bg, {
+              cacheControl: "3600",
+              upsert: false,
+            });
+
+          // Upload the Cover
+          await supabase.storage
+            .from("music-files")
+            .upload("/pictures/covers/" + id, uploaded_cover, {
+              cacheControl: "3600",
+              upsert: false,
+            });
+
+          bg_url = supabase.storage
+            .from("music-files")
+            .getPublicUrl("pictures/backgrounds/" + id).data.publicUrl;
+
+          cover_url = supabase.storage
+            .from("music-files")
+            .getPublicUrl("pictures/covers/" + id).data.publicUrl;
+        } else {
+          console.log("Use custom URL");
+          cover_url = (
+            document.getElementById("url-playlist-cover") as HTMLInputElement
+          )?.value;
+
+          bg_url = (
+            document.getElementById(
+              "url-playlist-background"
+            ) as HTMLInputElement
+          )?.value;
+        }
+      } else {
+        console.log("Default");
+        cover_url = ""; //default
+        bg_url = ""; //default
+      }
+
       await supabase
         .from("Playlists")
         .insert({
@@ -42,25 +91,11 @@ export default function PlaylistCreation(props: any) {
           type: props.playlistType, //Figure out a way to change this
           private: false,
           created_at: new Date(),
+          cover_url: cover_url,
+          bg_url: bg_url,
         })
         .then(async (result) => {
           if (result.error == null) {
-            // Upload the BG
-            await supabase.storage
-              .from("music-files")
-              .upload("/pictures/backgrounds/" + id, uploaded_bg, {
-                cacheControl: "3600",
-                upsert: false,
-              });
-
-            // Upload the Cover
-            await supabase.storage
-              .from("music-files")
-              .upload("/pictures/covers/" + id, uploaded_cover, {
-                cacheControl: "3600",
-                upsert: false,
-              });
-
             setPopupActive_UploadingWait(false);
 
             window.location.reload();
@@ -73,9 +108,15 @@ export default function PlaylistCreation(props: any) {
     insertIntoTable();
   }
 
-  const [checked, setChecked] = useState(false);
-  const handleChange = () => {
-    setChecked(!checked);
+  const [useCustom, setCustom] = useState(false);
+  const [useLocal, setLocal] = useState(false);
+
+  const handleCustom = () => {
+    setCustom(!useCustom);
+  };
+
+  const handleLocal = () => {
+    setLocal(!useLocal);
   };
 
   return (
@@ -87,31 +128,38 @@ export default function PlaylistCreation(props: any) {
         </div>
 
         <div>
-          <label>Use local files</label>
-          <input type="checkbox" checked={checked} onChange={handleChange} />
+          <label>Custom Images</label>
+          <input type="checkbox" checked={useCustom} onChange={handleCustom} />
         </div>
 
-        <div hidden={checked}>
-          <label>Cover URL</label>
-          <input id="url-playlist-cover" />
+        <div hidden={!useCustom}>
+          <div>
+            <label>Use local files</label>
+            <input type="checkbox" checked={useLocal} onChange={handleLocal} />
+          </div>
 
-          <label>Background URL</label>
-          <input id="url-playlist-background" />
-        </div>
+          <div hidden={useLocal}>
+            <label>Cover URL</label>
+            <input id="url-playlist-cover" />
 
-        <div hidden={!checked}>
-          <label>Upload Cover</label>
-          <input
-            id="upload-playlist-cover"
-            type="file"
-            accept=".jpg, .jpeg, .png"
-          />
-          <label>Upload Background</label>
-          <input
-            id="upload-playlist-background"
-            type="file"
-            accept=".jpg, .jpeg, .png"
-          />
+            <label>Background URL</label>
+            <input id="url-playlist-background" />
+          </div>
+
+          <div hidden={!useLocal}>
+            <label>Upload Cover</label>
+            <input
+              id="upload-playlist-cover"
+              type="file"
+              accept=".jpg, .jpeg, .png"
+            />
+            <label>Upload Background</label>
+            <input
+              id="upload-playlist-background"
+              type="file"
+              accept=".jpg, .jpeg, .png"
+            />
+          </div>
         </div>
 
         <button onClick={UploadPlaylist}>Create</button>

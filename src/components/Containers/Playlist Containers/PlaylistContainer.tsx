@@ -11,24 +11,27 @@ export default function PlaylistContainer(props: any) {
   if (props.playlist_id == null) return;
 
   const [playlistName, setPlaylistName] = useState(null);
+  const [coverUrl, setCover_URL] = useState("");
 
   useEffect(() => {
     supabase
       .from("Playlists")
-      .select("name")
+      .select("name, cover_url")
       .eq("id", props.playlist_id)
       .then((result) => {
         setPlaylistName(result.data?.at(0)?.name);
+        setCover_URL(result.data?.at(0)?.cover_url);
       });
   }, []);
-
-  const publicUrl = supabase.storage
-    .from("music-files")
-    .getPublicUrl("pictures/covers/" + props.playlist_id);
 
   //
   return (
     <>
+      <button
+        onClick={() => {
+          console.log(coverUrl);
+        }}
+      ></button>
       <NavLink to={"/app/playlist/" + props.playlist_id}>
         <div
           className="PlaylistContainer"
@@ -40,7 +43,8 @@ export default function PlaylistContainer(props: any) {
             ViewPlaylistContextMenu("Playlist_ContextMenu", e);
           }}
         >
-          <img src={publicUrl.data.publicUrl} />
+          <img src={coverUrl} />
+
           <div>
             <span>{playlistName}</span>
           </div>
