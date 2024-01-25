@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import SongRow from "../Containers/SongRow";
 import ContextMenuOption from "../Containers/ContextMenuOption";
 import SongContextMenu from "../Containers/ContextMenus/SongContextMenu";
+import PlaylistEdit from "../Containers/Popups/PlaylistEdit";
 
 export default function Playlist() {
   const dispatch = useDispatch();
@@ -33,21 +34,24 @@ export default function Playlist() {
       });
   }, [playlistID]);
 
-  const [playlistName, setPlaylistName] = useState(null);
-  const [playlistAuthor, setPlaylistAuthor] = useState(null);
-  const [playlistOwner, setPlaylistOwner] = useState(null);
-  const [playlistType, setPlaylistType] = useState(null);
+  const [playlistName, setPlaylistName] = useState("");
+  const [playlistAuthor, setPlaylistAuthor] = useState("");
+  const [playlistOwner, setPlaylistOwner] = useState("");
+  const [playlistType, setPlaylistType] = useState("");
   const [isFollowing, setIsFollowing] = useState(false);
-
   const [songContextID, setSongContextID] = useState("");
 
   const [hideTable, setHideTable] = useState(true);
 
   const [backgroundUrl, setBG_URL] = useState("");
-  const [coverUrl, setCover_URL] = useState("");
+  const [coverUrl, setCover_URL] = useState(
+    "../../../src/assets/record-vinyl-solid.svg"
+  );
 
   const [popupActive_UploadingWait, setPopupState_UploadingWait] =
     useState(false);
+
+  const [popupActive_Edit, setPopupState_Edit] = useState(false);
 
   const [popupActive_UploadSong, setPopupState_UploadSong] = useState(false);
   useEffect(() => {
@@ -62,7 +66,11 @@ export default function Playlist() {
           setPlaylistName(row.name);
           setPlaylistType(row.type);
           setBG_URL(row.bg_url);
-          setCover_URL(row.cover_url);
+          setCover_URL(
+            row.cover_url == ""
+              ? "../../../src/assets/record-vinyl-solid.svg"
+              : row.cover_url
+          );
 
           //setPlaylistOwner(row.owner);
 
@@ -239,11 +247,12 @@ export default function Playlist() {
             </div>
           </header>
           <button
+            hidden={!isOwner}
             onClick={() => {
-              console.log(coverUrl);
+              setPopupState_Edit(true);
             }}
           >
-            asdfasdf
+            Edit
           </button>
           <button
             hidden={!isOwner || playlistType == "Playlist"}
@@ -319,30 +328,42 @@ export default function Playlist() {
             </div>
           </main>
         </div>
-
-        <Popup
-          id="uploadSongPopup"
-          active={popupActive_UploadSong}
-          setActive={setPopupState_UploadSong}
-          canClose={true}
-          html={
-            <div>
-              <div id="upload-song-menu">
-                <div>
-                  <label>Name</label>
-                  <input id="upload-song-name" />
-                </div>
-
-                <label>Upload Song</label>
-                <input id="uploaded_song" type="file" accept="audio/mp3" />
-                <button onClick={() => UploadSong()}>Upload</button>
-              </div>
-            </div>
-          }
-          requiresVerification={() => playlistType != "Playlist"}
-        ></Popup>
       </div>
+      <Popup
+        id="uploadSongPopup"
+        active={popupActive_UploadSong}
+        setActive={setPopupState_UploadSong}
+        canClose={true}
+        html={
+          <div>
+            <div id="upload-song-menu">
+              <div>
+                <label>Name</label>
+                <input id="upload-song-name" />
+              </div>
 
+              <label>Upload Song</label>
+              <input id="uploaded_song" type="file" accept="audio/mp3" />
+              <button onClick={() => UploadSong()}>Upload</button>
+            </div>
+          </div>
+        }
+        requiresVerification={() => playlistType != "Playlist"}
+      ></Popup>
+      <Popup
+        id="uploadPlaylistEdit"
+        active={popupActive_Edit}
+        setActive={setPopupState_Edit}
+        canClose={true}
+        html={
+          <PlaylistEdit
+            setName={setPlaylistName}
+            setCover={setCover_URL}
+            setBG={setBG_URL}
+          />
+        }
+        requiresVerification={() => playlistType != "Playlist"}
+      ></Popup>
       <Popup
         id="uploadingWait"
         active={popupActive_UploadingWait}

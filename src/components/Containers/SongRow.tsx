@@ -15,17 +15,19 @@ export default function SongRow(props: any) {
   const [artistName, setArtistName] = useState("");
   const [albumName, setAlbumName] = useState("");
   const [dateCreated, setDateCreated] = useState("");
-  const [albumCoverID, setAlbumCoverID] = useState("");
+  const [albumCoverURL, setAlbumCoverURL] = useState(
+    "../../../src/assets/record-vinyl-solid.svg"
+  );
 
   const player = useSelector((state: RootState) => state.player);
   const dispatch = useDispatch();
 
-  var coverURL =
-    albumCoverID != ""
+  //var coverURL = se"../../../src/assets/record-vinyl-solid.svg";
+  /*albumCoverID != ""
       ? supabase.storage
           .from("music-files")
           .getPublicUrl("pictures/covers/" + albumCoverID).data.publicUrl
-      : "../../../src/assets/record-vinyl-solid.svg";
+      : "../../../src/assets/record-vinyl-solid.svg";*/
 
   const [albumID, setAlbumID] = useState();
   useEffect(() => {
@@ -44,10 +46,11 @@ export default function SongRow(props: any) {
             setAlbumID(row.album_id);
             await supabase
               .from("Playlists")
-              .select("id, name")
+              .select("id, name, cover_url")
               .eq("id", row.album_id)
               .then((result) => {
-                setAlbumCoverID(result.data?.at(0)?.id);
+                setAlbumCoverURL(result.data?.at(0)?.cover_url);
+                //setAlbumCoverID(result.data?.at(0)?.id);
                 setAlbumName(result.data?.at(0)?.name);
               });
           }
@@ -71,7 +74,7 @@ export default function SongRow(props: any) {
     } else {
       (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
         "src",
-        coverURL
+        albumCoverURL
       );
       (nameArea?.children[0].children[0] as HTMLElement).classList.remove(
         "audioGIF",
@@ -150,7 +153,7 @@ export default function SongRow(props: any) {
           if (player.song_id != nameArea?.id) {
             (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
               "src",
-              coverURL
+              albumCoverURL
             );
 
             (nameArea?.children[0].children[0] as HTMLElement).classList.remove(
@@ -178,7 +181,7 @@ export default function SongRow(props: any) {
           <img
             src={
               player.song_id != props.song_id
-                ? coverURL
+                ? albumCoverURL
                 : "../../../src/assets/small-play.svg"
             }
           />

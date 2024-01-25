@@ -11,7 +11,9 @@ export default function PlaylistContainer(props: any) {
   if (props.playlist_id == null) return;
 
   const [playlistName, setPlaylistName] = useState(null);
-  const [coverUrl, setCover_URL] = useState("");
+  const [coverUrl, setCover_URL] = useState(
+    "../../../src/assets/record-vinyl-solid.svg"
+  );
 
   useEffect(() => {
     supabase
@@ -20,18 +22,17 @@ export default function PlaylistContainer(props: any) {
       .eq("id", props.playlist_id)
       .then((result) => {
         setPlaylistName(result.data?.at(0)?.name);
-        setCover_URL(result.data?.at(0)?.cover_url);
+        setCover_URL(
+          result.data?.at(0)?.cover_url == ""
+            ? "../../../src/assets/record-vinyl-solid.svg"
+            : result.data?.at(0)?.cover_url
+        );
       });
   }, []);
 
   //
   return (
     <>
-      <button
-        onClick={() => {
-          console.log(coverUrl);
-        }}
-      ></button>
       <NavLink to={"/app/playlist/" + props.playlist_id}>
         <div
           className="PlaylistContainer"

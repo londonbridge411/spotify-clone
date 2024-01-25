@@ -24,17 +24,33 @@ export default function PlaylistCreation(props: any) {
       var cover_url = "";
       var bg_url = "";
 
-      console.log("Wow");
-
       // Guard Statement
       if (playlist_name_text == "") return;
 
       if (useCustom) {
-        if (useLocal) {
+        if (useLocalCover) {
           const uploaded_cover = (
             document.getElementById("upload-playlist-cover") as HTMLInputElement
           ).files![0];
 
+          // Upload the Cover
+          await supabase.storage
+            .from("music-files")
+            .upload("/pictures/covers/" + id, uploaded_cover, {
+              cacheControl: "3600",
+              upsert: false,
+            });
+
+          cover_url = supabase.storage
+            .from("music-files")
+            .getPublicUrl("pictures/covers/" + id).data.publicUrl;
+        } else {
+          cover_url = (
+            document.getElementById("url-playlist-cover") as HTMLInputElement
+          )?.value;
+        }
+
+        if (useLocalBG) {
           const uploaded_bg = (
             document.getElementById(
               "upload-playlist-background"
@@ -48,27 +64,10 @@ export default function PlaylistCreation(props: any) {
               upsert: false,
             });
 
-          // Upload the Cover
-          await supabase.storage
-            .from("music-files")
-            .upload("/pictures/covers/" + id, uploaded_cover, {
-              cacheControl: "3600",
-              upsert: false,
-            });
-
           bg_url = supabase.storage
             .from("music-files")
             .getPublicUrl("pictures/backgrounds/" + id).data.publicUrl;
-
-          cover_url = supabase.storage
-            .from("music-files")
-            .getPublicUrl("pictures/covers/" + id).data.publicUrl;
         } else {
-          console.log("Use custom URL");
-          cover_url = (
-            document.getElementById("url-playlist-cover") as HTMLInputElement
-          )?.value;
-
           bg_url = (
             document.getElementById(
               "url-playlist-background"
@@ -78,7 +77,7 @@ export default function PlaylistCreation(props: any) {
       } else {
         console.log("Default");
         cover_url = ""; //default
-        bg_url = ""; //default
+        bg_url = ""; //default*/
       }
 
       await supabase
@@ -109,14 +108,19 @@ export default function PlaylistCreation(props: any) {
   }
 
   const [useCustom, setCustom] = useState(false);
-  const [useLocal, setLocal] = useState(false);
+  const [useLocalCover, setLocalCover] = useState(false);
+  const [useLocalBG, setLocalBG] = useState(false);
 
   const handleCustom = () => {
     setCustom(!useCustom);
   };
 
-  const handleLocal = () => {
-    setLocal(!useLocal);
+  const handleLocalCover = () => {
+    setLocalCover(!useLocalCover);
+  };
+
+  const handleLocalBG = () => {
+    setLocalBG(!useLocalBG);
   };
 
   return (
@@ -134,25 +138,42 @@ export default function PlaylistCreation(props: any) {
 
         <div hidden={!useCustom}>
           <div>
-            <label>Use local files</label>
-            <input type="checkbox" checked={useLocal} onChange={handleLocal} />
+            <label>Use local file</label>
+            <input
+              type="checkbox"
+              checked={useLocalCover}
+              onChange={handleLocalCover}
+            />
           </div>
-
-          <div hidden={useLocal}>
+          <div hidden={useLocalCover}>
             <label>Cover URL</label>
             <input id="url-playlist-cover" />
-
-            <label>Background URL</label>
-            <input id="url-playlist-background" />
           </div>
 
-          <div hidden={!useLocal}>
+          <div hidden={!useLocalCover}>
             <label>Upload Cover</label>
             <input
               id="upload-playlist-cover"
               type="file"
               accept=".jpg, .jpeg, .png"
             />
+          </div>
+
+          <div>
+            <label>Use local file</label>
+            <input
+              type="checkbox"
+              checked={useLocalBG}
+              onChange={handleLocalBG}
+            />
+          </div>
+
+          <div hidden={useLocalBG}>
+            <label>Background URL</label>
+            <input id="url-playlist-background" />
+          </div>
+
+          <div hidden={!useLocalBG}>
             <label>Upload Background</label>
             <input
               id="upload-playlist-background"
