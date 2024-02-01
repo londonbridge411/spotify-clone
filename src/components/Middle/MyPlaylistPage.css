@@ -1,6 +1,8 @@
 .myPlaylists-layout {
-  margin-left: 100px;
-  margin-right: 100px;
+  /*margin-left: 100px;
+  margin-right: 100px;*/
+  width: 100%;
+  height: 100%;
   display: grid;
   gap: 0.75em;
   grid-template-areas:
@@ -8,6 +10,23 @@
     "main";
 
   user-select: none;
+
+  overflow-y: auto;
+}
+
+div::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0);
+}
+
+div::-webkit-scrollbar {
+  width: 12px;
+  background-color: rgba(0, 0, 0, 0);
+}
+
+div::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: #818181;
 }
 
 .myPlaylists-layout header {
@@ -17,6 +36,12 @@
 .myPlaylists-layout main {
   display: flex;
   flex-direction: column;
+  margin-left: 100px;
+  margin-right: 100px;
+}
+
+.myPlaylists-layout header {
+  margin-left: 100px;
 }
 
 .myPlaylists-layout .myAlbums {
@@ -27,4 +52,15 @@
   row-gap: 15px;
   list-style-type: none;
   overflow: auto;
+}
+
+.myAlbums .addPlaylist {
+  width: 150px;
+  height: 200px;
+  align-items: center;
+  display: flex;
+}
+
+.myAlbums .addPlaylist:hover {
+  filter: sepia(79%) saturate(1000%) hue-rotate(86deg);
 }

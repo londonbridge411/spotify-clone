@@ -195,23 +195,25 @@ export default function AccountPage() {
             Get Verified
           </button>
 
-          <button
-            hidden={!userVerified || !isOwner}
-            onClick={() => {
-              setPopupState_UploadPlaylist(userVerified);
-            }}
-          >
-            Create Album
-          </button>
-
           <section>
-            <h2> My Music:</h2>
+            <h2>Music:</h2>
             <ul className="myAlbums">
               {list.map((item) => (
                 <li key={item}>
                   <PlaylistContainer playlist_id={item} />
                 </li>
               ))}
+
+              <li className="addPlaylist">
+                <img
+                  src="../../../src/assets/circle-plus-solid.svg"
+                  style={{ width: "150px", height: "100px", cursor: "pointer" }}
+                  hidden={!userVerified || !isOwner}
+                  onClick={() => {
+                    setPopupState_UploadPlaylist(userVerified);
+                  }}
+                />
+              </li>
             </ul>
           </section>
         </main>

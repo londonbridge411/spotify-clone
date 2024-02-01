@@ -6,6 +6,7 @@ import "./Account/AccountPage.css";
 import "./MyPlaylistPage.css";
 import Popup from "../Containers/Popup";
 import PlaylistCreation from "../Containers/Popups/PlaylistCreation";
+import AddPlaylistButton from "../AddPlaylistButton";
 export default function MyPlaylistPage() {
   const [list, setList] = useState([null]);
   useEffect(() => {
@@ -55,18 +56,23 @@ export default function MyPlaylistPage() {
   return (
     <>
       <div className="myPlaylists-layout">
-        <header>header</header>
+        <header>
+          <h1>Playlists</h1>
+        </header>
+
         <main>
-          <button
-            onClick={() => {
-              setPopupState_UploadPlaylist(true);
-            }}
-          >
-            Create Playlist
-          </button>
           <section>
             <h2> My Playlists:</h2>
             <ul className="myAlbums">
+              <li className="addPlaylist">
+                <img
+                  src="../../../src/assets/circle-plus-solid.svg"
+                  style={{ width: "150px", height: "100px", cursor: "pointer" }}
+                  onClick={() => {
+                    setPopupState_UploadPlaylist(true);
+                  }}
+                />
+              </li>
               {list.map((item) => (
                 <li key={item}>
                   <PlaylistContainer playlist_id={item} />
@@ -95,7 +101,7 @@ export default function MyPlaylistPage() {
         canClose={true}
         html={<PlaylistCreation playlistType={"Playlist"} />}
         requiresVerification={false}
-      ></Popup>
+      />
     </>
   );
 }

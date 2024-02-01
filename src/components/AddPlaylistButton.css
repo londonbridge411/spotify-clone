@@ -1,0 +1,42 @@
+.PlaylistContainer {
+  background-color: black;
+  color: white;
+
+  width: 150px;
+  height: 200px;
+
+  display: flex;
+  white-space: nowrap;
+
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+  flex-direction: column;
+}
+
+.PlaylistContainer:hover {
+  cursor: pointer;
+
+  transition: all 0.12s ease-in;
+  filter: brightness(50%);
+}
+
+.PlaylistContainer img {
+  width: 150px;
+  height: 150px;
+}
+
+.PlaylistContainer span {
+  margin-top: 7.5px;
+  text-align: center;
+  min-width: 150px;
+  font-size: 20px;
+  position: absolute;
+  white-space: nowrap;
+}
+
+/*make sure that calc(x - 100%), x is equal to width of the object*/
+.PlaylistContainer:hover span {
+  transform: translateX(calc(150px - 100%));
+  transition: 4s;
+}

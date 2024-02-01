@@ -33,7 +33,7 @@ export default function MusicControl() {
   const [currentTime, setCurrentTime] = useState("");
   const [maxTime, setMaxTime] = useState("");
   const [playIcon, setPlayIcon] = useState(play);
-  const [imgID, setImgID] = useState(null);
+  const [imgURL, setImgURL] = useState("../../../src/assets/small_record.svg");
 
   // Changes Progress
   function ChangeProgress(i: number) {
@@ -73,13 +73,6 @@ export default function MusicControl() {
     .from("music-files")
     .getPublicUrl("audio-files/" + player.song_id);
 
-  var imageUrl =
-    imgID != null
-      ? supabase.storage
-          .from("music-files")
-          .getPublicUrl("pictures/covers/" + imgID)
-      : null;
-
   var audio: HTMLAudioElement;
   useEffect(() => {
     const getSong = async () => {
@@ -100,7 +93,18 @@ export default function MusicControl() {
               .then((result) => {
                 let albumID = result.data?.at(0)?.album_id;
 
-                setImgID(albumID);
+                supabase
+                  .from("Playlists")
+                  .select("cover_url")
+                  .eq("id", albumID)
+                  .then((result) => {
+                    let cover = result.data?.at(0)?.cover_url;
+                    setImgURL(
+                      cover == ""
+                        ? "../../../src/assets/small_record.svg"
+                        : cover
+                    );
+                  });
               });
 
             audio = document.getElementById("audioControl") as HTMLAudioElement;
@@ -185,7 +189,7 @@ export default function MusicControl() {
 
         <div className="name-area">
           <div className="name-area-content">
-            <img src={imageUrl?.data.publicUrl} />
+            <img src={imgURL} />
             <div className="name-area-content-text">
               <div className="overflow-ellipsis text-bigger text-bold">
                 {name}

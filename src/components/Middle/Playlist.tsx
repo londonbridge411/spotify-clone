@@ -45,7 +45,7 @@ export default function Playlist() {
 
   const [backgroundUrl, setBG_URL] = useState("");
   const [coverUrl, setCover_URL] = useState(
-    "../../../src/assets/record-vinyl-solid.svg"
+    "../../../src/assets/small_record.svg"
   );
 
   const [popupActive_UploadingWait, setPopupState_UploadingWait] =
@@ -68,7 +68,7 @@ export default function Playlist() {
           setBG_URL(row.bg_url);
           setCover_URL(
             row.cover_url == ""
-              ? "../../../src/assets/record-vinyl-solid.svg"
+              ? "../../../src/assets/small_record.svg"
               : row.cover_url
           );
 

@@ -74,9 +74,7 @@ export default function PlaylistEdit(props: any) {
         .eq("id", playlistID);
 
       props.setCover(
-        cover_url == ""
-          ? "../../../src/assets/record-vinyl-solid.svg"
-          : cover_url
+        cover_url == "" ? "../../../src/assets/small_record.svg" : cover_url
       );
     };
 

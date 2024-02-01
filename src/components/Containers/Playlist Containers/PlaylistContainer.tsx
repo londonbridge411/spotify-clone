@@ -10,23 +10,33 @@ import ContextMenuOption from "../ContextMenuOption";
 export default function PlaylistContainer(props: any) {
   if (props.playlist_id == null) return;
 
-  const [playlistName, setPlaylistName] = useState(null);
+  const [playlistName, setPlaylistName] = useState("");
+  const [artistName, setArtistName] = useState("");
+  const [artistID, setArtistID] = useState("");
   const [coverUrl, setCover_URL] = useState(
-    "../../../src/assets/record-vinyl-solid.svg"
+    "../../../src/assets/small_record.svg"
   );
 
   useEffect(() => {
     supabase
       .from("Playlists")
-      .select("name, cover_url")
+      .select("name, owner_id, cover_url")
       .eq("id", props.playlist_id)
       .then((result) => {
         setPlaylistName(result.data?.at(0)?.name);
         setCover_URL(
           result.data?.at(0)?.cover_url == ""
-            ? "../../../src/assets/record-vinyl-solid.svg"
+            ? "../../../src/assets/small_record.svg"
             : result.data?.at(0)?.cover_url
         );
+        setArtistID(result.data?.at(0)?.owner_id);
+        supabase
+          .from("Users")
+          .select("username")
+          .eq("id", result.data?.at(0)?.owner_id)
+          .then((result) => {
+            setArtistName(result.data?.at(0)?.username);
+          });
       });
   }, []);
 
@@ -44,10 +54,10 @@ export default function PlaylistContainer(props: any) {
             ViewPlaylistContextMenu("Playlist_ContextMenu", e);
           }}
         >
-          <img src={coverUrl} />
-
-          <div>
-            <span>{playlistName}</span>
+          <div className="pl-container-content">
+            <img src={coverUrl} />
+            <div className="pl-container-name_holder">{playlistName}</div>
+            <NavLink to={"../account/" + artistID}>{artistName}</NavLink>
           </div>
         </div>
       </NavLink>
@@ -56,3 +66,8 @@ export default function PlaylistContainer(props: any) {
     </>
   );
 }
+
+/*
+              <span>{playlistName}</span>
+
+*/

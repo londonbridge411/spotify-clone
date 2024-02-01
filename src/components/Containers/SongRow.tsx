@@ -16,7 +16,7 @@ export default function SongRow(props: any) {
   const [albumName, setAlbumName] = useState("");
   const [dateCreated, setDateCreated] = useState("");
   const [albumCoverURL, setAlbumCoverURL] = useState(
-    "../../../src/assets/record-vinyl-solid.svg"
+    "../../../src/assets/small_record.svg"
   );
 
   const player = useSelector((state: RootState) => state.player);

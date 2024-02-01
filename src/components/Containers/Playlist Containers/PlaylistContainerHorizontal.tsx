@@ -5,7 +5,7 @@ import "./PlaylistContainerHorizontal.css";
 export default function PlaylistContainerHorizontal(props: any) {
   const [playlistName, setPlaylistName] = useState();
   const [coverUrl, setCover_URL] = useState(
-    "../../../src/assets/record-vinyl-solid.svg"
+    "../../../src/assets/small_record.svg"
   );
 
   useEffect(() => {
@@ -17,7 +17,7 @@ export default function PlaylistContainerHorizontal(props: any) {
         setPlaylistName(result.data?.at(0)?.name);
         setCover_URL(
           result.data?.at(0)?.cover_url == ""
-            ? "../../../src/assets/record-vinyl-solid.svg"
+            ? "../../../src/assets/small_record.svg"
             : result.data?.at(0)?.cover_url
         );
       });
