@@ -20,13 +20,16 @@
 }
 
 .popup-content {
-  width: 50%;
-  height: 30%;
+  width: fit-content;
+  height: fit-content;
+  padding: 50px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-
-  background-color: black;
+  border-radius: 15px;
+  background-color: rgb(19, 19, 19);
+  filter: drop-shadow(0 0 0.75rem black);
 }
 
 /* Random Popup Stuff */

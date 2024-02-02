@@ -48,6 +48,7 @@ div::-webkit-scrollbar-thumb {
   height: 200px;
   width: 200px;
   filter: drop-shadow(0 0 0.75rem black);
+  border-radius: 10px;
 }
 
 .playlistHeader .info {

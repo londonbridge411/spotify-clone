@@ -313,7 +313,14 @@ export default function Playlist() {
 
                 {list.map((item) => {
                   // item broke somehow
-                  return <SongRow key={item} song_id={item} song_list={list} />;
+                  return (
+                    <SongRow
+                      key={item}
+                      song_id={item}
+                      song_list={list}
+                      coverUpdate={coverUrl}
+                    />
+                  );
                 })}
               </ul>
             </div>

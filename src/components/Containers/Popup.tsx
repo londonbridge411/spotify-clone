@@ -18,15 +18,17 @@ export default function Popup(props: any) {
   return props.active ? (
     <>
       <div id={props.id} className={fadeIn ? "popup-box fadeIn" : "popup-box"}>
-        <div className="popup-content">{props.html}</div>
-        <button
-          hidden={!props.canClose}
-          onClick={() => {
-            props.setActive(false);
-          }}
-        >
-          Close
-        </button>
+        <div className="popup-content">
+          {props.html}
+          <button
+            hidden={!props.canClose}
+            onClick={() => {
+              props.setActive(false);
+            }}
+          >
+            Close
+          </button>
+        </div>
       </div>
     </>
   ) : (

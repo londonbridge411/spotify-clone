@@ -18,6 +18,9 @@ export default function SongRow(props: any) {
   const [albumCoverURL, setAlbumCoverURL] = useState(
     "../../../src/assets/small_record.svg"
   );
+  useEffect(() => {
+    //update
+  }, [albumCoverURL]);
 
   const player = useSelector((state: RootState) => state.player);
   const dispatch = useDispatch();
@@ -49,14 +52,15 @@ export default function SongRow(props: any) {
               .select("id, name, cover_url")
               .eq("id", row.album_id)
               .then((result) => {
-                setAlbumCoverURL(result.data?.at(0)?.cover_url);
+                if (result.data?.at(0)?.cover_url != "")
+                  setAlbumCoverURL(result.data?.at(0)?.cover_url);
                 //setAlbumCoverID(result.data?.at(0)?.id);
                 setAlbumName(result.data?.at(0)?.name);
               });
           }
         });
     }
-  }, []);
+  }, [props.coverUpdate]); // coverUpdate is the state of coverUrl from the playlist. The idea is that it updates whenever the album cover updates
 
   useEffect(() => {
     if (props.song_id == null) return;

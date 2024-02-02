@@ -8,9 +8,6 @@ import Popup from "../Popup";
 import { useParams } from "react-router-dom";
 
 export default function PlaylistEdit(props: any) {
-  const [popupActive_UploadingWait, setPopupActive_UploadingWait] =
-    useState(false);
-
   const { playlistID } = useParams();
 
   if (playlistID == null) return;
@@ -59,13 +56,15 @@ export default function PlaylistEdit(props: any) {
               .getPublicUrl("pictures/covers/" + playlistID).data.publicUrl;
           });
       } else {
-        await supabase.storage
-          .from("music-files")
-          .remove(["/pictures/covers/" + playlistID]);
-
         cover_url = (
           document.getElementById("url-playlist-cover") as HTMLInputElement
         )?.value;
+
+        if (cover_url == "") return;
+
+        await supabase.storage
+          .from("music-files")
+          .remove(["/pictures/covers/" + playlistID]);
       }
 
       await supabase
@@ -105,13 +104,15 @@ export default function PlaylistEdit(props: any) {
               .data.publicUrl;
           });
       } else {
-        await supabase.storage
-          .from("music-files")
-          .remove(["/pictures/backgrounds/" + playlistID]);
-
         background_url = (
           document.getElementById("url-playlist-background") as HTMLInputElement
         )?.value;
+
+        if (background_url == "") return;
+
+        await supabase.storage
+          .from("music-files")
+          .remove(["/pictures/backgrounds/" + playlistID]);
       }
 
       await supabase
@@ -125,6 +126,12 @@ export default function PlaylistEdit(props: any) {
     update();
   }
 
+  function SaveSettings() {
+    UpdateName();
+    UpdateCover();
+    UpdateBG();
+    close();
+  }
   const [useLocalCover, setLocalCover] = useState(false);
   const [useLocalBG, setLocalBG] = useState(false);
 
@@ -138,16 +145,35 @@ export default function PlaylistEdit(props: any) {
 
   return (
     <>
-      <div id="edit-playlist-menu">
-        <h2>Edit Playlist</h2>
-        <div>
-          <label>Name</label>
-          <input id="edit-playlist-name" />
-        </div>
+      <div id="edit-playlist-menu" style={{ width: "400px" }}>
+        <h2
+          style={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          Edit Playlist
+        </h2>
 
-        <button onClick={UpdateName}>Set</button>
+        <CustomInputField
+          label={"Private:"}
+          inputType={"checkbox"}
+          placeholder={"www.somesite.com/img.png"}
+          accept=".jpg, .jpeg, .png"
+          setType={"none"}
+          OnSet={UpdateBG}
+        />
 
-        <div>
+        <CustomInputField
+          inputType={"url"}
+          placeholder={"Some name"}
+          label={"Name:"}
+          inputID={"edit-playlist-name"}
+          setType={"none"}
+          OnSet={UpdateName}
+        />
+
+        <div style={{ paddingLeft: "150px" }}>
           <label>Use local file</label>
           <input
             type="checkbox"
@@ -155,21 +181,28 @@ export default function PlaylistEdit(props: any) {
             onChange={handleLocalCover}
           />
         </div>
-        <div hidden={useLocalCover}>
-          <label>Cover URL</label>
-          <input id="url-playlist-cover" />
-        </div>
 
-        <div hidden={!useLocalCover}>
-          <label>Upload Cover</label>
-          <input
-            id="edit-playlist-cover"
-            type="file"
-            accept=".jpg, .jpeg, .png"
-          />
-        </div>
-        <button onClick={UpdateCover}>Set</button>
-        <div>
+        <CustomInputField
+          hidden={useLocalCover}
+          label={"Cover URL:"}
+          inputType={"url"}
+          placeholder={"www.somesite.com/img.png"}
+          inputID={"url-playlist-cover"}
+          accept=".jpg, .jpeg, .png"
+          setType={"none"}
+          OnSet={UpdateCover}
+        />
+
+        <CustomInputField
+          hidden={!useLocalCover}
+          inputType={"file"}
+          inputID={"edit-playlist-cover"}
+          setType={"none"}
+          OnSet={UpdateCover}
+          accept=".jpg, .jpeg, .png"
+        />
+
+        <div style={{ paddingLeft: "150px" }}>
           <label>Use local file</label>
           <input
             type="checkbox"
@@ -178,51 +211,67 @@ export default function PlaylistEdit(props: any) {
           />
         </div>
 
-        <div hidden={useLocalBG}>
-          <label>Background URL</label>
-          <input id="url-playlist-background" />
-        </div>
+        <CustomInputField
+          hidden={useLocalBG}
+          label={"Background URL:"}
+          inputID={"url-playlist-background"}
+          placeholder={"www.somesite.com/img.png"}
+          setType={"none"}
+          OnSet={UpdateBG}
+        />
 
-        <div hidden={!useLocalBG}>
-          <label>Upload Background</label>
-          <input
-            id="edit-playlist-background"
-            type="file"
-            accept=".jpg, .jpeg, .png"
-          />
-        </div>
-        <button onClick={UpdateBG}>Set</button>
+        <CustomInputField
+          hidden={!useLocalBG}
+          inputType={"file"}
+          inputID={"edit-playlist-background"}
+          setType={"none"}
+          OnSet={UpdateBG}
+          accept=".jpg, .jpeg, .png"
+        />
       </div>
-
-      <Popup
-        id="uploadingWait"
-        active={popupActive_UploadingWait}
-        setActive={setPopupActive_UploadingWait}
-        canClose={false}
-        html={<div>Creating Playlist</div>}
-      ></Popup>
+      <button
+        style={{
+          display: "flex",
+          alignContent: "center",
+          marginBottom: "15px",
+        }}
+        onClick={SaveSettings}
+      >
+        Save Settings
+      </button>
     </>
   );
 }
 
-/*
-          <div>
-            <div>
-              <label>Name</label>
-              <input id="edit-playlist-name" />
-              <button>Update</button>
-            </div>
+export function CustomInputField(props: any) {
+  return (
+    <div hidden={props.hidden}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          alignItems: "center",
+          gap: "12px",
+          marginBottom: "20px",
+        }}
+      >
+        <label>{props.label}</label>
+        <input
+          id={props.inputID}
+          type={props.inputType}
+          placeholder={props.placeholder}
+          style={{
+            padding: "7.5px",
+            borderRadius: "10px",
+            border: "none",
+          }}
+          accept={props.accept} // Happens only if type is set to file
+        />
 
-            <div>
-              <label>Cover</label>
-              <input id="edit-playlist-cover" />
-              <button>Update</button>
-            </div>
-
-            <div>
-              <label>Background</label>
-              <input id="edit-playlist-bg" />
-              <button>Update</button>
-            </div>
-          </div>
-*/
+        <button hidden={props.setType != "button"} onClick={props.OnSet}>
+          Set
+        </button>
+      </div>
+    </div>
+  );
+}

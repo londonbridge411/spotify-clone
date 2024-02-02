@@ -1,9 +1,9 @@
 .PlaylistContainer {
-  background-color: black;
+  background-color: rgb(35, 35, 35);
   color: white;
 
-  width: 165px;
-  height: 215px;
+  width: 170px;
+  height: 220px;
   border-radius: 10px;
   display: flex;
   white-space: nowrap;
@@ -39,15 +39,17 @@
 .PlaylistContainer:hover {
   cursor: pointer;
 
-  transition: all 0.12s ease-in;
-  filter: brightness(50%);
+  transition: all 0.2s ease-in;
+  background-color: rgb(52, 52, 52);
 }
 
 .PlaylistContainer img {
   border-radius: 10px;
+  filter: drop-shadow(0 0 0.25rem black);
   width: 130px;
   height: 130px;
   background-color: rgb(24, 24, 24);
+  margin-bottom: 5px;
 }
 
 .pl-container-content a {

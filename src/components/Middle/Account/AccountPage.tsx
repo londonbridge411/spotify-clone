@@ -40,23 +40,33 @@ export default function AccountPage() {
       });
   }, [userID]);
 
-  const [list, setList] = useState([null]);
+  const [albumList, setAlbumList] = useState([null]);
+
+  const [playlistList, setPlaylistList] = useState([null]);
   useEffect(() => {
     supabase
       .from("Playlists")
-      .select("id")
+      .select("id, type, private")
       .eq("owner_id", userID)
-      .eq("type", "Album")
       .then((result) => {
-        var array = [];
+        var albums = [];
+        var playlists = [];
         var myData = result.data;
 
         if (myData != null) {
           for (let i = 0; i < myData.length; i++) {
-            array.push(myData.at(i)?.id);
+            // If private ignore
+            if (myData.at(i)?.private) continue;
+
+            if (myData.at(i)?.type == "Album") {
+              albums.push(myData.at(i)?.id);
+            } else if (myData.at(i)?.type == "Playlist") {
+              playlists.push(myData.at(i)?.id);
+            }
           }
 
-          setList(array);
+          setAlbumList(albums);
+          setPlaylistList(playlists);
         }
       });
   }, [userID]);
@@ -196,9 +206,31 @@ export default function AccountPage() {
           </button>
 
           <section>
-            <h2>Music:</h2>
+            <h2>Albums:</h2>
             <ul className="myAlbums">
-              {list.map((item) => (
+              {albumList.map((item) => (
+                <li key={item}>
+                  <PlaylistContainer playlist_id={item} />
+                </li>
+              ))}
+
+              <li className="addPlaylist">
+                <img
+                  src="../../../src/assets/circle-plus-solid.svg"
+                  style={{ width: "150px", height: "100px", cursor: "pointer" }}
+                  hidden={!userVerified || !isOwner}
+                  onClick={() => {
+                    setPopupState_UploadPlaylist(userVerified);
+                  }}
+                />
+              </li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>Public Playlists:</h2>
+            <ul className="myAlbums">
+              {playlistList.map((item) => (
                 <li key={item}>
                   <PlaylistContainer playlist_id={item} />
                 </li>
