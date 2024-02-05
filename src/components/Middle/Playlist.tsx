@@ -39,13 +39,13 @@ export default function Playlist() {
   useEffect(() => {
     supabase
       .from("Playlists")
-      .select("privacy_setting")
+      .select("privacy_setting, owner_id")
       .eq("id", playlistID)
       .then(async (result) => {
         var row = result.data?.at(0);
         if (row != null) {
           setPlaylistPrivacy(row.privacy_setting);
-          if (isOwner == false && row.privacy_setting == "Private") {
+          if (row.owner_id != authUserID && row.privacy_setting == "Private") {
             navigate("/app/home");
           }
         }
@@ -337,7 +337,7 @@ export default function Playlist() {
                       key={item}
                       song_id={item}
                       song_list={list}
-                      forceUpdate={[coverUrl, playlistName]}
+                      forceUpdate={[coverUrl, playlistName, playlistPrivacy]}
                     />
                   );
                 })}
@@ -386,6 +386,7 @@ export default function Playlist() {
             setName={setPlaylistName}
             setCover={setCover_URL}
             setBG={setBG_URL}
+            setPrivacy={setPlaylistPrivacy}
           />
         }
         requiresVerification={() => playlistType != "Playlist"}

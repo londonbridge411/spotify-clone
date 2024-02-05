@@ -126,11 +126,29 @@ export default function PlaylistEdit(props: any) {
     update();
   }
 
+  function UpdateVisibility() {
+    let dropdown = document.getElementById(
+      "playlist-privacy-setting"
+    ) as HTMLSelectElement;
+
+    const update = async () => {
+      if (dropdown.value == "") return;
+      props.setPrivacy(dropdown.value);
+      await supabase
+        .from("Playlists")
+        .update({ privacy_setting: dropdown.value })
+        .eq("id", playlistID);
+    };
+
+    update();
+  }
+
   function SaveSettings() {
     UpdateName();
     UpdateCover();
     UpdateBG();
-    close();
+    UpdateVisibility();
+    //close();
   }
   const [useLocalCover, setLocalCover] = useState(false);
   const [useLocalBG, setLocalBG] = useState(false);
@@ -156,7 +174,8 @@ export default function PlaylistEdit(props: any) {
         </h2>
         <label>Set Visibility:</label>
 
-        <select id="playlist-privacy-setting">
+        <select defaultValue={""} id="playlist-privacy-setting">
+          <option value=""></option>
           <option value="Public">Public</option>
           <option value="Private">Private</option>
           <option value="Unlisted">Unlisted</option>
