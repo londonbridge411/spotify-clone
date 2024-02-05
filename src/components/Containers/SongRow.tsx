@@ -54,13 +54,14 @@ export default function SongRow(props: any) {
               .then((result) => {
                 if (result.data?.at(0)?.cover_url != "")
                   setAlbumCoverURL(result.data?.at(0)?.cover_url);
+
                 //setAlbumCoverID(result.data?.at(0)?.id);
                 setAlbumName(result.data?.at(0)?.name);
               });
           }
         });
     }
-  }, [props.coverUpdate]); // coverUpdate is the state of coverUrl from the playlist. The idea is that it updates whenever the album cover updates
+  }, [props.forceUpdate]); // forceUpdate is a collection of states from the playlist. The idea is that whenever the cover or name updates, it updates in the song row.
 
   useEffect(() => {
     if (props.song_id == null) return;

@@ -46,7 +46,7 @@ export default function AccountPage() {
   useEffect(() => {
     supabase
       .from("Playlists")
-      .select("id, type, private")
+      .select("id, type, privacy_setting")
       .eq("owner_id", userID)
       .then((result) => {
         var albums = [];
@@ -55,8 +55,16 @@ export default function AccountPage() {
 
         if (myData != null) {
           for (let i = 0; i < myData.length; i++) {
+            //if ()
             // If private ignore
-            if (myData.at(i)?.private) continue;
+            //if (myData.at(i)?.privacy_setting == ) continue;
+
+            if (
+              myData.at(i)?.privacy_setting == "Unlisted" ||
+              (myData.at(i)?.privacy_setting == "Private" && isOwner == false)
+            ) {
+              continue;
+            }
 
             if (myData.at(i)?.type == "Album") {
               albums.push(myData.at(i)?.id);
@@ -170,10 +178,18 @@ export default function AccountPage() {
       <div className="account-layout">
         <header>
           <h1>{username}</h1>
+          <img
+            src="../../../src/assets/square-check-regular.svg"
+            style={{
+              width: "50px",
+              height: "50px",
+              filter: "sepia(79%) saturate(1000%) hue-rotate(86deg)",
+            }}
+            hidden={!userVerified}
+          />
         </header>
         <main>
           <div className="profileStats">
-            <p> Verified: {`${userVerified}`}</p>
             <p> Followers: {getFollowerCount}</p>
           </div>
 

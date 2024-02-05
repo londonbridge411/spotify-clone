@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import supabase from "../../config/supabaseClient";
 
 import "./Playlist.css";
@@ -22,7 +22,7 @@ export default function Playlist() {
   if (playlistID == null) return;
 
   const [isOwner, setOwner] = useState(false);
-
+  const navigate = useNavigate();
   useEffect(() => {
     supabase
       .from("Playlists")
@@ -31,6 +31,24 @@ export default function Playlist() {
       .then((result) => {
         setOwner(authUserID == result.data?.at(0)?.owner_id);
         if (isOwner) console.log("I own this");
+      });
+  }, [playlistID]);
+
+  const [playlistPrivacy, setPlaylistPrivacy] = useState("");
+
+  useEffect(() => {
+    supabase
+      .from("Playlists")
+      .select("privacy_setting")
+      .eq("id", playlistID)
+      .then(async (result) => {
+        var row = result.data?.at(0);
+        if (row != null) {
+          setPlaylistPrivacy(row.privacy_setting);
+          if (isOwner == false && row.privacy_setting == "Private") {
+            navigate("/app/home");
+          }
+        }
       });
   }, [playlistID]);
 
@@ -66,6 +84,7 @@ export default function Playlist() {
           setPlaylistName(row.name);
           setPlaylistType(row.type);
           setBG_URL(row.bg_url);
+
           setCover_URL(
             row.cover_url == ""
               ? "../../../src/assets/small_record.svg"
@@ -243,7 +262,7 @@ export default function Playlist() {
             <div className="info">
               <h1>{playlistName}</h1>
               <h2>{playlistAuthor}</h2>
-              <h2>{playlistType}</h2>
+              <h2>{playlistPrivacy + " " + playlistType}</h2>
             </div>
           </header>
           <button
@@ -318,7 +337,7 @@ export default function Playlist() {
                       key={item}
                       song_id={item}
                       song_list={list}
-                      coverUpdate={coverUrl}
+                      forceUpdate={[coverUrl, playlistName]}
                     />
                   );
                 })}

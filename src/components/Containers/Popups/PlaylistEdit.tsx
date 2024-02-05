@@ -154,15 +154,13 @@ export default function PlaylistEdit(props: any) {
         >
           Edit Playlist
         </h2>
+        <label>Set Visibility:</label>
 
-        <CustomInputField
-          label={"Private:"}
-          inputType={"checkbox"}
-          placeholder={"www.somesite.com/img.png"}
-          accept=".jpg, .jpeg, .png"
-          setType={"none"}
-          OnSet={UpdateBG}
-        />
+        <select id="playlist-privacy-setting">
+          <option value="Public">Public</option>
+          <option value="Private">Private</option>
+          <option value="Unlisted">Unlisted</option>
+        </select>
 
         <CustomInputField
           inputType={"url"}

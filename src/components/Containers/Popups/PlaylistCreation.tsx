@@ -92,6 +92,7 @@ export default function PlaylistCreation(props: any) {
           created_at: new Date(),
           cover_url: cover_url,
           bg_url: bg_url,
+          privacy_setting: "Private",
         })
         .then(async (result) => {
           if (result.error == null) {
@@ -126,6 +127,14 @@ export default function PlaylistCreation(props: any) {
   return (
     <>
       <div id="upload-playlist-menu">
+        <label>Set Visibility:</label>
+
+        <select id="playlist-privacy-setting">
+          <option value="Public">Public</option>
+          <option value="Private">Private</option>
+          <option value="Unlisted">Unlisted</option>
+        </select>
+
         <div>
           <label>Name</label>
           <input id="upload-playlist-name" />

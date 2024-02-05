@@ -36,13 +36,22 @@ export default function MyPlaylistPage() {
       .select("subscribed_playlists")
       .eq("id", authUserID)
       .then(async (result) => {
+        // Collection of Playlist IDs
         let resultList = result.data?.at(0)?.subscribed_playlists;
 
-        var array = [];
+        var array: any[] = [];
 
         if (resultList != null || resultList.length == 0) {
           for (let i = 0; i < resultList.length; i++) {
-            array.push(resultList.at(i));
+            await supabase
+              .from("Playlists")
+              .select("privacy_setting")
+              .eq("id", resultList.at(i))
+              .then((result2) => {
+                if (result2.data?.at(0)?.privacy_setting != "Private") {
+                  array.push(resultList.at(i));
+                }
+              });
           }
 
           setSharedList(array);
