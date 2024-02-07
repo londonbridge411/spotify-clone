@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import supabase from "../../config/supabaseClient";
 
 import "./Playlist.css";
@@ -53,8 +53,8 @@ export default function Playlist() {
   }, [playlistID]);
 
   const [playlistName, setPlaylistName] = useState("");
-  const [playlistAuthor, setPlaylistAuthor] = useState("");
-  const [playlistOwner, setPlaylistOwner] = useState("");
+  const [playlistAuthor, setPlaylistAuthor] = useState("Loading...");
+  const [playlistAuthorID, setPlaylistAuthorID] = useState("");
   const [playlistType, setPlaylistType] = useState("");
   const [isFollowing, setIsFollowing] = useState(false);
   const [songContextID, setSongContextID] = useState("");
@@ -84,14 +84,12 @@ export default function Playlist() {
           setPlaylistName(row.name);
           setPlaylistType(row.type);
           setBG_URL(row.bg_url);
-
+          setPlaylistAuthorID(row.owner_id);
           setCover_URL(
             row.cover_url == ""
               ? "../../../src/assets/small_record.svg"
               : row.cover_url
           );
-
-          //setPlaylistOwner(row.owner);
 
           supabase
             .from("Users")
@@ -261,7 +259,11 @@ export default function Playlist() {
             <img src={coverUrl} />
             <div className="info">
               <h1>{playlistName}</h1>
-              <h2>{playlistAuthor}</h2>
+              <h2>
+                <NavLink to={"../account/" + playlistAuthorID}>
+                  {playlistAuthor}
+                </NavLink>
+              </h2>
               <h2>{playlistPrivacy + " " + playlistType}</h2>
             </div>
           </header>

@@ -38,6 +38,8 @@
   margin-right: 25px;
   height: 50px;
   width: 50px;
+
+  border-radius: 10%;
 }
 
 .name-area-content > .name-area-content-text {

@@ -10,8 +10,8 @@ import ContextMenuOption from "../ContextMenuOption";
 export default function PlaylistContainer(props: any) {
   if (props.playlist_id == null) return;
 
-  const [playlistName, setPlaylistName] = useState("loading...");
-  const [artistName, setArtistName] = useState("loading...");
+  const [playlistName, setPlaylistName] = useState("Loading...");
+  const [artistName, setArtistName] = useState("Loading...");
   const [artistID, setArtistID] = useState("");
   const [coverUrl, setCover_URL] = useState(
     "../../../src/assets/small_record.svg"

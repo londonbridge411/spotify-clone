@@ -175,43 +175,196 @@ export default function AccountPage() {
 
   return (
     <>
+      <div className="account-page">
+        <div className="account-layout">
+          <header>
+            <div
+              style={{
+                background: "black",
+                height: "150px",
+                width: "150px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "flex-end",
+                borderRadius: "50%",
+                overflow: "hidden",
+              }}
+            >
+              <img
+                src="../../../src/assets/user-solid.svg"
+                style={{
+                  filter: "invert(100%) drop-shadow(0 0 0.75rem black)",
+                  height: "80%",
+                  width: "80%",
+                }}
+              />
+            </div>
+
+            <div className="info">
+              <h1>
+                {username}
+                <img
+                  src="../../../src/assets/square-check-regular.svg"
+                  style={{
+                    width: "50px",
+                    height: "50px",
+                    filter: "sepia(79%) saturate(1000%) hue-rotate(86deg)",
+                  }}
+                  hidden={!userVerified}
+                />
+              </h1>
+              <h2>Followers: {getFollowerCount}</h2>
+
+              <button
+                hidden={isOwner || isFollowing}
+                onClick={() => {
+                  FollowUser();
+                }}
+              >
+                Follow
+              </button>
+
+              <button
+                hidden={!isFollowing}
+                onClick={() => {
+                  UnfollowUser();
+                }}
+              >
+                Unfollow
+              </button>
+            </div>
+          </header>
+          <main>
+            {/*Changes depending on verification level*/}
+            <button
+              hidden={userVerified || !isOwner}
+              onClick={() => {
+                setPopupState_Verification(!userVerified);
+              }}
+            >
+              Get Verified
+            </button>
+
+            <section>
+              <h2 hidden={albumList.length == 0}>Albums:</h2>
+              <ul className="myAlbums">
+                {albumList.map((item) => (
+                  <li key={item}>
+                    <PlaylistContainer playlist_id={item} />
+                  </li>
+                ))}
+
+                <li className="addPlaylist">
+                  <img
+                    src="../../../src/assets/circle-plus-solid.svg"
+                    style={{
+                      width: "150px",
+                      height: "100px",
+                      cursor: "pointer",
+                    }}
+                    hidden={!userVerified || !isOwner}
+                    onClick={() => {
+                      setPopupState_UploadPlaylist(userVerified);
+                    }}
+                  />
+                </li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 hidden={playlistList.length == 0}>Public Playlists:</h2>
+              <ul className="myAlbums">
+                {playlistList.map((item) => (
+                  <li key={item}>
+                    <PlaylistContainer playlist_id={item} />
+                  </li>
+                ))}
+
+                <li className="addPlaylist">
+                  <img
+                    src="../../../src/assets/circle-plus-solid.svg"
+                    style={{
+                      width: "150px",
+                      height: "100px",
+                      cursor: "pointer",
+                    }}
+                    hidden={!userVerified || !isOwner}
+                    onClick={() => {
+                      setPopupState_UploadPlaylist(userVerified);
+                    }}
+                  />
+                </li>
+              </ul>
+            </section>
+          </main>
+        </div>
+      </div>
+    </>
+  );
+  /*
+  return (
+    <>
       <div className="account-layout">
         <header>
-          <h1>{username}</h1>
-          <img
-            src="../../../src/assets/square-check-regular.svg"
+          <div
             style={{
-              width: "50px",
-              height: "50px",
-              filter: "sepia(79%) saturate(1000%) hue-rotate(86deg)",
+              background: "black",
+              height: "150px",
+              width: "150px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "flex-end",
+              borderRadius: "50%",
+              overflow: "hidden",
             }}
-            hidden={!userVerified}
-          />
-        </header>
-        <main>
-          <div className="profileStats">
-            <p> Followers: {getFollowerCount}</p>
+          >
+            <img
+              src="../../../src/assets/user-solid.svg"
+              style={{
+                filter: "invert(100%) drop-shadow(0 0 0.75rem black)",
+                height: "80%",
+                width: "80%",
+              }}
+            />
           </div>
 
-          <button
-            hidden={isOwner || isFollowing}
-            onClick={() => {
-              FollowUser();
-            }}
-          >
-            Follow
-          </button>
+          <div className="info">
+            <h1>
+              {username}
+              <img
+                src="../../../src/assets/square-check-regular.svg"
+                style={{
+                  width: "50px",
+                  height: "50px",
+                  filter: "sepia(79%) saturate(1000%) hue-rotate(86deg)",
+                }}
+                hidden={!userVerified}
+              />
+            </h1>
+            <h2>Followers: {getFollowerCount}</h2>
 
-          <button
-            hidden={!isFollowing}
-            onClick={() => {
-              UnfollowUser();
-            }}
-          >
-            Unfollow
-          </button>
+            <button
+              hidden={isOwner || isFollowing}
+              onClick={() => {
+                FollowUser();
+              }}
+            >
+              Follow
+            </button>
 
-          {/*Changes depending on verification level*/}
+            <button
+              hidden={!isFollowing}
+              onClick={() => {
+                UnfollowUser();
+              }}
+            >
+              Unfollow
+            </button>
+          </div>
+        </header>
+
+        <main>
+          {/*Changes depending on verification level/}
           <button
             hidden={userVerified || !isOwner}
             onClick={() => {
@@ -222,7 +375,7 @@ export default function AccountPage() {
           </button>
 
           <section>
-            <h2>Albums:</h2>
+            <h2 hidden={albumList.length == 0}>Albums:</h2>
             <ul className="myAlbums">
               {albumList.map((item) => (
                 <li key={item}>
@@ -244,7 +397,7 @@ export default function AccountPage() {
           </section>
 
           <section>
-            <h2>Public Playlists:</h2>
+            <h2 hidden={playlistList.length == 0}>Public Playlists:</h2>
             <ul className="myAlbums">
               {playlistList.map((item) => (
                 <li key={item}>
@@ -288,4 +441,5 @@ export default function AccountPage() {
       ></Popup>
     </>
   );
+  */
 }

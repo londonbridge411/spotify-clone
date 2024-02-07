@@ -64,43 +64,49 @@ export default function MyPlaylistPage() {
 
   return (
     <>
-      <div className="myPlaylists-layout">
-        <header>
-          <h1>Playlists</h1>
-        </header>
+      <div className="myPlaylists-page">
+        <div className="myPlaylists-layout">
+          <header>
+            <h1>Playlists</h1>
+          </header>
 
-        <main>
-          <section>
-            <h2> My Playlists:</h2>
-            <ul className="myAlbums">
-              <li className="addPlaylist">
-                <img
-                  src="../../../src/assets/circle-plus-solid.svg"
-                  style={{ width: "150px", height: "100px", cursor: "pointer" }}
-                  onClick={() => {
-                    setPopupState_UploadPlaylist(true);
-                  }}
-                />
-              </li>
-              {list.map((item) => (
-                <li key={item}>
-                  <PlaylistContainer playlist_id={item} />
+          <main>
+            <section>
+              <h2> My Playlists:</h2>
+              <ul className="myAlbums">
+                <li className="addPlaylist">
+                  <img
+                    src="../../../src/assets/circle-plus-solid.svg"
+                    style={{
+                      width: "150px",
+                      height: "100px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      setPopupState_UploadPlaylist(true);
+                    }}
+                  />
                 </li>
-              ))}
-            </ul>
-          </section>
+                {list.map((item) => (
+                  <li key={item}>
+                    <PlaylistContainer playlist_id={item} />
+                  </li>
+                ))}
+              </ul>
+            </section>
 
-          <section>
-            <h2> Shared Playlists:</h2>
-            <ul className="myAlbums">
-              {sharedList.map((item) => (
-                <li key={item}>
-                  <PlaylistContainer playlist_id={item} />
-                </li>
-              ))}
-            </ul>
-          </section>
-        </main>
+            <section>
+              <h2> Shared Playlists:</h2>
+              <ul className="myAlbums">
+                {sharedList.map((item) => (
+                  <li key={item}>
+                    <PlaylistContainer playlist_id={item} />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          </main>
+        </div>
       </div>
 
       <Popup

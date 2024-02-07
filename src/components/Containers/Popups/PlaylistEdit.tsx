@@ -172,14 +172,32 @@ export default function PlaylistEdit(props: any) {
         >
           Edit Playlist
         </h2>
-        <label>Set Visibility:</label>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "12px",
+            marginBottom: "20px",
+          }}
+        >
+          <label>Set Visibility:</label>
 
-        <select defaultValue={""} id="playlist-privacy-setting">
-          <option value=""></option>
-          <option value="Public">Public</option>
-          <option value="Private">Private</option>
-          <option value="Unlisted">Unlisted</option>
-        </select>
+          <select
+            defaultValue={""}
+            id="playlist-privacy-setting"
+            style={{
+              padding: "7.5px",
+              borderRadius: "10px",
+              border: "none",
+            }}
+          >
+            <option value=""></option>
+            <option value="Public">Public</option>
+            <option value="Private">Private</option>
+            <option value="Unlisted">Unlisted</option>
+          </select>
+        </div>
 
         <CustomInputField
           inputType={"url"}
