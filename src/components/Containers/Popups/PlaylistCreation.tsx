@@ -88,11 +88,12 @@ export default function PlaylistCreation(props: any) {
           owner_id: (await supabase.auth.getUser()).data.user?.id,
           song_ids: [],
           type: props.playlistType, //Figure out a way to change this
-          private: false,
           created_at: new Date(),
           cover_url: cover_url,
           bg_url: bg_url,
-          privacy_setting: "Private",
+          privacy_setting: (document.getElementById(
+            "playlist-privacy-setting"
+          ) as HTMLSelectElement).value,
         })
         .then(async (result) => {
           if (result.error == null) {

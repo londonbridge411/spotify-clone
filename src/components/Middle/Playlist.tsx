@@ -114,6 +114,8 @@ export default function Playlist() {
 
   // Song List
   const [list, setList] = useState([]);
+
+  // Make it so songs in private (not unlisted playlists) are hidden
   useEffect(() => {
     supabase
       .from("Playlists")

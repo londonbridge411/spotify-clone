@@ -60,8 +60,8 @@ export default function AccountPage() {
             //if (myData.at(i)?.privacy_setting == ) continue;
 
             if (
-              myData.at(i)?.privacy_setting == "Unlisted" ||
-              (myData.at(i)?.privacy_setting == "Private" && isOwner == false)
+              (myData.at(i)?.privacy_setting == "Unlisted" ||
+              myData.at(i)?.privacy_setting == "Private") && isOwner == false
             ) {
               continue;
             }
@@ -299,6 +299,26 @@ export default function AccountPage() {
           </main>
         </div>
       </div>
+
+      <Popup
+        id="Popup_Verification"
+        active={popupActive_Verification}
+        setActive={setPopupState_Verification}
+        canClose={true}
+        html={<div>Get Verified</div>}
+        requiresVerification={false}
+        blockElement={!isOwner}
+      ></Popup>
+
+      <Popup
+        id="Popup_UploadPlaylist"
+        active={popupActive_UploadPlaylist}
+        setActive={setPopupState_UploadPlaylist}
+        canClose={true}
+        html={<PlaylistCreation playlistType={"Album"} />}
+        requiresVerification={true}
+        blockElement={!isOwner}
+      ></Popup>
     </>
   );
   /*
