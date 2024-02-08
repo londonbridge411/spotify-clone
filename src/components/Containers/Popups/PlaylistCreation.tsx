@@ -9,6 +9,7 @@ import Popup from "../Popup";
 export default function PlaylistCreation(props: any) {
   const [popupActive_UploadingWait, setPopupActive_UploadingWait] =
     useState(false);
+
   function UploadPlaylist() {
     setPopupActive_UploadingWait(true);
 
@@ -91,9 +92,11 @@ export default function PlaylistCreation(props: any) {
           created_at: new Date(),
           cover_url: cover_url,
           bg_url: bg_url,
-          privacy_setting: (document.getElementById(
-            "playlist-privacy-setting"
-          ) as HTMLSelectElement).value,
+          privacy_setting: (
+            document.getElementById(
+              "playlist-privacy-setting"
+            ) as HTMLSelectElement
+          ).value,
         })
         .then(async (result) => {
           if (result.error == null) {
@@ -127,7 +130,7 @@ export default function PlaylistCreation(props: any) {
 
   return (
     <>
-      <div id="upload-playlist-menu">
+      <div id="upload-playlist-menu" hidden={popupActive_UploadingWait}>
         <label>Set Visibility:</label>
 
         <select id="playlist-privacy-setting">
@@ -201,7 +204,7 @@ export default function PlaylistCreation(props: any) {
         active={popupActive_UploadingWait}
         setActive={setPopupActive_UploadingWait}
         canClose={false}
-        html={<div>Creating Playlist</div>}
+        html={<div>Creating Playlist... </div>}
         //requiresVerification={() => playlistType != "Playlist"}
       ></Popup>
     </>

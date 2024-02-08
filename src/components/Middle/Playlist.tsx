@@ -5,14 +5,16 @@ import supabase from "../../config/supabaseClient";
 import "./Playlist.css";
 
 import Popup from "../Containers/Popup";
-import { authUserID, email } from "../../main";
+import { authUserID, email, username } from "../../main";
 import * as uuid from "uuid";
 import { setSongID, setSongList, shufflePlay } from "../../PlayerSlice";
 import { useDispatch } from "react-redux";
 import SongRow from "../Containers/SongRow";
 import ContextMenuOption from "../Containers/ContextMenuOption";
 import SongContextMenu from "../Containers/ContextMenus/SongContextMenu";
-import PlaylistEdit, { CustomInputField } from "../Containers/Popups/PlaylistEdit";
+import PlaylistEdit, {
+  CustomInputField,
+} from "../Containers/Popups/PlaylistEdit";
 
 export default function Playlist() {
   const dispatch = useDispatch();
@@ -76,10 +78,12 @@ export default function Playlist() {
     console.log("Updating");
     supabase
       .from("Playlists")
-      .select("*")
+      .select("name, type, bg_url, cover_url, owner_id, Users(username)")
       .eq("id", playlistID)
       .then((result) => {
         var row = result.data?.at(0);
+        var user_data: any = result.data?.at(0)?.Users;
+
         if (row != null) {
           setPlaylistName(row.name);
           setPlaylistType(row.type);
@@ -91,11 +95,7 @@ export default function Playlist() {
               : row.cover_url
           );
 
-          supabase
-            .from("Users")
-            .select("username")
-            .eq("id", row.owner_id)
-            .then((result) => setPlaylistAuthor(result.data?.at(0)?.username));
+          setPlaylistAuthor(user_data.username);
         }
       });
   }, [playlistID]);
@@ -125,26 +125,32 @@ export default function Playlist() {
         var myData = result.data?.at(0)?.song_ids;
 
         var songs: string[] = [];
+
         if (playlistType == "Playlist") {
           for (let i = 0; i < myData.length; i++) {
-            await supabase.from("Songs").select("album_id").eq("id", myData.at(i)).then(async (result2) => {
-              let albumID = result2.data?.at(0)?.album_id;
+            await supabase
+              .from("Songs")
+              .select("album_id")
+              .eq("id", myData.at(i))
+              .then(async (result2) => {
+                let albumID = result2.data?.at(0)?.album_id;
 
-              await supabase.from("Playlists").select("privacy_setting").eq("id", albumID).then((result3) => {
-                let setting = result3.data?.at(0)?.privacy_setting;
+                await supabase
+                  .from("Playlists")
+                  .select("privacy_setting")
+                  .eq("id", albumID)
+                  .then((result3) => {
+                    let setting = result3.data?.at(0)?.privacy_setting;
 
-                if (setting != "Private") {
-                  songs.push(myData.at(i));
-                }
+                    if (setting != "Private") {
+                      songs.push(myData.at(i));
+                    }
+                  });
               });
-
-            })
           }
-        }
-        else {
+        } else {
           songs = myData;
         }
-
 
         if (songs.length == 0) {
           setHideTable(true);
@@ -281,65 +287,69 @@ export default function Playlist() {
             <img src={coverUrl} />
             <div className="info">
               <h1>{playlistName}</h1>
-              <h2>
-                <NavLink to={"../account/" + playlistAuthorID}>
-                  {playlistAuthor}
-                </NavLink>
+              <NavLink to={"../account/" + playlistAuthorID}>
+                <h2>{playlistAuthor}</h2>
+              </NavLink>
+              <h2 className="text-regular">
+                {playlistPrivacy + " " + playlistType}
               </h2>
-              <h2>{playlistPrivacy + " " + playlistType}</h2>
             </div>
           </header>
-          <button
-            hidden={!isOwner}
-            onClick={() => {
-              setPopupState_Edit(true);
-            }}
-          >
-            Edit
-          </button>
-          <button
-            hidden={!isOwner || playlistType == "Playlist"}
-            onClick={() => setPopupState_UploadSong(isOwner)}
-          >
-            Add Song
-          </button>
 
+          <div className="playlist-button-bar">
+            <img
+              src="../../../src/assets/edit_button.png"
+              hidden={!isOwner}
+              onClick={() => {
+                setPopupState_Edit(true);
+              }}
+            />
 
-          <button
-            onClick={() => {
-              dispatch(setSongList(list as string[]));
-              dispatch(setSongID(list[0]));
-            }}
-          >
-            Play
-          </button>
+            <img
+              src="../../../src/assets/add_button.png"
+              hidden={!isOwner || playlistType == "Playlist"}
+              onClick={() => {
+                setPopupState_UploadSong(isOwner);
+              }}
+            />
 
-          <button
-            onClick={() => {
-              dispatch(setSongList(list as string[]));
-              dispatch(shufflePlay());
-            }}
-          >
-            Shuffle
-          </button>
+            <img
+              src="../../../src/assets/play_button.png"
+              onClick={() => {
+                dispatch(setSongList(list as string[]));
+                dispatch(setSongID(list[0]));
+              }}
+            />
 
-          <button
-            hidden={isOwner || isFollowing}
-            onClick={() => {
-              FollowPlaylist();
-            }}
-          >
-            Follow
-          </button>
+            <img
+              src="../../../src/assets/shuffle_button.png"
+              onClick={() => {
+                dispatch(setSongList(list as string[]));
+                dispatch(shufflePlay());
+              }}
+            />
 
-          <button
-            hidden={!isFollowing}
-            onClick={() => {
-              UnfollowPlaylist();
-            }}
-          >
-            Unfollow
-          </button>
+            <img
+              src="../../../src/assets/bookmark_button.png"
+              hidden={isOwner || isFollowing}
+              onClick={FollowPlaylist}
+            />
+
+            <img
+              src="../../../src/assets/unbookmark.png"
+              hidden={!isFollowing}
+              onClick={UnfollowPlaylist}
+            />
+
+            <img
+              src="../../../src/assets/share.png"
+              onClick={() => {
+                console.log("URL copied to clipboard!");
+                const url = location.href;
+                navigator.clipboard.writeText(url);
+              }}
+            />
+          </div>
           <main>
             <div hidden={hideTable} className="playlist-content">
               <ul className="song-table">
@@ -388,8 +398,7 @@ export default function Playlist() {
         canClose={true}
         html={
           <div>
-            <div id="upload-song-menu" >
-
+            <div id="upload-song-menu">
               <h2
                 style={{
                   display: "flex",
@@ -438,7 +447,7 @@ export default function Playlist() {
         active={popupActive_UploadingWait}
         setActive={setPopupState_UploadingWait}
         canClose={false}
-        html={<div>Uploading Song</div>}
+        html={<div>Uploading Song...</div>}
         requiresVerification={() => playlistType != "Playlist"}
       ></Popup>
     </>

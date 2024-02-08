@@ -37,27 +37,22 @@ export default function SongRow(props: any) {
     if (props.song_id != null) {
       supabase
         .from("Songs")
-        .select("*")
+        .select("title, created_at, album_id, Playlists(id, name, cover_url)")
         .eq("id", props.song_id)
         .then(async (result) => {
           var row = result.data?.at(0);
+          var playlistData: any = row?.Playlists;
 
           if (row != null) {
             setSongName(row.title);
             setDateCreated(row.created_at);
 
             setAlbumID(row.album_id);
-            await supabase
-              .from("Playlists")
-              .select("id, name, cover_url")
-              .eq("id", row.album_id)
-              .then((result) => {
-                if (result.data?.at(0)?.cover_url != "")
-                  setAlbumCoverURL(result.data?.at(0)?.cover_url);
 
-                //setAlbumCoverID(result.data?.at(0)?.id);
-                setAlbumName(result.data?.at(0)?.name);
-              });
+            if (playlistData.cover_url != "")
+              setAlbumCoverURL(playlistData.cover_url);
+
+            setAlbumName(playlistData.name);
           }
         });
     }

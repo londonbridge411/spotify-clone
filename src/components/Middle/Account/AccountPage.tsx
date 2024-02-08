@@ -25,17 +25,29 @@ export default function AccountPage() {
   const [isFollowing, setIsFollowing] = useState(false);
   const [userVerified, setVerified] = useState(false);
   const [username, setUsername] = useState("");
+  const [pfpUrl, setPfpUrl] = useState("../../../src/assets/default_user.png");
+  const [popupActive_FollowingUser, setPopupActive_FollowingUser] =
+    useState(false);
+
+  const [popupActive_UnfollowingUser, setPopupActive_UnfollowingUser] =
+    useState(false);
 
   useEffect(() => {
     supabase
       .from("Users")
-      .select("subscribers, is_verified, username")
+      .select("subscribers, is_verified, username, pfp_url")
       .eq("id", userID)
       .then((result) => {
         setFollowerCount(result.data?.at(0)?.subscribers.length);
         setVerified(result.data?.at(0)?.is_verified);
         setUsername(result.data?.at(0)?.username);
 
+        setPfpUrl(
+          result.data?.at(0)?.pfp_url != null &&
+            result.data?.at(0)?.pfp_url != ""
+            ? result.data?.at(0)?.pfp_url
+            : "../../../src/assets/default_user.png"
+        );
         setIsFollowing(result.data?.at(0)?.subscribers.includes(authUserID));
       });
   }, [userID]);
@@ -61,14 +73,18 @@ export default function AccountPage() {
 
             if (
               (myData.at(i)?.privacy_setting == "Unlisted" ||
-              myData.at(i)?.privacy_setting == "Private") && isOwner == false
+                myData.at(i)?.privacy_setting == "Private") &&
+              isOwner == false
             ) {
               continue;
             }
 
             if (myData.at(i)?.type == "Album") {
               albums.push(myData.at(i)?.id);
-            } else if (myData.at(i)?.type == "Playlist") {
+            } else if (
+              myData.at(i)?.type == "Playlist" &&
+              myData.at(i)?.privacy_setting == "Public"
+            ) {
               playlists.push(myData.at(i)?.id);
             }
           }
@@ -132,6 +148,7 @@ export default function AccountPage() {
         });
 
       setIsFollowing(true);
+      setPopupActive_FollowingUser(true);
     }
   }
 
@@ -178,27 +195,16 @@ export default function AccountPage() {
       <div className="account-page">
         <div className="account-layout">
           <header>
-            <div
+            <img
               style={{
-                background: "black",
                 height: "150px",
                 width: "150px",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "flex-end",
+                background: "black",
+                filter: "drop-shadow(0 0 0.75rem black)",
                 borderRadius: "50%",
-                overflow: "hidden",
               }}
-            >
-              <img
-                src="../../../src/assets/user-solid.svg"
-                style={{
-                  filter: "invert(100%) drop-shadow(0 0 0.75rem black)",
-                  height: "80%",
-                  width: "80%",
-                }}
-              />
-            </div>
+              src={pfpUrl}
+            />
 
             <div className="info">
               <h1>
@@ -214,26 +220,30 @@ export default function AccountPage() {
                 />
               </h1>
               <h2>Followers: {getFollowerCount}</h2>
-
-              <button
-                hidden={isOwner || isFollowing}
-                onClick={() => {
-                  FollowUser();
-                }}
-              >
-                Follow
-              </button>
-
-              <button
-                hidden={!isFollowing}
-                onClick={() => {
-                  UnfollowUser();
-                }}
-              >
-                Unfollow
-              </button>
             </div>
           </header>
+          <div className="playlist-button-bar">
+            <img
+              src="../../../src/assets/add_person.png"
+              hidden={isOwner || isFollowing}
+              onClick={FollowUser}
+            />
+
+            <img
+              src="../../../src/assets/unadd_person.png"
+              hidden={!isFollowing}
+              onClick={() => setPopupActive_UnfollowingUser(true)}
+            />
+
+            <img
+              src="../../../src/assets/share.png"
+              onClick={() => {
+                console.log("URL copied to clipboard!");
+                const url = location.href;
+                navigator.clipboard.writeText(url);
+              }}
+            />
+          </div>
           <main>
             {/*Changes depending on verification level*/}
             <button
@@ -279,21 +289,6 @@ export default function AccountPage() {
                     <PlaylistContainer playlist_id={item} />
                   </li>
                 ))}
-
-                <li className="addPlaylist">
-                  <img
-                    src="../../../src/assets/circle-plus-solid.svg"
-                    style={{
-                      width: "150px",
-                      height: "100px",
-                      cursor: "pointer",
-                    }}
-                    hidden={!userVerified || !isOwner}
-                    onClick={() => {
-                      setPopupState_UploadPlaylist(userVerified);
-                    }}
-                  />
-                </li>
               </ul>
             </section>
           </main>
@@ -319,147 +314,37 @@ export default function AccountPage() {
         requiresVerification={true}
         blockElement={!isOwner}
       ></Popup>
-    </>
-  );
-  /*
-  return (
-    <>
-      <div className="account-layout">
-        <header>
-          <div
-            style={{
-              background: "black",
-              height: "150px",
-              width: "150px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "flex-end",
-              borderRadius: "50%",
-              overflow: "hidden",
-            }}
-          >
-            <img
-              src="../../../src/assets/user-solid.svg"
-              style={{
-                filter: "invert(100%) drop-shadow(0 0 0.75rem black)",
-                height: "80%",
-                width: "80%",
-              }}
-            />
-          </div>
 
-          <div className="info">
-            <h1>
-              {username}
-              <img
-                src="../../../src/assets/square-check-regular.svg"
-                style={{
-                  width: "50px",
-                  height: "50px",
-                  filter: "sepia(79%) saturate(1000%) hue-rotate(86deg)",
-                }}
-                hidden={!userVerified}
-              />
-            </h1>
-            <h2>Followers: {getFollowerCount}</h2>
+      <Popup
+        id="Popup_FollowingUser"
+        active={popupActive_FollowingUser}
+        setActive={setPopupActive_FollowingUser}
+        canClose={true}
+        html={<div>You are now following {username}.</div>}
+      ></Popup>
 
+      <Popup
+        id="Popup_UnfollowingUser"
+        active={popupActive_UnfollowingUser}
+        setActive={setPopupActive_UnfollowingUser}
+        canClose={false}
+        html={
+          <>
+            <div>Are you sure you want to unfollow {username}?</div>
             <button
-              hidden={isOwner || isFollowing}
-              onClick={() => {
-                FollowUser();
-              }}
-            >
-              Follow
-            </button>
-
-            <button
-              hidden={!isFollowing}
               onClick={() => {
                 UnfollowUser();
+                setPopupActive_UnfollowingUser(false);
               }}
             >
-              Unfollow
+              Yes
             </button>
-          </div>
-        </header>
-
-        <main>
-          {/*Changes depending on verification level/}
-          <button
-            hidden={userVerified || !isOwner}
-            onClick={() => {
-              setPopupState_Verification(!userVerified);
-            }}
-          >
-            Get Verified
-          </button>
-
-          <section>
-            <h2 hidden={albumList.length == 0}>Albums:</h2>
-            <ul className="myAlbums">
-              {albumList.map((item) => (
-                <li key={item}>
-                  <PlaylistContainer playlist_id={item} />
-                </li>
-              ))}
-
-              <li className="addPlaylist">
-                <img
-                  src="../../../src/assets/circle-plus-solid.svg"
-                  style={{ width: "150px", height: "100px", cursor: "pointer" }}
-                  hidden={!userVerified || !isOwner}
-                  onClick={() => {
-                    setPopupState_UploadPlaylist(userVerified);
-                  }}
-                />
-              </li>
-            </ul>
-          </section>
-
-          <section>
-            <h2 hidden={playlistList.length == 0}>Public Playlists:</h2>
-            <ul className="myAlbums">
-              {playlistList.map((item) => (
-                <li key={item}>
-                  <PlaylistContainer playlist_id={item} />
-                </li>
-              ))}
-
-              <li className="addPlaylist">
-                <img
-                  src="../../../src/assets/circle-plus-solid.svg"
-                  style={{ width: "150px", height: "100px", cursor: "pointer" }}
-                  hidden={!userVerified || !isOwner}
-                  onClick={() => {
-                    setPopupState_UploadPlaylist(userVerified);
-                  }}
-                />
-              </li>
-            </ul>
-          </section>
-        </main>
-      </div>
-
-      <Popup
-        id="Popup_Verification"
-        active={popupActive_Verification}
-        setActive={setPopupState_Verification}
-        canClose={true}
-        html={<div>Get Verified</div>}
-        requiresVerification={false}
-        blockElement={!isOwner}
-      ></Popup>
-
-      <Popup
-        id="Popup_UploadPlaylist"
-        active={popupActive_UploadPlaylist}
-        setActive={setPopupState_UploadPlaylist}
-        canClose={true}
-        html={<PlaylistCreation playlistType={"Album"} />}
-        requiresVerification={true}
-        blockElement={!isOwner}
+            <button onClick={() => setPopupActive_UnfollowingUser(false)}>
+              No
+            </button>
+          </>
+        }
       ></Popup>
     </>
   );
-  */
 }

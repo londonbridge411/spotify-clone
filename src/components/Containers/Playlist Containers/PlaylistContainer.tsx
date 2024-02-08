@@ -20,7 +20,7 @@ export default function PlaylistContainer(props: any) {
   useEffect(() => {
     supabase
       .from("Playlists")
-      .select("name, owner_id, cover_url")
+      .select("name, owner_id, cover_url, Users(username)")
       .eq("id", props.playlist_id)
       .then((result) => {
         setPlaylistName(result.data?.at(0)?.name);
@@ -30,13 +30,9 @@ export default function PlaylistContainer(props: any) {
             : result.data?.at(0)?.cover_url
         );
         setArtistID(result.data?.at(0)?.owner_id);
-        supabase
-          .from("Users")
-          .select("username")
-          .eq("id", result.data?.at(0)?.owner_id)
-          .then((result) => {
-            setArtistName(result.data?.at(0)?.username);
-          });
+
+        var userData: any = result.data?.at(0)?.Users;
+        setArtistName(userData.username);
       });
   }, []);
 
@@ -66,8 +62,3 @@ export default function PlaylistContainer(props: any) {
     </>
   );
 }
-
-/*
-              <span>{playlistName}</span>
-
-*/

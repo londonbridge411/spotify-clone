@@ -46,6 +46,7 @@ function Signup() {
       first_name: fn_text,
       last_name: ln_text,
       username: username_text,
+      pfp_url: null,
     });
 
     console.log(await supabase.auth.getUser());
