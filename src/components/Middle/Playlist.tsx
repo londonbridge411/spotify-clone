@@ -12,7 +12,7 @@ import { useDispatch } from "react-redux";
 import SongRow from "../Containers/SongRow";
 import ContextMenuOption from "../Containers/ContextMenuOption";
 import SongContextMenu from "../Containers/ContextMenus/SongContextMenu";
-import PlaylistEdit from "../Containers/Popups/PlaylistEdit";
+import PlaylistEdit, { CustomInputField } from "../Containers/Popups/PlaylistEdit";
 
 export default function Playlist() {
   const dispatch = useDispatch();
@@ -121,16 +121,36 @@ export default function Playlist() {
       .from("Playlists")
       .select("song_ids")
       .eq("id", playlistID)
-      .then((result) => {
+      .then(async (result) => {
         var myData = result.data?.at(0)?.song_ids;
 
-        if (myData != null) {
-          if (myData.length == 0) {
-            setHideTable(true);
-          } else {
-            setHideTable(false);
-            setList(myData);
+        var songs: string[] = [];
+        if (playlistType == "Playlist") {
+          for (let i = 0; i < myData.length; i++) {
+            await supabase.from("Songs").select("album_id").eq("id", myData.at(i)).then(async (result2) => {
+              let albumID = result2.data?.at(0)?.album_id;
+
+              await supabase.from("Playlists").select("privacy_setting").eq("id", albumID).then((result3) => {
+                let setting = result3.data?.at(0)?.privacy_setting;
+
+                if (setting != "Private") {
+                  songs.push(myData.at(i));
+                }
+              });
+
+            })
           }
+        }
+        else {
+          songs = myData;
+        }
+
+
+        if (songs.length == 0) {
+          setHideTable(true);
+        } else {
+          setHideTable(false);
+          setList(songs as any);
         }
       });
   }, [playlistID]);
@@ -283,6 +303,8 @@ export default function Playlist() {
           >
             Add Song
           </button>
+
+
           <button
             onClick={() => {
               dispatch(setSongList(list as string[]));
@@ -366,14 +388,30 @@ export default function Playlist() {
         canClose={true}
         html={
           <div>
-            <div id="upload-song-menu">
-              <div>
-                <label>Name</label>
-                <input id="upload-song-name" />
-              </div>
+            <div id="upload-song-menu" >
 
-              <label>Upload Song</label>
-              <input id="uploaded_song" type="file" accept="audio/mp3" />
+              <h2
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                Upload Song
+              </h2>
+              <CustomInputField
+                inputType={"url"}
+                placeholder={"Some name"}
+                label={"Name:"}
+                inputID={"upload-song-name"}
+              />
+
+              <CustomInputField
+                inputType={"file"}
+                placeholder={"Some name"}
+                label={"Choose file:"}
+                inputID={"uploaded_song"}
+                accept="audio/mp3"
+              />
               <button onClick={() => UploadSong()}>Upload</button>
             </div>
           </div>
