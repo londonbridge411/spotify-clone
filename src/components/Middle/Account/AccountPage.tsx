@@ -6,6 +6,7 @@ import supabase from "../../../config/supabaseClient";
 import PlaylistContainer from "../../Containers/Playlist Containers/PlaylistContainer";
 import { useParams } from "react-router-dom";
 import { authUserID, email, isVerified } from "../../../main";
+import AccountEdit from "../../Containers/Popups/AccountEdit";
 
 /*
 Want to display icon, username, bio, followers, isVerified, upload song.
@@ -32,6 +33,8 @@ export default function AccountPage() {
   const [popupActive_UnfollowingUser, setPopupActive_UnfollowingUser] =
     useState(false);
 
+  const [popupActive_Edit, setPopupState_Edit] = useState(false);
+
   useEffect(() => {
     supabase
       .from("Users")
@@ -50,7 +53,7 @@ export default function AccountPage() {
         );
         setIsFollowing(result.data?.at(0)?.subscribers.includes(authUserID));
       });
-  }, [userID]);
+  }, [userID, username]);
 
   const [albumList, setAlbumList] = useState([null]);
 
@@ -94,6 +97,8 @@ export default function AccountPage() {
         }
       });
   }, [userID]);
+
+  const [popupActive_Share, setPopupState_Share] = useState(false);
 
   const [popupActive_Verification, setPopupState_Verification] =
     useState(false);
@@ -207,8 +212,8 @@ export default function AccountPage() {
             />
 
             <div className="info">
-              <h1>
-                {username}
+              <div className="profileName">
+                <h1>{username}</h1>
                 <img
                   src="../../../src/assets/square-check-regular.svg"
                   style={{
@@ -218,11 +223,20 @@ export default function AccountPage() {
                   }}
                   hidden={!userVerified}
                 />
-              </h1>
+              </div>
+
               <h2>Followers: {getFollowerCount}</h2>
             </div>
           </header>
           <div className="playlist-button-bar">
+            <img
+              src="../../../src/assets/edit_button.png"
+              hidden={!isOwner}
+              onClick={() => {
+                setPopupState_Edit(true);
+              }}
+            />
+
             <img
               src="../../../src/assets/add_person.png"
               hidden={isOwner || isFollowing}
@@ -238,7 +252,7 @@ export default function AccountPage() {
             <img
               src="../../../src/assets/share.png"
               onClick={() => {
-                console.log("URL copied to clipboard!");
+                setPopupState_Share(true);
                 const url = location.href;
                 navigator.clipboard.writeText(url);
               }}
@@ -345,6 +359,27 @@ export default function AccountPage() {
           </>
         }
       ></Popup>
+
+      <Popup
+        id="account-edit"
+        active={popupActive_Edit}
+        setActive={setPopupState_Edit}
+        canClose={true}
+        html={
+          <>
+            <AccountEdit setName={setUsername} setPFP={setPfpUrl} />
+          </>
+        }
+        requiresVerification={() => isOwner == true}
+      ></Popup>
+
+      <Popup
+        id="shareAccount"
+        active={popupActive_Share}
+        setActive={setPopupState_Share}
+        canClose={true}
+        html={<div>Copied link to clipboard.</div>}
+      />
     </>
   );
 }

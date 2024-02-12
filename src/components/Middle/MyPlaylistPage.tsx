@@ -41,7 +41,7 @@ export default function MyPlaylistPage() {
 
         var array: any[] = [];
 
-        if (resultList != null || resultList.length == 0) {
+        if (resultList != null || resultList?.length == 0) {
           for (let i = 0; i < resultList.length; i++) {
             await supabase
               .from("Playlists")

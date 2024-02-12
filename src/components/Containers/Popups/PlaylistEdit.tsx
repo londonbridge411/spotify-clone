@@ -6,6 +6,7 @@ import { email } from "../../../main";
 import * as uuid from "uuid";
 import Popup from "../Popup";
 import { useParams } from "react-router-dom";
+import testbg from "../../../assets/test_bg.jpg";
 
 export default function PlaylistEdit(props: any) {
   const { playlistID } = useParams();
@@ -21,7 +22,6 @@ export default function PlaylistEdit(props: any) {
 
     var playlist_name_text = playlist_name?.value;
 
-    console.log("Text: " + playlistID);
     if (playlist_name_text != "") {
       const update = async () => {
         await supabase
@@ -46,14 +46,16 @@ export default function PlaylistEdit(props: any) {
         // Update Cover
         await supabase.storage
           .from("music-files")
-          .update("/pictures/covers/" + playlistID, uploaded_cover, {
-            cacheControl: "3600",
+          .upload("/pictures/covers/" + playlistID, uploaded_cover, {
+            cacheControl: "1",
             upsert: true,
           })
-          .then(() => {
-            cover_url = supabase.storage
-              .from("music-files")
-              .getPublicUrl("pictures/covers/" + playlistID).data.publicUrl;
+          .then((result) => {
+            if (result.error == null) {
+              cover_url = supabase.storage
+                .from("music-files")
+                .getPublicUrl("pictures/covers/" + playlistID).data.publicUrl;
+            }
           });
       } else {
         cover_url = (
@@ -90,14 +92,18 @@ export default function PlaylistEdit(props: any) {
           ) as HTMLInputElement
         ).files![0];
 
+        if (uploaded_bg == null) console.log("IS NULL");
+
+        //          .update("/pictures/backgrounds/" + playlistID, uploaded_bg, {
+
         // Update Cover
         await supabase.storage
           .from("music-files")
-          .update("/pictures/backgrounds/" + playlistID, uploaded_bg, {
-            cacheControl: "3600",
+          .upload("pictures/backgrounds/" + playlistID, uploaded_bg, {
+            cacheControl: "1",
             upsert: true,
           })
-          .then(() => {
+          .then((result) => {
             background_url = supabase.storage
               .from("music-files")
               .getPublicUrl("pictures/backgrounds/" + playlistID)
@@ -143,11 +149,39 @@ export default function PlaylistEdit(props: any) {
     update();
   }
 
+  function ClearInput() {
+    // Cover
+    (document.getElementById("edit-playlist-cover") as HTMLInputElement).value =
+      "";
+    (document.getElementById("url-playlist-cover") as HTMLInputElement).value =
+      "";
+
+    // Background
+    (
+      document.getElementById("edit-playlist-background") as HTMLInputElement
+    ).value = "";
+
+    (
+      document.getElementById("url-playlist-background") as HTMLInputElement
+    ).value = "";
+
+    // Name
+
+    (document.getElementById("edit-playlist-name") as HTMLInputElement).value =
+      "";
+
+    // Privacy
+    (
+      document.getElementById("playlist-privacy-setting") as HTMLSelectElement
+    ).value = "";
+  }
+
   function SaveSettings() {
     UpdateName();
     UpdateCover();
     UpdateBG();
     UpdateVisibility();
+    ClearInput();
     //close();
   }
   const [useLocalCover, setLocalCover] = useState(false);
@@ -263,6 +297,19 @@ export default function PlaylistEdit(props: any) {
           OnSet={UpdateBG}
           accept=".jpg, .jpeg, .png"
         />
+
+        <div
+          hidden={!useLocalCover && !useLocalBG}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginBottom: "15px",
+            color: "#E34234",
+          }}
+        >
+          * If it does not update automatically, give up to 1 minute and then
+          reload the page.
+        </div>
       </div>
       <button
         style={{

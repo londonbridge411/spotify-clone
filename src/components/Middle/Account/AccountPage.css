@@ -22,17 +22,30 @@
 
 .account-layout header {
   max-height: 175px;
-  display: flex;
-  flex-direction: row;
-  align-content: center;
-  gap: 15px;
-}
-
-.account-layout header h1 {
+  width: 100%;
   margin: 0;
   display: flex;
+  flex-direction: row;
   align-items: center;
-  gap: 15px;
+}
+
+.account-layout .profileName {
+  display: flex;
+  align-items: center;
+
+  max-width: calc(44vw);
+}
+
+.account-layout .profileName h1 {
+  margin: 0;
+  overflow-x: hidden;
+  height: 70px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.account-layout .profileName img {
+  margin-left: 20px;
 }
 
 .account-layout header .info {
@@ -41,6 +54,7 @@
 }
 
 .account-layout header .info h2 {
+  margin: 0;
   color: rgb(197, 197, 197);
 }
 
@@ -64,22 +78,6 @@
   max-height: 250px;
 }
 
-.myAlbums::-webkit-scrollbar-track {
-  border: 1px solid #000;
-  background-color: #404040;
-}
-
-.myAlbums::-webkit-scrollbar {
-  width: 5px;
-}
-
-.myAlbums::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  background-color: #737272;
-  border: 1px solid #000;
-}
-
 div::-webkit-scrollbar-track {
   border-radius: 10px;
   background-color: rgba(0, 0, 0, 0);
@@ -91,6 +89,21 @@ div::-webkit-scrollbar {
 }
 
 div::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: #818181;
+}
+
+.myAlbums::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.myAlbums::-webkit-scrollbar {
+  width: 12px;
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.myAlbums::-webkit-scrollbar-thumb {
   border-radius: 10px;
   background-color: #818181;
 }

@@ -61,6 +61,7 @@ export default function Playlist() {
   const [isFollowing, setIsFollowing] = useState(false);
   const [songContextID, setSongContextID] = useState("");
 
+  const [popupActive_Share, setPopupState_Share] = useState(false);
   const [hideTable, setHideTable] = useState(true);
 
   const [backgroundUrl, setBG_URL] = useState("");
@@ -344,7 +345,7 @@ export default function Playlist() {
             <img
               src="../../../src/assets/share.png"
               onClick={() => {
-                console.log("URL copied to clipboard!");
+                setPopupState_Share(true);
                 const url = location.href;
                 navigator.clipboard.writeText(url);
               }}
@@ -450,6 +451,14 @@ export default function Playlist() {
         html={<div>Uploading Song...</div>}
         requiresVerification={() => playlistType != "Playlist"}
       ></Popup>
+
+      <Popup
+        id="sharePlaylist"
+        active={popupActive_Share}
+        setActive={setPopupState_Share}
+        canClose={true}
+        html={<div>Copied link to clipboard.</div>}
+      />
     </>
   );
 }

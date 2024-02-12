@@ -17,6 +17,7 @@
 
 #page > nav {
   grid-area: nav;
+  overflow: hidden;
 }
 
 #page > main {

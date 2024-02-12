@@ -12,3 +12,7 @@
 #upload-playlist-menu > ul > li {
   color: blue;
 }
+
+[hidden] {
+  display: none !important;
+}
