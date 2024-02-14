@@ -151,6 +151,35 @@ div::-webkit-scrollbar-thumb {
         <img className="audioGIF"src={"https://open.spotifycdn.com/cdn/images/equaliser-animated-green.f5eb96f2.gif"} />
 
 */
+.song-row-artists ul {
+  list-style: none;
+  margin: 0;
+  font-size: 0;
+}
+
+.song-row-artists li {
+  display: inline-block;
+  margin-right: 10px;
+  white-space: none;
+  color: rgb(197, 197, 197);
+}
+
+.song-row-artists li a {
+  color: rgb(197, 197, 197);
+}
+
+.song-row-artists li:after {
+  content: ",";
+}
+
+.song-row-artists li:last-child:after {
+  content: " ";
+}
+
+.song-row-artists li a:hover {
+  color: #8dffff;
+}
+
 .song-row-album {
   padding-top: 18.2px;
   padding-right: 50px;

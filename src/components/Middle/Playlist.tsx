@@ -15,6 +15,8 @@ import SongContextMenu from "../Containers/ContextMenus/SongContextMenu";
 import PlaylistEdit, {
   CustomInputField,
 } from "../Containers/Popups/PlaylistEdit";
+import SearchBar from "../SearchBar";
+import { UploadSongPopup } from "../Containers/Popups/UploadSongPopup";
 
 export default function Playlist() {
   const dispatch = useDispatch();
@@ -59,7 +61,6 @@ export default function Playlist() {
   const [playlistAuthorID, setPlaylistAuthorID] = useState("");
   const [playlistType, setPlaylistType] = useState("");
   const [isFollowing, setIsFollowing] = useState(false);
-  const [songContextID, setSongContextID] = useState("");
 
   const [popupActive_Share, setPopupState_Share] = useState(false);
   const [hideTable, setHideTable] = useState(true);
@@ -68,9 +69,6 @@ export default function Playlist() {
   const [coverUrl, setCover_URL] = useState(
     "../../../src/assets/small_record.svg"
   );
-
-  const [popupActive_UploadingWait, setPopupState_UploadingWait] =
-    useState(false);
 
   const [popupActive_Edit, setPopupState_Edit] = useState(false);
 
@@ -166,66 +164,6 @@ export default function Playlist() {
     .from("music-files")
     .getPublicUrl("pictures/covers/" + playlistID);*/
 
-  function UploadSong() {
-    const uploaded_song = (
-      document.getElementById("uploaded_song") as HTMLInputElement
-    ).files![0];
-
-    let id = uuid.v4();
-
-    if (uploaded_song != null) {
-      setPopupState_UploadingWait(true);
-      const insertIntoTable = async () => {
-        var song_name = document.getElementById(
-          "upload-song-name"
-        ) as HTMLInputElement;
-
-        var song_name_text = song_name?.value;
-
-        await supabase
-          .from("Songs")
-          .insert({
-            id: id,
-            title: song_name_text,
-            owner_id: (await supabase.auth.getUser()).data.user?.id,
-            album_id: playlistID!,
-            created_at: new Date(),
-          })
-          .then((result) => console.log(result.error));
-
-        await supabase.storage
-          .from("music-files")
-          .upload("/audio-files/" + id, uploaded_song, {
-            cacheControl: "3600",
-            upsert: false,
-          });
-
-        setPopupState_UploadSong(false);
-
-        // Now we need to append ID to array in playlist
-
-        await supabase
-          .from("Playlists")
-          .select("song_ids")
-          .eq("id", playlistID)
-          .then(async (result) => {
-            var array: string[] = result.data?.at(0)?.song_ids;
-
-            array.push(id as string);
-
-            await supabase
-              .from("Playlists")
-              .update({ song_ids: array })
-              .eq("id", playlistID);
-
-            window.location.reload();
-          });
-      };
-
-      insertIntoTable();
-    }
-  }
-
   function FollowPlaylist() {
     if (isFollowing == false && isOwner == false) {
       // Add subscribed user into user row
@@ -270,7 +208,6 @@ export default function Playlist() {
     }
   }
 
-  //list = [""]
   return (
     <>
       <div
@@ -397,35 +334,7 @@ export default function Playlist() {
         active={popupActive_UploadSong}
         setActive={setPopupState_UploadSong}
         canClose={true}
-        html={
-          <div>
-            <div id="upload-song-menu">
-              <h2
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
-                Upload Song
-              </h2>
-              <CustomInputField
-                inputType={"url"}
-                placeholder={"Some name"}
-                label={"Name:"}
-                inputID={"upload-song-name"}
-              />
-
-              <CustomInputField
-                inputType={"file"}
-                placeholder={"Some name"}
-                label={"Choose file:"}
-                inputID={"uploaded_song"}
-                accept="audio/mp3"
-              />
-              <button onClick={() => UploadSong()}>Upload</button>
-            </div>
-          </div>
-        }
+        html={<UploadSongPopup setActive={setPopupState_UploadSong} />}
         requiresVerification={() => playlistType != "Playlist"}
       ></Popup>
       <Popup
@@ -439,16 +348,9 @@ export default function Playlist() {
             setCover={setCover_URL}
             setBG={setBG_URL}
             setPrivacy={setPlaylistPrivacy}
+            set
           />
         }
-        requiresVerification={() => playlistType != "Playlist"}
-      ></Popup>
-      <Popup
-        id="uploadingWait"
-        active={popupActive_UploadingWait}
-        setActive={setPopupState_UploadingWait}
-        canClose={false}
-        html={<div>Uploading Song...</div>}
         requiresVerification={() => playlistType != "Playlist"}
       ></Popup>
 

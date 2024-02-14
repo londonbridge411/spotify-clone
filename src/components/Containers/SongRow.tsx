@@ -9,10 +9,14 @@ import SongContextMenu, {
 import ContextMenuOption from "./ContextMenuOption";
 import { NavLink } from "react-router-dom";
 
+interface Artist {
+  id: string;
+  username: string;
+}
 // Song Row
 export default function SongRow(props: any) {
   const [songName, setSongName] = useState("");
-  const [artistName, setArtistName] = useState("");
+  const [artists, setArtists] = useState([] as Artist[]);
   const [albumName, setAlbumName] = useState("");
   const [dateCreated, setDateCreated] = useState("");
   const [albumCoverURL, setAlbumCoverURL] = useState(
@@ -37,7 +41,9 @@ export default function SongRow(props: any) {
     if (props.song_id != null) {
       supabase
         .from("Songs")
-        .select("title, created_at, album_id, Playlists(id, name, cover_url)")
+        .select(
+          "title, artist_ids, created_at, album_id, Playlists(id, name, cover_url)"
+        )
         .eq("id", props.song_id)
         .then(async (result) => {
           var row = result.data?.at(0);
@@ -48,6 +54,23 @@ export default function SongRow(props: any) {
             setDateCreated(row.created_at);
 
             setAlbumID(row.album_id);
+
+            let myList = [] as Artist[];
+            for (let i = 0; i < row.artist_ids.length; i++) {
+              await supabase
+                .from("Users")
+                .select("username")
+                .eq("id", row.artist_ids[i])
+                .then((r) => {
+                  let art: Artist = {
+                    id: row?.artist_ids[i],
+                    username: r.data?.at(0)?.username,
+                  };
+                  myList.push(art);
+                });
+            }
+            console.log(myList);
+            setArtists(myList);
 
             if (playlistData.cover_url != "")
               setAlbumCoverURL(playlistData.cover_url);
@@ -190,7 +213,20 @@ export default function SongRow(props: any) {
           <div className="overflow-ellipsis text-bigger text-bold">
             {songName}
           </div>
-          <div>Artist</div>
+
+          <div>
+            <div className="song-row-artists">
+              {artists.map((item: any) => {
+                return (
+                  <li key={item.id}>
+                    <NavLink to={"../account/" + item.id}>
+                      {item.username}
+                    </NavLink>
+                  </li>
+                );
+              })}
+            </div>
+          </div>
         </div>
         <div className="song-row-album">
           <NavLink to={"../playlist/" + albumID}>{albumName}</NavLink>
