@@ -48,14 +48,11 @@ export default function SongContextMenu(props: any) {
         deleteBtn?.style.setProperty("display", "none");
       }
     }
-
-    //console.log(playlistType == "Album" ? "delete" : "remove");
   };
 
   run();
 
   useEffect(() => {
-    console.log("Change albums");
     run();
   }, [playlistID]);
 
@@ -84,9 +81,8 @@ export default function SongContextMenu(props: any) {
         .eq("id", playlistID)
         .then(async (result) => {
           let songs: string[] = result.data?.at(0)?.song_ids;
-          //delete songs[songs.indexOf(targ)];
+
           songs.splice(songs.indexOf(song_id), 1); // Remove the song from the index
-          console.log(songs);
 
           await supabase
             .from("Playlists")
@@ -95,7 +91,6 @@ export default function SongContextMenu(props: any) {
 
           window.location.reload();
         });
-      console.log("yay");
     } else {
       // Safeguard from modifying
       alert("Violation");
@@ -114,14 +109,11 @@ export default function SongContextMenu(props: any) {
         .contains("song_ids", [song_id])
         .then(async (result) => {
           let playlists_with_song: object[] = result.data!;
-          console.log(playlists_with_song);
 
           for (let i = 0; i < playlists_with_song.length; i++) {
             // Printing out the first list
             let songs: any = playlists_with_song[i];
-            console.log(songs.song_ids);
             songs.song_ids.splice(songs.song_ids.indexOf(song_id), 1); // Remove the song from the index
-            console.log(songs.song_ids);
 
             await supabase
               .from("Playlists")
@@ -139,7 +131,6 @@ export default function SongContextMenu(props: any) {
 
           window.location.reload();
         });
-      console.log("yay");
     } else {
       // Sometimes happens if the page hasn't fully loaded
       // Safeguard from modifying

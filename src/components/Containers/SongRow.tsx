@@ -8,41 +8,30 @@ import SongContextMenu, {
 } from "./ContextMenus/SongContextMenu";
 import ContextMenuOption from "./ContextMenuOption";
 import { NavLink } from "react-router-dom";
+import { Artist } from "./Popups/UploadSongPopup";
 
-interface Artist {
-  id: string;
-  username: string;
-}
 // Song Row
 export default function SongRow(props: any) {
   const [songName, setSongName] = useState("");
   const [artists, setArtists] = useState([] as Artist[]);
   const [albumName, setAlbumName] = useState("");
   const [dateCreated, setDateCreated] = useState("");
+  const [albumID, setAlbumID] = useState();
+
   const [albumCoverURL, setAlbumCoverURL] = useState(
     "../../../src/assets/small_record.svg"
   );
-  useEffect(() => {
-    //update
-  }, [albumCoverURL]);
 
   const player = useSelector((state: RootState) => state.player);
   const dispatch = useDispatch();
 
-  //var coverURL = se"../../../src/assets/record-vinyl-solid.svg";
-  /*albumCoverID != ""
-      ? supabase.storage
-          .from("music-files")
-          .getPublicUrl("pictures/covers/" + albumCoverID).data.publicUrl
-      : "../../../src/assets/record-vinyl-solid.svg";*/
-
-  const [albumID, setAlbumID] = useState();
+  // Set the states for the row
   useEffect(() => {
     if (props.song_id != null) {
       supabase
         .from("Songs")
         .select(
-          "title, artist_ids, created_at, album_id, Playlists(id, name, cover_url)"
+          "title, artist_data, created_at, album_id, Playlists(id, name, cover_url)"
         )
         .eq("id", props.song_id)
         .then(async (result) => {
@@ -52,35 +41,26 @@ export default function SongRow(props: any) {
           if (row != null) {
             setSongName(row.title);
             setDateCreated(row.created_at);
-
+            setAlbumName(playlistData.name);
             setAlbumID(row.album_id);
-
-            let myList = [] as Artist[];
-            for (let i = 0; i < row.artist_ids.length; i++) {
-              await supabase
-                .from("Users")
-                .select("username")
-                .eq("id", row.artist_ids[i])
-                .then((r) => {
-                  let art: Artist = {
-                    id: row?.artist_ids[i],
-                    username: r.data?.at(0)?.username,
-                  };
-                  myList.push(art);
-                });
-            }
-            console.log(myList);
-            setArtists(myList);
-
             if (playlistData.cover_url != "")
               setAlbumCoverURL(playlistData.cover_url);
 
-            setAlbumName(playlistData.name);
+            let myList = [] as Artist[];
+            for (let i = 0; i < row.artist_data.length; i++) {
+              let art: Artist = {
+                id: row?.artist_data[i].id,
+                username: row?.artist_data[i].username,
+              };
+              myList.push(art);
+            }
+            setArtists(myList);
           }
         });
     }
   }, [props.forceUpdate]); // forceUpdate is a collection of states from the playlist. The idea is that whenever the cover or name updates, it updates in the song row.
 
+  // Change play icon
   useEffect(() => {
     if (props.song_id == null) return;
     let nameArea = document.getElementById(props.song_id);
@@ -88,11 +68,10 @@ export default function SongRow(props: any) {
     if (player.song_id == nameArea?.id) {
       (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
         "src",
-        "https://open.spotifycdn.com/cdn/images/equaliser-animated-green.f5eb96f2.gif"
+        "../../../src/assets/audio.gif"
       );
       (nameArea?.children[0].children[0] as HTMLElement).classList.add(
-        "audioGIF",
-        "smallIcon"
+        "audioGIF"
       );
     } else {
       (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
@@ -100,17 +79,15 @@ export default function SongRow(props: any) {
         albumCoverURL
       );
       (nameArea?.children[0].children[0] as HTMLElement).classList.remove(
-        "audioGIF",
-        "smallIcon"
+        "audioGIF"
       );
     }
-    //.filter =
-    //player.song_id == nameArea?.id ? "brightness(50%)" : "none";
 
     (nameArea?.children[1].children[0] as HTMLElement).style.color =
       player.song_id == nameArea?.id ? "#8DFFFF" : "#FFFFFF";
   }, [player.song_id]);
 
+  // Change play icon
   useEffect(() => {
     if (props.song_id == null) return;
     let nameArea = document.getElementById(props.song_id);
@@ -119,12 +96,12 @@ export default function SongRow(props: any) {
       if (player.isPlaying) {
         (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
           "src",
-          "https://open.spotifycdn.com/cdn/images/equaliser-animated-green.f5eb96f2.gif"
+          "../../../src/assets/audio.gif"
         );
       } else {
         (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
           "src",
-          "../../../src/assets/small-play.svg"
+          "../../../src/assets/play-row.svg"
         );
       }
     }
@@ -161,11 +138,7 @@ export default function SongRow(props: any) {
           if (player.song_id != nameArea?.id) {
             (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
               "src",
-              "../../../src/assets/small-play.svg"
-            );
-
-            (nameArea?.children[0].children[0] as HTMLElement).classList.add(
-              "smallIcon"
+              "../../../src/assets/play-row.svg"
             );
           }
         }}
@@ -177,10 +150,6 @@ export default function SongRow(props: any) {
             (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
               "src",
               albumCoverURL
-            );
-
-            (nameArea?.children[0].children[0] as HTMLElement).classList.remove(
-              "smallIcon"
             );
           }
         }}
@@ -205,7 +174,7 @@ export default function SongRow(props: any) {
             src={
               player.song_id != props.song_id
                 ? albumCoverURL
-                : "../../../src/assets/small-play.svg"
+                : "../../../src/assets/play-row.svg"
             }
           />
         </div>

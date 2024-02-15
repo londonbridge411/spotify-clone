@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import supabase from "../../../config/supabaseClient";
 import SearchBar from "../../SearchBar";
 import Popup from "../Popup";
@@ -7,6 +7,11 @@ import * as uuid from "uuid";
 import { useParams } from "react-router-dom";
 import { PostgrestSingleResponse } from "@supabase/supabase-js";
 import { authUserID } from "../../../main";
+
+export interface Artist {
+  id: string;
+  username: string;
+}
 
 export function UploadSongPopup(props: any) {
   // Get Playlist ID
@@ -17,8 +22,8 @@ export function UploadSongPopup(props: any) {
   const [popupActive_UploadingWait, setPopupState_UploadingWait] =
     useState(false);
 
-  const [artists, setArtists] = useState([] as any[]);
-  const list: any[] = [];
+  const [artists, setArtists] = useState([] as Artist[]);
+  const list: Artist[] = [];
 
   // Functions
 
@@ -49,7 +54,7 @@ export function UploadSongPopup(props: any) {
             console.log("got here");
 
             // This is retarded, but if I do setArtists(list), the list literally goes back to empty
-            list.push(item);
+            list.push(item as Artist);
             setArtists(artists.concat(list));
           }
         });
@@ -91,7 +96,7 @@ export function UploadSongPopup(props: any) {
             owner_id: (await supabase.auth.getUser()).data.user?.id,
             album_id: playlistID!,
             created_at: new Date(),
-            artist_ids: myList,
+            artist_data: artists,
           })
           .then((result) => console.log(result.error));
 
@@ -180,7 +185,4 @@ export function UploadSongPopup(props: any) {
       />
     </>
   );
-}
-function throwable(arg0: PostgrestSingleResponse<{ id: any }[]>) {
-  throw new Error("Function not implemented.");
 }

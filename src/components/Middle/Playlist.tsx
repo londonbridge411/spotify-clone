@@ -34,7 +34,6 @@ export default function Playlist() {
       .eq("id", playlistID)
       .then((result) => {
         setOwner(authUserID == result.data?.at(0)?.owner_id);
-        if (isOwner) console.log("I own this");
       });
   }, [playlistID]);
 

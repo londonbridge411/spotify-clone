@@ -11,6 +11,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,6 +25,8 @@ import {
   setVolume,
 } from "../PlayerSlice";
 import supabase from "../config/supabaseClient";
+import { NavLink } from "react-router-dom";
+import { Artist } from "./Containers/Popups/UploadSongPopup";
 
 export default function MusicControl() {
   const player = useSelector((state: RootState) => state.player);
@@ -32,8 +35,27 @@ export default function MusicControl() {
   const [name, setName] = useState("");
   const [currentTime, setCurrentTime] = useState("");
   const [maxTime, setMaxTime] = useState("");
+  const [viewCount, setViewCount] = useState(0);
   const [playIcon, setPlayIcon] = useState(play);
   const [imgURL, setImgURL] = useState("../../../src/assets/small_record.svg");
+  const [artists, setArtists] = useState([] as Artist[]);
+
+  // Use to track the time the song has been listened to uninterrupted. Not 100% accurate, but not too inaccurate.
+  const [timeListened, setTimeListened] = useState(0);
+  useInterval(() => {
+    // Your custom logic here
+    if (timeListened == 30) {
+      let update = async () => {
+        await supabase
+          .from("Songs")
+          .update({ view_count: viewCount + 1 })
+          .eq("id", player.song_id);
+      };
+
+      update();
+    }
+    if (player.isPlaying) setTimeListened(timeListened + 1);
+  }, 1000);
 
   // Changes Progress
   function ChangeProgress(i: number) {
@@ -78,42 +100,49 @@ export default function MusicControl() {
     const getSong = async () => {
       await supabase
         .from("Songs")
-        .select("*")
+        .select("title, view_count, artist_data, album_id")
         .eq("id", player.song_id)
         .then((result) => {
           var row = result.data?.at(0);
 
           if (row != null) {
             setName(row.title);
+            setViewCount(row.view_count);
 
+            // Fill In artists
+            let myList = [] as Artist[];
+            for (let i = 0; i < row.artist_data.length; i++) {
+              let art: Artist = {
+                id: row?.artist_data[i].id,
+                username: row?.artist_data[i].username,
+              };
+              myList.push(art);
+            }
+            setArtists(myList);
+
+            // Cover URL
+            let albumID = result.data?.at(0)?.album_id;
             supabase
-              .from("Songs")
-              .select("album_id")
-              .eq("id", player.song_id)
+              .from("Playlists")
+              .select("cover_url")
+              .eq("id", albumID)
               .then((result) => {
-                let albumID = result.data?.at(0)?.album_id;
-
-                supabase
-                  .from("Playlists")
-                  .select("cover_url")
-                  .eq("id", albumID)
-                  .then((result) => {
-                    let cover = result.data?.at(0)?.cover_url;
-                    setImgURL(
-                      cover == ""
-                        ? "../../../src/assets/small_record.svg"
-                        : cover
-                    );
-                  });
+                let cover = result.data?.at(0)?.cover_url;
+                setImgURL(
+                  cover == "" ? "../../../src/assets/small_record.svg" : cover
+                );
               });
 
+            // Audio
             audio = document.getElementById("audioControl") as HTMLAudioElement;
             audio.load();
 
             audio.onloadedmetadata = () => {
               setInterval(() => {
-                ChangeProgress((audio.currentTime / audio.duration) * 100);
-                setCurrentTime(CalculateTime(audio.currentTime));
+                if (player.isPlaying) {
+                  ChangeProgress((audio.currentTime / audio.duration) * 100);
+                  setCurrentTime(CalculateTime(audio.currentTime));
+                }
               }, 0);
 
               audio.onpause = () => {
@@ -153,7 +182,7 @@ export default function MusicControl() {
           }
         });
     };
-
+    setTimeListened(0);
     if (player.song_id != "") getSong();
   }, [player.song_id]);
 
@@ -194,7 +223,19 @@ export default function MusicControl() {
               <div className="overflow-ellipsis text-bigger text-bold">
                 {name}
               </div>
-              <div>Artist</div>
+              <div>
+                <div className="song-row-artists">
+                  {artists.map((item: any) => {
+                    return (
+                      <li key={item.id}>
+                        <NavLink to={"/app/account/" + item.id}>
+                          {item.username}
+                        </NavLink>
+                      </li>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -220,6 +261,8 @@ export default function MusicControl() {
                 ) as HTMLAudioElement;
                 a.currentTime = 0;
                 a.play();
+
+                // start time
               }
             }}
             src={prev}
@@ -233,7 +276,9 @@ export default function MusicControl() {
           <img
             id="next-btn"
             className="control-btn"
-            onClick={() => dispatch(nextSong())}
+            onClick={() => {
+              dispatch(nextSong());
+            }}
             src={next}
           />
         </div>
@@ -256,4 +301,21 @@ export default function MusicControl() {
       </div>
     </>
   );
+}
+
+function useInterval(callback: any, delay: number) {
+  const savedCallback = useRef();
+
+  useEffect(() => {
+    savedCallback.current = callback;
+  });
+
+  useEffect(() => {
+    function tick() {
+      (savedCallback as any).current(); //Needs ()
+    }
+
+    let id = setInterval(tick, delay);
+    return () => clearInterval(id);
+  }, [delay]);
 }
