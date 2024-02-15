@@ -269,8 +269,8 @@ export default function AccountPage() {
               Get Verified
             </button>
 
-            <section>
-              <h2 hidden={albumList.length == 0}>Albums:</h2>
+            <section hidden={albumList.length == 0}>
+              <h2>Albums:</h2>
               <ul className="myAlbums">
                 {albumList.map((item) => (
                   <li key={item}>
@@ -295,8 +295,8 @@ export default function AccountPage() {
               </ul>
             </section>
 
-            <section>
-              <h2 hidden={playlistList.length == 0}>Public Playlists:</h2>
+            <section hidden={playlistList.length == 0}>
+              <h2>Public Playlists:</h2>
               <ul className="myAlbums">
                 {playlistList.map((item) => (
                   <li key={item}>
