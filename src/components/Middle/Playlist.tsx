@@ -222,6 +222,7 @@ export default function Playlist() {
         <div className="Playlist-Layout">
           <header className="playlistHeader">
             <img src={coverUrl} />
+            <div>{list.length}</div>
             <div className="info">
               <h1>{playlistName}</h1>
               <NavLink to={"../account/" + playlistAuthorID}>
