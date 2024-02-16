@@ -152,7 +152,7 @@ export default function Playlist() {
             setList(songs as any);
           }
         });
-    }
+    };
 
     update();
   }, [playlistID]);
@@ -321,7 +321,11 @@ export default function Playlist() {
                 marginTop: "25vh",
               }}
             >
-              <img hidden={!loading} src="https://i.gifer.com/ZZ5H.gif" style={{ height: "35px", width: "35px"}} />
+              <img
+                hidden={!loading}
+                src="https://i.gifer.com/ZZ5H.gif"
+                style={{ height: "35px", width: "35px" }}
+              />
               <h2 hidden={loading}>No music</h2>
             </div>
           </main>

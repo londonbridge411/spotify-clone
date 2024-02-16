@@ -6,7 +6,7 @@ import { CustomInputField } from "./AccountEdit";
 import * as uuid from "uuid";
 import { useParams } from "react-router-dom";
 import { PostgrestSingleResponse } from "@supabase/supabase-js";
-import { authUserID } from "../../../main";
+import { authUserID, username } from "../../../main";
 
 export interface Artist {
   id: string;
@@ -80,14 +80,6 @@ export function UploadSongPopup(props: any) {
 
         var song_name_text = song_name?.value;
 
-        let myList = [];
-        for (let i = 0; i < artists.length; i++) {
-          myList.push(artists[i].id);
-        }
-
-        if (myList.length == 0) {
-          myList.push(authUserID);
-        }
         await supabase
           .from("Songs")
           .insert({
@@ -96,7 +88,9 @@ export function UploadSongPopup(props: any) {
             owner_id: (await supabase.auth.getUser()).data.user?.id,
             album_id: playlistID!,
             created_at: new Date(),
-            artist_data: artists,
+            artist_data: hasMultipleArtists
+              ? artists
+              : [{ id: authUserID, username: username }],
           })
           .then((result) => console.log(result.error));
 
@@ -132,6 +126,11 @@ export function UploadSongPopup(props: any) {
       insertIntoTable();
     }
   }
+  const [hasMultipleArtists, setMultipleArtists] = useState(false);
+  const handleMultipleArtists = () => {
+    setMultipleArtists(!hasMultipleArtists);
+    setArtists([]);
+  };
 
   return (
     <>
@@ -159,14 +158,43 @@ export function UploadSongPopup(props: any) {
           inputID={"upload-song-name"}
         />
 
+        <div style={{}}>
+          <label>{"Has Multiple/Different Artist(s)"}</label>
+          <input
+            type="checkbox"
+            checked={hasMultipleArtists}
+            onChange={handleMultipleArtists}
+          />
+        </div>
+
         <CustomInputField
+          hidden={!hasMultipleArtists}
           inputType={"url"}
           placeholder={"Enter ID"}
           label={"Artist(s):"}
           inputID={"upload-song-artists"}
           setType={"button"}
-          OnSet={AddUser}
+          OnSet={() => {
+            AddUser();
+            // Clear input
+            (
+              document.getElementById("upload-song-artists") as HTMLInputElement
+            ).value = "";
+          }}
         />
+        <div
+          hidden={!hasMultipleArtists}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginBottom: "15px",
+            color: "#E34234",
+          }}
+        >
+          * If you are one of the artists, you need to insert your ID too. The
+          ID can be found at the end of the profile's URL. Ex:
+          "f6b4dg3d-93b5-4dfa-849d-67cs142t9r7z"
+        </div>
         <ul style={{ margin: 0 }}>
           {artists.map((item: any) => {
             return <li key={item.id}>{item.username}</li>;

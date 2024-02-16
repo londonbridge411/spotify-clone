@@ -17,8 +17,8 @@
   margin-top: -4px;
 }
 
-#Soundbar > .name-area {
-  overflow: hidden;
+#player-name-area {
+  -webkit-overflow-scrolling: none;
   white-space: nowrap;
   padding-bottom: 5px;
   padding-top: 10px;
@@ -28,13 +28,13 @@
   width: 25%;
 }
 
-.name-area > .name-area-content {
+#player-name-area > .name-area-content {
   margin-left: 20px;
   display: flex;
   flex-direction: row;
 }
 
-.name-area > .name-area-content img {
+#player-name-area > .name-area-content img {
   margin-right: 25px;
   height: 50px;
   width: 50px;
@@ -42,7 +42,7 @@
   border-radius: 10%;
 }
 
-.name-area-content > .name-area-content-text {
+#player-name-area > .name-area-content-text {
   display: flex;
   flex-direction: column;
 }
@@ -126,4 +126,11 @@
 #volume-control {
   accent-color: rgb(141, 255, 255);
   margin-right: 5px;
+}
+
+.time {
+  display: flex;
+  width: 50px;
+  justify-content: center;
+  align-content: center;
 }

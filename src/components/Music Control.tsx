@@ -1,4 +1,5 @@
 import "./Music Control.css";
+import "./Marquee.css";
 import play from "../assets/circle-play-solid.svg";
 import pause from "../assets/circle-pause-solid.svg";
 import prev from "../assets/backward-step-solid.svg";
@@ -33,8 +34,8 @@ export default function MusicControl() {
   const dispatch = useDispatch();
 
   const [name, setName] = useState("");
-  const [currentTime, setCurrentTime] = useState("");
-  const [maxTime, setMaxTime] = useState("");
+  const [currentTime, setCurrentTime] = useState("--:--");
+  const [maxTime, setMaxTime] = useState("--:--");
   const [viewCount, setViewCount] = useState(0);
   const [playIcon, setPlayIcon] = useState(play);
   const [imgURL, setImgURL] = useState("../../../src/assets/small_record.svg");
@@ -98,6 +99,8 @@ export default function MusicControl() {
   var audio: HTMLAudioElement;
   useEffect(() => {
     const getSong = async () => {
+      setCurrentTime("--:--");
+      setMaxTime("--:--");
       await supabase
         .from("Songs")
         .select("title, view_count, artist_data, album_id")
@@ -109,7 +112,8 @@ export default function MusicControl() {
             setName(row.title);
             setViewCount(row.view_count);
 
-            // Fill In artists
+            //console.log(name_text_element.value)
+            // Fill In artists"
             let myList = [] as Artist[];
             for (let i = 0; i < row.artist_data.length; i++) {
               let art: Artist = {
@@ -138,12 +142,23 @@ export default function MusicControl() {
             audio.load();
 
             audio.onloadedmetadata = () => {
+              MarqueeCheck();
+
               setInterval(() => {
                 if (player.isPlaying) {
                   ChangeProgress((audio.currentTime / audio.duration) * 100);
                   setCurrentTime(CalculateTime(audio.currentTime));
                 }
               }, 0);
+
+              window.onresize = () => {
+                setInterval(() => {
+                  if (player.isPlaying) {
+                    ChangeProgress((audio.currentTime / audio.duration) * 100);
+                    setCurrentTime(CalculateTime(audio.currentTime));
+                  }
+                }, 0);
+              };
 
               audio.onpause = () => {
                 dispatch(setIsPlaying(false));
@@ -186,6 +201,7 @@ export default function MusicControl() {
     if (player.song_id != "") getSong();
   }, [player.song_id]);
 
+  useEffect(() => {}, [player.song_id]);
   document.body.onkeyup = function (e) {
     if (
       (e.key == " " || e.code == "Space" || e.keyCode == 32) &&
@@ -194,6 +210,29 @@ export default function MusicControl() {
       TogglePlay();
     }
   };
+
+  window.onresize = MarqueeCheck;
+
+  function MarqueeCheck() {
+    let name_area = document.getElementById("player-name-area") as HTMLElement;
+
+    let name_text_element = document.getElementById(
+      "name-area-text"
+    ) as HTMLDivElement;
+    name_text_element.classList.remove("marquee");
+
+    if (
+      name_area.scrollHeight > name_area.clientHeight ||
+      name_area.scrollWidth > name_area.clientWidth
+    ) {
+      // The reason I hide it is because auto makes it go to a scrollbar.
+      name_area.style.overflow = "hidden";
+      name_text_element.classList.add("marquee");
+    } else {
+      name_area.style.overflow = "auto";
+      name_text_element.classList.remove("marquee");
+    }
+  }
 
   return (
     <>
@@ -216,12 +255,15 @@ export default function MusicControl() {
           <source src={audioUrl.data.publicUrl} />
         </audio>
 
-        <div className="name-area">
+        <div id="player-name-area" style={{ overflow: "auto" }}>
           <div className="name-area-content">
             <img src={imgURL} />
             <div className="name-area-content-text">
-              <div className="overflow-ellipsis text-bigger text-bold">
-                {name}
+              <div
+                id="name-area-text"
+                className="overflow-ellipsis text-bigger text-bold"
+              >
+                <span>{name}</span>
               </div>
               <div>
                 <div className="song-row-artists">

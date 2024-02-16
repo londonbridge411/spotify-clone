@@ -1,0 +1,38 @@
+.marquee {
+  width: max-content;
+
+  box-sizing: border-box;
+
+  animation-play-state: paused;
+}
+
+.marquee span {
+  display: inline-block;
+  width: fit-content;
+  will-change: transform;
+  animation: 15s marquee 2s linear infinite;
+}
+
+.marquee span:hover {
+  animation-play-state: paused;
+}
+/*
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(-100%, 0);
+  }
+*/
+@keyframes marquee {
+  0%,
+  50% {
+    transform: translate(0, 0);
+  }
+  51% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(-110%, 0);
+  }
+}

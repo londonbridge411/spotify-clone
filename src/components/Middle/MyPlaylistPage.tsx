@@ -72,7 +72,7 @@ export default function MyPlaylistPage() {
 
           <main>
             <section>
-              <h2> My Playlists:</h2>
+              <h2> My Playlists</h2>
               <ul className="myAlbums">
                 <li className="addPlaylist">
                   <img
@@ -96,7 +96,7 @@ export default function MyPlaylistPage() {
             </section>
 
             <section>
-              <h2> Shared Playlists:</h2>
+              <h2> Shared Playlists</h2>
               <ul className="myAlbums">
                 {sharedList.map((item) => (
                   <li key={item}>

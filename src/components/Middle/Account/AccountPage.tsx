@@ -7,6 +7,7 @@ import PlaylistContainer from "../../Containers/Playlist Containers/PlaylistCont
 import { useParams } from "react-router-dom";
 import { authUserID, email, isVerified } from "../../../main";
 import AccountEdit from "../../Containers/Popups/AccountEdit";
+import SongRow from "../../Containers/SongRow";
 
 /*
 Want to display icon, username, bio, followers, isVerified, upload song.
@@ -34,6 +35,54 @@ export default function AccountPage() {
     useState(false);
 
   const [popupActive_Edit, setPopupState_Edit] = useState(false);
+  const [popularSongsList, setPopularSongsList] = useState([] as string[]);
+  const [hideEverything, setHideEverything] = useState(true);
+  const [loading, setLoading] = useState(true);
+
+  //setPopularSongsList(["2046f516-227f-4b86-b78d-4d3d14c7fea4"]);
+
+  useEffect(() => {
+    let update = async () => {
+      setLoading(true);
+      await supabase
+        .from("Songs")
+        .select("id")
+        .contains("artist_data", JSON.stringify([{ id: userID }]))
+        .order("view_count", { ascending: false }) // Most views up top
+        .then(async (result) => {
+          var myData = result.data as any[];
+
+          var songs: string[] = [];
+
+          // Instead of 5, myData.length gets all
+          // We will want to sort by popularity, then go to 5
+          for (let i = 0; i < 5; i++) {
+            await supabase
+              .from("Songs")
+              .select("owner_id, Playlists(privacy_setting)")
+              .eq("id", myData?.at(i).id)
+              .then((result2) => {
+                let myData2 = result2.data?.at(0);
+                let setting = (myData2?.Playlists as any).privacy_setting;
+
+                if (setting != "Private" || myData2?.owner_id == authUserID) {
+                  songs.push(myData[i].id);
+                }
+              });
+          }
+          setLoading(false);
+
+          if (songs.length == 0) {
+            setHideEverything(true);
+          } else {
+            setHideEverything(false);
+            setPopularSongsList(songs as string[]);
+          }
+        });
+    };
+
+    update();
+  }, [userID, username]);
 
   useEffect(() => {
     supabase
@@ -96,7 +145,7 @@ export default function AccountPage() {
           setPlaylistList(playlists);
         }
       });
-  }, [userID]);
+  }, [userID, username]);
 
   const [popupActive_Share, setPopupState_Share] = useState(false);
 
@@ -198,7 +247,7 @@ export default function AccountPage() {
   return (
     <>
       <div className="account-page">
-        <div className="account-layout">
+        <div className="account-layout" hidden={hideEverything}>
           <header>
             <img
               style={{
@@ -269,8 +318,49 @@ export default function AccountPage() {
               Get Verified
             </button>
 
+            {/*Popular Songs*/}
+            <section>
+              <h2>Popular Songs</h2>
+              <div className="playlist-content">
+                <ul
+                  className="song-table"
+                  /*Doesn't work*/
+                  style={{
+                    listStyle: "inside",
+                    listStyleType: "circle",
+                  }}
+                >
+                  <div style={{ color: "rgba(0, 0, 0, 0)" }}>
+                    ?<hr></hr>
+                  </div>
+                  <div className="text-bold">
+                    Name <hr></hr>
+                  </div>
+                  <div className="text-bold">
+                    Album <hr></hr>
+                  </div>
+                  <div className="text-bold">
+                    Created <hr></hr>
+                  </div>
+
+                  {popularSongsList.map((item) => {
+                    // item broke somehow
+                    return (
+                      <SongRow
+                        key={item}
+                        song_id={item}
+                        song_list={popularSongsList}
+                        //forceUpdate={[coverUrl, playlistName, playlistPrivacy]}
+                      />
+                    );
+                  })}
+                </ul>
+              </div>
+            </section>
+
+            {/*Albums Songs*/}
             <section hidden={albumList.length == 0}>
-              <h2>Albums:</h2>
+              <h2>Albums</h2>
               <ul className="myAlbums">
                 {albumList.map((item) => (
                   <li key={item}>
@@ -295,8 +385,9 @@ export default function AccountPage() {
               </ul>
             </section>
 
+            {/*Public Playlists*/}
             <section hidden={playlistList.length == 0}>
-              <h2>Public Playlists:</h2>
+              <h2>Public Playlists</h2>
               <ul className="myAlbums">
                 {playlistList.map((item) => (
                   <li key={item}>
@@ -306,6 +397,21 @@ export default function AccountPage() {
               </ul>
             </section>
           </main>
+        </div>
+        <div
+          hidden={!hideEverything}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignSelf: "center",
+          }}
+        >
+          <img
+            hidden={!loading}
+            src="https://i.gifer.com/ZZ5H.gif"
+            style={{ height: "35px", width: "35px" }}
+          />
+          <h2 hidden={loading}>No music</h2>
         </div>
       </div>
 
