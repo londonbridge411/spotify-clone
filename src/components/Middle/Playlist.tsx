@@ -137,7 +137,7 @@ export default function Playlist() {
                 let myData2 = result2.data?.at(0);
                 let setting = (myData2?.Playlists as any).privacy_setting;
 
-                if (setting == "Public" || myData2?.owner_id == authUserID) {
+                if (setting != "Private" || myData2?.owner_id == authUserID) {
                   songs.push(myData[i]);
                 }
               });
