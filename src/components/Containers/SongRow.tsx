@@ -203,10 +203,10 @@ export default function SongRow(props: any) {
         <div className="song-row-date">{dateCreated}</div>
       </div>
 
-      {/* <SongContextMenu
+      <SongContextMenu
       // About to leave but a thought is to store the selected song in a state
       //requiresVerification={() => playlistType != "Playlist"}
-      /> */}
+      />
     </>
   );
 }

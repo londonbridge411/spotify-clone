@@ -63,6 +63,7 @@ export default function Playlist() {
 
   const [popupActive_Share, setPopupState_Share] = useState(false);
   const [hideTable, setHideTable] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   const [backgroundUrl, setBG_URL] = useState("");
   const [coverUrl, setCover_URL] = useState(
@@ -115,48 +116,45 @@ export default function Playlist() {
 
   // Make it so songs in private (not unlisted playlists) are hidden
   useEffect(() => {
-    supabase
-      .from("Playlists")
-      .select("song_ids")
-      .eq("id", playlistID)
-      .then(async (result) => {
-        var myData = result.data?.at(0)?.song_ids;
+    let update = async () => {
+      setHideTable(true);
+      setLoading(true);
+      await supabase
+        .from("Playlists")
+        .select("song_ids")
+        .eq("id", playlistID)
+        .then(async (result) => {
+          var myData = result.data?.at(0)?.song_ids;
 
-        var songs: string[] = [];
+          var songs: string[] = [];
 
-        if (playlistType == "Playlist") {
           for (let i = 0; i < myData.length; i++) {
             await supabase
               .from("Songs")
-              .select("album_id")
+              .select("owner_id, Playlists(privacy_setting)")
               .eq("id", myData.at(i))
-              .then(async (result2) => {
-                let albumID = result2.data?.at(0)?.album_id;
+              .then((result2) => {
+                let myData2 = result2.data?.at(0);
+                let setting = (myData2?.Playlists as any).privacy_setting;
 
-                await supabase
-                  .from("Playlists")
-                  .select("privacy_setting")
-                  .eq("id", albumID)
-                  .then((result3) => {
-                    let setting = result3.data?.at(0)?.privacy_setting;
-
-                    if (setting != "Private") {
-                      songs.push(myData.at(i));
-                    }
-                  });
+                if (setting == "Public" || myData2?.owner_id == authUserID) {
+                  songs.push(myData[i]);
+                }
               });
           }
-        } else {
-          songs = myData;
-        }
 
-        if (songs.length == 0) {
-          setHideTable(true);
-        } else {
-          setHideTable(false);
-          setList(songs as any);
-        }
-      });
+          setLoading(false);
+
+          if (songs.length == 0) {
+            setHideTable(true);
+          } else {
+            setHideTable(false);
+            setList(songs as any);
+          }
+        });
+    }
+
+    update();
   }, [playlistID]);
 
   /*const coverUrl = supabase.storage
@@ -222,7 +220,6 @@ export default function Playlist() {
         <div className="Playlist-Layout">
           <header className="playlistHeader">
             <img src={coverUrl} />
-            <div>{list.length}</div>
             <div className="info">
               <h1>{playlistName}</h1>
               <NavLink to={"../account/" + playlistAuthorID}>
@@ -324,7 +321,8 @@ export default function Playlist() {
                 marginTop: "25vh",
               }}
             >
-              <h2>No music</h2>
+              <img hidden={!loading} src="https://i.gifer.com/ZZ5H.gif" style={{ height: "35px", width: "35px"}} />
+              <h2 hidden={loading}>No music</h2>
             </div>
           </main>
         </div>
