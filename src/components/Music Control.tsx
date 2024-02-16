@@ -242,7 +242,7 @@ export default function MusicControl() {
 
         <div className="controls">
           <span id="current-time" className="time">
-            {currentTime + " / " + maxTime}
+            {currentTime}
           </span>
           <img
             id="prev-btn"
@@ -281,6 +281,9 @@ export default function MusicControl() {
             }}
             src={next}
           />
+          <span id="max-time" className="time">
+            {maxTime}
+          </span>
         </div>
 
         <div className="volume-control-container">
