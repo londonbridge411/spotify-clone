@@ -73,7 +73,7 @@ export default function MyPlaylistPage() {
           <main>
             <section>
               <h2> My Playlists</h2>
-              <ul className="myAlbums">
+              <div className="myAlbums">
                 <li className="addPlaylist">
                   <img
                     src="../../../src/assets/circle-plus-solid.svg"
@@ -92,18 +92,18 @@ export default function MyPlaylistPage() {
                     <PlaylistContainer playlist_id={item} />
                   </li>
                 ))}
-              </ul>
+              </div>
             </section>
 
             <section>
               <h2> Shared Playlists</h2>
-              <ul className="myAlbums">
+              <div className="myAlbums">
                 {sharedList.map((item) => (
                   <li key={item}>
                     <PlaylistContainer playlist_id={item} />
                   </li>
                 ))}
-              </ul>
+              </div>
             </section>
           </main>
         </div>

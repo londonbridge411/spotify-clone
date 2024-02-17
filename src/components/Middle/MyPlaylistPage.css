@@ -20,6 +20,10 @@
   margin-top: 15px;
 }
 
+.myPlaylists-page section {
+  margin-top: 20px;
+}
+
 .myAlbums::-webkit-scrollbar-track {
   border-radius: 10px;
   background-color: rgba(0, 0, 0, 0);
@@ -44,8 +48,7 @@
   flex-direction: column;
 }
 
-.myPlaylists-layout header {
-}
+.myPlaylists-layout header {}
 
 .myPlaylists-layout .myAlbums {
   display: flex;
@@ -54,6 +57,7 @@
   column-gap: 15px;
   row-gap: 15px;
   list-style-type: none;
+
   overflow: auto;
 }
 

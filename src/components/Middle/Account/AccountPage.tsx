@@ -44,6 +44,8 @@ export default function AccountPage() {
   useEffect(() => {
     let update = async () => {
       setLoading(true);
+      setHideEverything(true);
+
       await supabase
         .from("Songs")
         .select("id")
@@ -320,6 +322,7 @@ export default function AccountPage() {
 
             {/*Popular Songs*/}
             <section>
+              
               <h2>Popular Songs</h2>
               <div className="playlist-content">
                 <ul
@@ -328,8 +331,13 @@ export default function AccountPage() {
                   style={{
                     listStyle: "inside",
                     listStyleType: "circle",
+                    gridTemplateColumns: "20px 62px 50% 20% 10%"
+
                   }}
                 >
+                  <div style={{ color: "rgba(0, 0, 0, 0)" }}>
+                    ?<hr></hr>
+                  </div>
                   <div style={{ color: "rgba(0, 0, 0, 0)" }}>
                     ?<hr></hr>
                   </div>
@@ -343,15 +351,17 @@ export default function AccountPage() {
                     Created <hr></hr>
                   </div>
 
-                  {popularSongsList.map((item) => {
+                  {popularSongsList.map((item, index) => {
                     // item broke somehow
                     return (
-                      <SongRow
-                        key={item}
-                        song_id={item}
-                        song_list={popularSongsList}
+                      <><div style={{alignSelf:"center"}}>{index + 1}.</div>
+                        <SongRow
+                          key={item}
+                          song_id={item}
+                          song_list={popularSongsList}
                         //forceUpdate={[coverUrl, playlistName, playlistPrivacy]}
-                      />
+                        /></>
+
                     );
                   })}
                 </ul>
@@ -361,7 +371,7 @@ export default function AccountPage() {
             {/*Albums Songs*/}
             <section hidden={albumList.length == 0}>
               <h2>Albums</h2>
-              <ul className="myAlbums">
+              <div className="myAlbums">
                 {albumList.map((item) => (
                   <li key={item}>
                     <PlaylistContainer playlist_id={item} />
@@ -382,19 +392,18 @@ export default function AccountPage() {
                     }}
                   />
                 </li>
-              </ul>
+              </div>
             </section>
-
             {/*Public Playlists*/}
             <section hidden={playlistList.length == 0}>
               <h2>Public Playlists</h2>
-              <ul className="myAlbums">
+              <div className="myAlbums">
                 {playlistList.map((item) => (
                   <li key={item}>
                     <PlaylistContainer playlist_id={item} />
                   </li>
                 ))}
-              </ul>
+              </div>
             </section>
           </main>
         </div>
