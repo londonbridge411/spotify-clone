@@ -42,51 +42,6 @@ export default function AccountPage() {
   //setPopularSongsList(["2046f516-227f-4b86-b78d-4d3d14c7fea4"]);
 
   useEffect(() => {
-    let update = async () => {
-      setLoading(true);
-      setHideEverything(true);
-
-      await supabase
-        .from("Songs")
-        .select("id")
-        .contains("artist_data", JSON.stringify([{ id: userID }]))
-        .order("view_count", { ascending: false }) // Most views up top
-        .then(async (result) => {
-          var myData = result.data as any[];
-
-          var songs: string[] = [];
-
-          // Instead of 5, myData.length gets all
-          // We will want to sort by popularity, then go to 5
-          for (let i = 0; i < 5; i++) {
-            await supabase
-              .from("Songs")
-              .select("owner_id, Playlists(privacy_setting)")
-              .eq("id", myData?.at(i).id)
-              .then((result2) => {
-                let myData2 = result2.data?.at(0);
-                let setting = (myData2?.Playlists as any).privacy_setting;
-
-                if (setting != "Private" || myData2?.owner_id == authUserID) {
-                  songs.push(myData[i].id);
-                }
-              });
-          }
-          setLoading(false);
-
-          if (songs.length == 0) {
-            setHideEverything(true);
-          } else {
-            setHideEverything(false);
-            setPopularSongsList(songs as string[]);
-          }
-        });
-    };
-
-    update();
-  }, [userID, username]);
-
-  useEffect(() => {
     supabase
       .from("Users")
       .select("subscribers, is_verified, username, pfp_url")
@@ -104,6 +59,53 @@ export default function AccountPage() {
         );
         setIsFollowing(result.data?.at(0)?.subscribers.includes(authUserID));
       });
+  }, [userID, username]);
+
+  useEffect(() => {
+    let update = async () => {
+      setLoading(true);
+      setHideEverything(true);
+
+      await supabase
+        .from("Songs")
+        .select("id")
+        .contains("artist_data", JSON.stringify([{ id: userID }]))
+        .order("view_count", { ascending: false }) // Most views up top
+        .then(async (result) => {
+          var myData = result.data as any[];
+
+          var songs: string[] = [];
+
+          // Instead of 5, myData.length gets all
+          // We will want to sort by popularity, then go to 5
+
+          // Fix this
+          console.log(myData);
+          if (myData.length > 0)
+          {
+            for (let i = 0; i < 5; i++) {
+              await supabase
+                .from("Songs")
+                .select("owner_id, Playlists(privacy_setting)")
+                .eq("id", myData?.at(i).id)
+                .then((result2) => {
+                  let myData2 = result2.data?.at(0);
+                  let setting = (myData2?.Playlists as any).privacy_setting;
+  
+                  if (setting != "Private" || myData2?.owner_id == authUserID) {
+                    songs.push(myData[i].id);
+                  }
+                });
+            }
+            setPopularSongsList(songs as string[]);
+          }
+
+          setLoading(false);
+          setHideEverything(false);
+        });
+    };
+
+    update();
   }, [userID, username]);
 
   const [albumList, setAlbumList] = useState([null]);
@@ -321,7 +323,7 @@ export default function AccountPage() {
             </button>
 
             {/*Popular Songs*/}
-            <section>
+            <section hidden={popularSongsList.length == 0}>
               
               <h2>Popular Songs</h2>
               <div className="playlist-content">
@@ -369,10 +371,11 @@ export default function AccountPage() {
             </section>
 
             {/*Albums Songs*/}
-            <section hidden={albumList.length == 0}>
+            <section hidden={albumList.length == 0  && !isOwner}>
               <h2>Albums</h2>
               <div className="myAlbums">
-                {albumList.map((item) => (
+                {
+                albumList.map((item) => (
                   <li key={item}>
                     <PlaylistContainer playlist_id={item} />
                   </li>
