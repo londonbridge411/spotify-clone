@@ -329,12 +329,8 @@ export default function AccountPage() {
               <div className="playlist-content">
                 <ul
                   className="song-table"
-                  /*Doesn't work*/
                   style={{
-                    listStyle: "inside",
-                    listStyleType: "circle",
                     gridTemplateColumns: "20px 62px 50% 20% 10%"
-
                   }}
                 >
                   <div style={{ color: "rgba(0, 0, 0, 0)" }}>
