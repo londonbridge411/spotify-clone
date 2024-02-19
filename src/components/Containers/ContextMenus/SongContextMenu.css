@@ -23,10 +23,6 @@
   padding-left: 15px;
 }
 
-.song-context-content > div:hover {
-  background-color: red;
-}
-
 #AdditionalOptions {
   --mouse-x: 0;
   --mouse-y: 0;
@@ -64,4 +60,17 @@
 
 #AddToPlaylist .popup-content .AddToPlaylist-content {
   background-color: black;
+}
+
+.contextButton {
+  display: flex;
+  height: 35px;
+  border-radius: 5%;
+  align-items: center;
+}
+
+.contextButton:hover {
+  cursor: pointer;
+
+  background-color: rgb(52, 52, 52);
 }

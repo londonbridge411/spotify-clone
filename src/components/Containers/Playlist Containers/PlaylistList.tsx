@@ -3,9 +3,9 @@ import supabase from "../../../config/supabaseClient";
 import { authUserID, email } from "../../../main";
 import PlaylistContainerHorizontal from "./PlaylistContainerHorizontal";
 import "./PlaylistList.css";
-import { targ } from "../ContextMenus/SongContextMenu";
+import { CloseSongContextMenu, targ } from "../ContextMenus/SongContextMenu";
 export default function PlaylistList(props: any) {
-  const [list, setList] = useState([null]);
+  const [list, setList] = useState([]);
   useEffect(() => {
     supabase
       .from("Playlists")
@@ -21,7 +21,7 @@ export default function PlaylistList(props: any) {
             array.push(myData.at(i)?.id);
           }
 
-          setList(array);
+          setList(array as any);
         }
       });
   }, []);
@@ -50,7 +50,7 @@ export default function PlaylistList(props: any) {
     };
 
     insertIntoTable();
-
+    CloseSongContextMenu();
     props.setActive(false);
   }
   return (

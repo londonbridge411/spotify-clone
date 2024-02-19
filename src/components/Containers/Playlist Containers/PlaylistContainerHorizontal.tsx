@@ -23,8 +23,6 @@ export default function PlaylistContainerHorizontal(props: any) {
       });
   }, []);
 
-  console.log("asasdf " + playlistName);
-
   return (
     <>
       <div className="PlaylistContainerHorizontal" onClick={props.onClick!}>
