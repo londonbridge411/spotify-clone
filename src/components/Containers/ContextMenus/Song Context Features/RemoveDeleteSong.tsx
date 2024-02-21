@@ -125,48 +125,53 @@ export default function ContextOption_RemoveDeleteSong(props: any) {
   }
   return (
     <>
-      <div>
-        <div id="RemoveSong_Button" onClick={() => RemoveSong(props.targ)}>
-          Remove Song
+      <div className="contextButton">
+        <div>
+          <div id="RemoveSong_Button" onClick={() => RemoveSong(props.targ)}>
+            Remove Song
+          </div>
+          <div
+            id="DeleteSong_Button"
+            onClick={() => setPopupActive_DeleteSong(true)}
+          >
+            Delete Song
+          </div>
         </div>
-        <div
-          id="DeleteSong_Button"
-          onClick={() => setPopupActive_DeleteSong(true)}
-        >
-          Delete Song
-        </div>
-      </div>
 
-      <Popup
-        id="DeleteSong"
-        active={popupActive_DeleteSong}
-        setActive={setPopupActive_DeleteSong}
-        canClose={false}
-        requiresVerification={true}
-        html={
-          <>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <h2>Are you sure?</h2>
-              <div>
-                This will permanently delete the song and remove it from the
-                platform.
+        <Popup
+          id="DeleteSong"
+          active={popupActive_DeleteSong}
+          setActive={setPopupActive_DeleteSong}
+          canClose={false}
+          requiresVerification={true}
+          html={
+            <>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "300px",
+                  height: "125px",
+                }}
+              >
+                <h2>Are you sure?</h2>
+                <div>
+                  This will permanently delete the song and remove it from the
+                  platform.
+                </div>
+                <div style={{ display: "flex", flexDirection: "row" }}>
+                  <button onClick={() => DeleteSong(props.targ)}>Yes</button>
+                  <button onClick={() => setPopupActive_DeleteSong(false)}>
+                    No
+                  </button>
+                </div>
               </div>
-              <div style={{ display: "flex", flexDirection: "row" }}>
-                <button onClick={() => DeleteSong(props.targ)}>Yes</button>
-                <button onClick={() => setPopupActive_DeleteSong(false)}>
-                  No
-                </button>
-              </div>
-            </div>
-          </>
-        }
-      />
+            </>
+          }
+        />
+      </div>
     </>
   );
 }

@@ -1,6 +1,8 @@
 import { useEffect, useLayoutEffect, useState } from "react";
 import { authUserID, email, isVerified } from "../../../main";
 import "./SongContextMenu.css";
+import "./ContextButton.css";
+
 import Popup from "../Popup";
 import supabase from "../../../config/supabaseClient";
 import PlaylistList from "../Playlist Containers/PlaylistList";
@@ -9,6 +11,7 @@ import ContextOption_RemoveDeleteSong from "./Song Context Features/RemoveDelete
 import ContextOption_AddToPlaylist from "./Song Context Features/AddToPlaylist";
 
 export var targ: string = "";
+var isInPlaylist = document.location.href.includes("playlist");
 
 // Used to mimic the event system found in C#. It's a map to avoid React duplicating items. A simple includes() does not do the job
 export var ContextCloseSubs = new Map<string, any>();
@@ -24,6 +27,10 @@ export default function SongContextMenu(props: any) {
     return;
   }
 
+  // Run this so it updates. I don't use useState because it crashes due to infinite looping
+  isInPlaylist = document.location.href.includes("playlist");
+
+  //setIsPlaylist(document.location.href.includes("playlist"))
   // Clicking outside the context container sets it inactive
   document.onmouseup = function (e) {
     var container = document.getElementById("Song_ContextMenu");
@@ -46,29 +53,13 @@ export default function SongContextMenu(props: any) {
         className="song-context-box"
       >
         <div className="song-context-content">
-          <>
-            <ContextButton html={<ContextOption_AddToPlaylist />} />
+          <ContextOption_AddToPlaylist />
 
-            <ContextButton html={"Go to artist"} />
-            <ContextButton html={"Favorite"} />
-            <ContextButton html={"Add to queue"} />
-            <ContextButton html={"Move Up"} />
-            <ContextButton html={"Move Down"} />
-
-            <ContextButton
-              html={<ContextOption_RemoveDeleteSong targ={targ} />}
-            />
-          </>
+          <div hidden={!isInPlaylist}>
+            <ContextOption_RemoveDeleteSong targ={targ} />
+          </div>
         </div>
       </div>
-    </>
-  );
-}
-
-function ContextButton(props: any) {
-  return (
-    <>
-      <div className="contextButton">{props.html}</div>
     </>
   );
 }

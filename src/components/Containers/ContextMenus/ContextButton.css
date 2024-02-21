@@ -1,0 +1,13 @@
+.contextButton {
+  display: flex;
+  height: 35px;
+  border-radius: 5%;
+  align-items: center;
+  padding-left: 10px;
+}
+
+.contextButton:hover {
+  cursor: pointer;
+
+  background-color: rgb(52, 52, 52);
+}

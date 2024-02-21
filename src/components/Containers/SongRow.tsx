@@ -6,7 +6,6 @@ import { RootState } from "../../store";
 import SongContextMenu, {
   ViewSongContextMenu,
 } from "./ContextMenus/SongContextMenu";
-import ContextMenuOption from "./ContextMenuOption";
 import { NavLink } from "react-router-dom";
 import { Artist } from "./Popups/UploadSongPopup";
 

@@ -20,24 +20,25 @@ export default function ContextOption_AddToPlaylist() {
 
   return (
     <>
-      <div onClick={() => setPopupState_AddToPlaylist(true)}>
-        Add to Playlist
+      <div className="contextButton">
+        <div onClick={() => setPopupState_AddToPlaylist(true)}>
+          Add to Playlist
+        </div>
+        <Popup
+          id="AddToPlaylist"
+          active={popupActive_AddToPlaylist}
+          setActive={setPopupState_AddToPlaylist}
+          canClose={true}
+          requiresVerification={false}
+          html={
+            <>
+              <div className="AddToPlaylist-content">
+                <PlaylistList setActive={setPopupState_AddToPlaylist} />
+              </div>
+            </>
+          }
+        />
       </div>
-
-      <Popup
-        id="AddToPlaylist"
-        active={popupActive_AddToPlaylist}
-        setActive={setPopupState_AddToPlaylist}
-        canClose={true}
-        requiresVerification={false}
-        html={
-          <>
-            <div className="AddToPlaylist-content">
-              <PlaylistList setActive={setPopupState_AddToPlaylist} />
-            </div>
-          </>
-        }
-      />
     </>
   );
 }

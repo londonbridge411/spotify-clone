@@ -4,6 +4,7 @@ import { authUserID, email } from "../../../main";
 import PlaylistContainerHorizontal from "./PlaylistContainerHorizontal";
 import "./PlaylistList.css";
 import { CloseSongContextMenu, targ } from "../ContextMenus/SongContextMenu";
+
 export default function PlaylistList(props: any) {
   const [list, setList] = useState([]);
   useEffect(() => {
@@ -57,6 +58,30 @@ export default function PlaylistList(props: any) {
     <>
       <ul>
         {list.map((item) => (
+          <li key={item}>
+            <PlaylistContainerHorizontal
+              onClick={() => AddToPlaylist(item!, targ)}
+              playlist_id={item}
+            />
+          </li>
+        ))}
+                {list.map((item) => (
+          <li key={item}>
+            <PlaylistContainerHorizontal
+              onClick={() => AddToPlaylist(item!, targ)}
+              playlist_id={item}
+            />
+          </li>
+        ))}
+                {list.map((item) => (
+          <li key={item}>
+            <PlaylistContainerHorizontal
+              onClick={() => AddToPlaylist(item!, targ)}
+              playlist_id={item}
+            />
+          </li>
+        ))}
+                {list.map((item) => (
           <li key={item}>
             <PlaylistContainerHorizontal
               onClick={() => AddToPlaylist(item!, targ)}
