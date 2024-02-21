@@ -7,7 +7,12 @@ import "./MyPlaylistPage.css";
 import Popup from "../Containers/Popup";
 import PlaylistCreation from "../Containers/Popups/PlaylistCreation";
 import AddPlaylistButton from "../AddPlaylistButton";
+import { useDispatch } from "react-redux";
+import { setPopup } from "../../PopupSlice";
 export default function MyPlaylistPage() {
+
+  const dispatch = useDispatch();
+
   const [list, setList] = useState([null]);
   useEffect(() => {
     supabase
@@ -59,9 +64,6 @@ export default function MyPlaylistPage() {
       });
   }, []);
 
-  const [popupActive_UploadPlaylist, setPopupState_UploadPlaylist] =
-    useState(false);
-
   return (
     <>
       <div className="myPlaylists-page">
@@ -83,7 +85,7 @@ export default function MyPlaylistPage() {
                       cursor: "pointer",
                     }}
                     onClick={() => {
-                      setPopupState_UploadPlaylist(true);
+                      dispatch(setPopup("Popup_UploadPlaylist"))
                     }}
                   />
                 </li>
@@ -108,15 +110,6 @@ export default function MyPlaylistPage() {
           </main>
         </div>
       </div>
-
-      <Popup
-        id="Popup_UploadPlaylist"
-        active={popupActive_UploadPlaylist}
-        setActive={setPopupState_UploadPlaylist}
-        canClose={true}
-        html={<PlaylistCreation playlistType={"Playlist"} />}
-        requiresVerification={false}
-      />
     </>
   );
 }

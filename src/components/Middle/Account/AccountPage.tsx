@@ -8,15 +8,21 @@ import { useParams } from "react-router-dom";
 import { authUserID, email, isVerified } from "../../../main";
 import AccountEdit from "../../Containers/Popups/AccountEdit";
 import SongRow from "../../Containers/SongRow";
+import { setPopup } from "../../../PopupSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../../../store";
 
 /*
 Want to display icon, username, bio, followers, isVerified, upload song.
 */
 
+export var UnfollowUser_Exported:any;
+
 export default function AccountPage() {
   const { userID } = useParams();
 
   if (userID == null) return;
+  const dispatch = useDispatch();
 
   let isOwner: boolean = false;
   isOwner = userID == authUserID;
@@ -28,13 +34,6 @@ export default function AccountPage() {
   const [userVerified, setVerified] = useState(false);
   const [username, setUsername] = useState("");
   const [pfpUrl, setPfpUrl] = useState("../../../src/assets/default_user.png");
-  const [popupActive_FollowingUser, setPopupActive_FollowingUser] =
-    useState(false);
-
-  const [popupActive_UnfollowingUser, setPopupActive_UnfollowingUser] =
-    useState(false);
-
-  const [popupActive_Edit, setPopupState_Edit] = useState(false);
   const [popularSongsList, setPopularSongsList] = useState([] as string[]);
   const [hideEverything, setHideEverything] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -61,6 +60,10 @@ export default function AccountPage() {
       });
   }, [userID, username]);
 
+
+  // Exports the function so the popup control can see it.
+  UnfollowUser_Exported = UnfollowUser;
+
   useEffect(() => {
     let update = async () => {
       setLoading(true);
@@ -80,7 +83,7 @@ export default function AccountPage() {
           // We will want to sort by popularity, then go to 5
 
           // Fix this
-          console.log(myData);
+         // console.log(myData);
           if (myData.length > 0)
           {
             for (let i = 0; i < 5; i++) {
@@ -151,26 +154,6 @@ export default function AccountPage() {
       });
   }, [userID, username]);
 
-  const [popupActive_Share, setPopupState_Share] = useState(false);
-
-  const [popupActive_Verification, setPopupState_Verification] =
-    useState(false);
-
-  const [popupActive_UploadPlaylist, setPopupState_UploadPlaylist] =
-    useState(false);
-
-  useEffect(() => {
-    if (userVerified) {
-      setPopupState_Verification(false);
-    }
-  }, [popupActive_Verification]);
-
-  useEffect(() => {
-    if (userVerified) {
-      setPopupState_Verification(false);
-    }
-  }, [popupActive_UploadPlaylist]);
-
   function FollowUser() {
     if (isFollowing == false && isOwner == false) {
       // Add user as a sub
@@ -190,6 +173,7 @@ export default function AccountPage() {
         });
 
       // Add subscribed user into user row
+
       supabase
         .from("Users")
         .select("subscribed_artists")
@@ -206,7 +190,7 @@ export default function AccountPage() {
         });
 
       setIsFollowing(true);
-      setPopupActive_FollowingUser(true);
+      dispatch(setPopup("Popup_FollowingUser"));
     }
   }
 
@@ -286,7 +270,7 @@ export default function AccountPage() {
               src="../../../src/assets/edit_button.png"
               hidden={!isOwner}
               onClick={() => {
-                setPopupState_Edit(true);
+                dispatch(setPopup("account-edit"));
               }}
             />
 
@@ -299,13 +283,13 @@ export default function AccountPage() {
             <img
               src="../../../src/assets/unadd_person.png"
               hidden={!isFollowing}
-              onClick={() => setPopupActive_UnfollowingUser(true)}
+              onClick={() => dispatch(setPopup("Popup_UnfollowingUser"))}
             />
 
             <img
               src="../../../src/assets/share.png"
               onClick={() => {
-                setPopupState_Share(true);
+                dispatch(setPopup("shareAccount"));
                 const url = location.href;
                 navigator.clipboard.writeText(url);
               }}
@@ -316,7 +300,7 @@ export default function AccountPage() {
             <button
               hidden={userVerified || !isOwner}
               onClick={() => {
-                setPopupState_Verification(!userVerified);
+                dispatch(setPopup("Popup_Verification"));
               }}
             >
               Get Verified
@@ -352,13 +336,12 @@ export default function AccountPage() {
                   {popularSongsList.map((item, index) => {
                     // item broke somehow
                     return (
-                      <><div style={{alignSelf:"center"}}>{index + 1}.</div>
+                      <div key={index} style={{display:"contents"}}><div style={{alignSelf:"center"}}>{index + 1}.</div>
                         <SongRow
-                          key={item}
                           song_id={item}
                           song_list={popularSongsList}
                         //forceUpdate={[coverUrl, playlistName, playlistPrivacy]}
-                        /></>
+                        /></div>
 
                     );
                   })}
@@ -387,7 +370,7 @@ export default function AccountPage() {
                     }}
                     hidden={!userVerified || !isOwner}
                     onClick={() => {
-                      setPopupState_UploadPlaylist(userVerified);
+                      dispatch(setPopup("Popup_UploadAlbum"))
                     }}
                   />
                 </li>
@@ -422,78 +405,6 @@ export default function AccountPage() {
           <h2 hidden={loading}>No music</h2>
         </div>
       </div>
-
-      <Popup
-        id="Popup_Verification"
-        active={popupActive_Verification}
-        setActive={setPopupState_Verification}
-        canClose={true}
-        html={<div>Get Verified</div>}
-        requiresVerification={false}
-        blockElement={!isOwner}
-      ></Popup>
-
-      <Popup
-        id="Popup_UploadPlaylist"
-        active={popupActive_UploadPlaylist}
-        setActive={setPopupState_UploadPlaylist}
-        canClose={true}
-        html={<PlaylistCreation playlistType={"Album"} />}
-        requiresVerification={true}
-        blockElement={!isOwner}
-      ></Popup>
-
-      <Popup
-        id="Popup_FollowingUser"
-        active={popupActive_FollowingUser}
-        setActive={setPopupActive_FollowingUser}
-        canClose={true}
-        html={<div>You are now following {username}.</div>}
-      ></Popup>
-
-      <Popup
-        id="Popup_UnfollowingUser"
-        active={popupActive_UnfollowingUser}
-        setActive={setPopupActive_UnfollowingUser}
-        canClose={false}
-        html={
-          <>
-            <div>Are you sure you want to unfollow {username}?</div>
-            <button
-              onClick={() => {
-                UnfollowUser();
-                setPopupActive_UnfollowingUser(false);
-              }}
-            >
-              Yes
-            </button>
-            <button onClick={() => setPopupActive_UnfollowingUser(false)}>
-              No
-            </button>
-          </>
-        }
-      ></Popup>
-
-      <Popup
-        id="account-edit"
-        active={popupActive_Edit}
-        setActive={setPopupState_Edit}
-        canClose={true}
-        html={
-          <>
-            <AccountEdit setName={setUsername} setPFP={setPfpUrl} />
-          </>
-        }
-        requiresVerification={() => isOwner == true}
-      ></Popup>
-
-      <Popup
-        id="shareAccount"
-        active={popupActive_Share}
-        setActive={setPopupState_Share}
-        canClose={true}
-        html={<div>Copied link to clipboard.</div>}
-      />
     </>
   );
 }

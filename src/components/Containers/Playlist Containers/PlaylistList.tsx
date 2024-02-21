@@ -65,30 +65,6 @@ export default function PlaylistList(props: any) {
             />
           </li>
         ))}
-                {list.map((item) => (
-          <li key={item}>
-            <PlaylistContainerHorizontal
-              onClick={() => AddToPlaylist(item!, targ)}
-              playlist_id={item}
-            />
-          </li>
-        ))}
-                {list.map((item) => (
-          <li key={item}>
-            <PlaylistContainerHorizontal
-              onClick={() => AddToPlaylist(item!, targ)}
-              playlist_id={item}
-            />
-          </li>
-        ))}
-                {list.map((item) => (
-          <li key={item}>
-            <PlaylistContainerHorizontal
-              onClick={() => AddToPlaylist(item!, targ)}
-              playlist_id={item}
-            />
-          </li>
-        ))}
       </ul>
     </>
   );

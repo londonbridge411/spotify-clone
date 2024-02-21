@@ -6,6 +6,7 @@ import MusicControl from "./components/Music Control";
 import "./App.css";
 import { useSelector } from "react-redux";
 import { RootState } from "./store";
+import PopupControl from "./PopupControl";
 
 export default function App() {
   const navigate = useNavigate();
@@ -39,6 +40,7 @@ export default function App() {
           <MusicControl />
         </footer>
       </section>
+      <PopupControl />
     </div>
   );
 }

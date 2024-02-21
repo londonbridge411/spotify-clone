@@ -13,9 +13,6 @@ import ContextOption_AddToPlaylist from "./Song Context Features/AddToPlaylist";
 export var targ: string = "";
 var isInPlaylist = document.location.href.includes("playlist");
 
-// Used to mimic the event system found in C#. It's a map to avoid React duplicating items. A simple includes() does not do the job
-export var ContextCloseSubs = new Map<string, any>();
-
 export function CloseSongContextMenu() {
   var menu = document.getElementById("Song_ContextMenu") as HTMLElement;
   menu?.style.setProperty("display", "none");
@@ -40,7 +37,7 @@ export default function SongContextMenu(props: any) {
       CloseSongContextMenu();
 
       // Calls every subscriber this is closed.
-      ContextCloseSubs.forEach((value: boolean) => (value as any)());
+      //ContextCloseSubs.forEach((value: boolean) => (value as any)());
     }
   };
 

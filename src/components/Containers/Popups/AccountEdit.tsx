@@ -8,7 +8,7 @@ import Popup from "../Popup";
 import { useParams } from "react-router-dom";
 import testbg from "../../../assets/test_bg.jpg";
 
-export default function AccountEdit(props: any) {
+export default function AccountEdit() {
   const { userID } = useParams();
 
   if (userID == null) return;
@@ -28,8 +28,6 @@ export default function AccountEdit(props: any) {
           .from("Users")
           .update({ username: account_name_text })
           .eq("id", userID);
-
-        props.setName(account_name_text);
       };
       update();
     }
@@ -73,32 +71,16 @@ export default function AccountEdit(props: any) {
         .from("Users")
         .update({ pfp_url: cover_url })
         .eq("id", userID);
-
-      props.setPFP(
-        cover_url == "" ? "../../../src/assets/small_record.svg" : cover_url
-      );
     };
 
     update();
   }
 
-  function ClearInput() {
-    // Cover
-    (document.getElementById("edit-account-cover") as HTMLInputElement).value =
-      "";
-    (document.getElementById("url-account-cover") as HTMLInputElement).value =
-      "";
-
-    // Name
-
-    (document.getElementById("edit-account-name") as HTMLInputElement).value =
-      "";
-  }
 
   function SaveSettings() {
     UpdateName();
     UpdateCover();
-    //ClearInput();
+    window.location.reload();
   }
   const [useLocalCover, setLocalCover] = useState(false);
   const [useLocalBG, setLocalBG] = useState(false);

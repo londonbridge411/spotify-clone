@@ -204,13 +204,7 @@ export function UploadSongPopup(props: any) {
         <button onClick={() => UploadSong()}>Upload</button>
       </div>
 
-      <Popup
-        id="uploadingWait"
-        active={popupActive_UploadingWait}
-        setActive={setPopupState_UploadingWait}
-        canClose={false}
-        html={<div>Uploading Song...</div>}
-      />
+
     </>
   );
 }
