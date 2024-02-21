@@ -68,6 +68,7 @@ export default function AccountPage() {
     let update = async () => {
       setLoading(true);
       setHideEverything(true);
+      setPopularSongsList([]);
 
       await supabase
         .from("Songs")
@@ -340,7 +341,7 @@ export default function AccountPage() {
                         <SongRow
                           song_id={item}
                           song_list={popularSongsList}
-                        //forceUpdate={[coverUrl, playlistName, playlistPrivacy]}
+                          //forceUpdate={[username]}
                         /></div>
 
                     );
