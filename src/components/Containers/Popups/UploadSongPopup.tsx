@@ -7,6 +7,8 @@ import * as uuid from "uuid";
 import { useParams } from "react-router-dom";
 import { PostgrestSingleResponse } from "@supabase/supabase-js";
 import { authUserID, username } from "../../../main";
+import { useDispatch } from "react-redux";
+import { setPopup } from "../../../PopupSlice";
 
 export interface Artist {
   id: string;
@@ -18,10 +20,9 @@ export function UploadSongPopup(props: any) {
   const { playlistID } = useParams();
   if (playlistID == null) return;
 
-  // States
-  const [popupActive_UploadingWait, setPopupState_UploadingWait] =
-    useState(false);
+  const dispatch = useDispatch();
 
+  // States
   const [artists, setArtists] = useState([] as Artist[]);
   const list: Artist[] = [];
 
@@ -72,7 +73,7 @@ export function UploadSongPopup(props: any) {
     let id = uuid.v4();
 
     if (uploaded_song != null) {
-      setPopupState_UploadingWait(true);
+      dispatch(setPopup("uploadingWait"));
       const insertIntoTable = async () => {
         var song_name = document.getElementById(
           "upload-song-name"
@@ -92,7 +93,6 @@ export function UploadSongPopup(props: any) {
               ? artists
               : [{ id: authUserID, username: username }],
           })
-          .then((result) => console.log(result.error));
 
         await supabase.storage
           .from("music-files")
@@ -100,8 +100,6 @@ export function UploadSongPopup(props: any) {
             cacheControl: "3600",
             upsert: false,
           });
-
-        props.setActive(false);
 
         // Now we need to append ID to array in playlist
 
