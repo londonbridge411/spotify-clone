@@ -201,8 +201,6 @@ export function UploadSongPopup(props: any) {
 
         <button onClick={() => UploadSong()}>Upload</button>
       </div>
-
-
     </>
   );
 }
