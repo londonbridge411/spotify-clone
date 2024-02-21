@@ -10,13 +10,12 @@ import * as uuid from "uuid";
 import { setSongID, setSongList, shufflePlay } from "../../PlayerSlice";
 import { useDispatch } from "react-redux";
 import SongRow from "../Containers/SongRow";
-import ContextMenuOption from "../Containers/ContextMenuOption";
-import SongContextMenu from "../Containers/ContextMenus/SongContextMenu";
 import PlaylistEdit, {
   CustomInputField,
 } from "../Containers/Popups/PlaylistEdit";
 import SearchBar from "../SearchBar";
 import { UploadSongPopup } from "../Containers/Popups/UploadSongPopup";
+import { setPopup } from "../../PopupSlice";
 
 export default function Playlist() {
   const dispatch = useDispatch();
@@ -61,7 +60,6 @@ export default function Playlist() {
   const [playlistType, setPlaylistType] = useState("");
   const [isFollowing, setIsFollowing] = useState(false);
 
-  const [popupActive_Share, setPopupState_Share] = useState(false);
   const [hideTable, setHideTable] = useState(true);
   const [loading, setLoading] = useState(true);
 
@@ -70,9 +68,6 @@ export default function Playlist() {
     "../../../src/assets/small_record.svg"
   );
 
-  const [popupActive_Edit, setPopupState_Edit] = useState(false);
-
-  const [popupActive_UploadSong, setPopupState_UploadSong] = useState(false);
   useEffect(() => {
     console.log("Updating");
     supabase
@@ -236,7 +231,7 @@ export default function Playlist() {
               src="../../../src/assets/edit_button.png"
               hidden={!isOwner}
               onClick={() => {
-                setPopupState_Edit(true);
+                dispatch(setPopup("uploadPlaylistEdit"));
               }}
             />
 
@@ -244,7 +239,7 @@ export default function Playlist() {
               src="../../../src/assets/add_button.png"
               hidden={!isOwner || playlistType == "Playlist"}
               onClick={() => {
-                setPopupState_UploadSong(isOwner);
+                dispatch(setPopup("uploadSongPopup"));
               }}
             />
 
@@ -279,7 +274,7 @@ export default function Playlist() {
             <img
               src="../../../src/assets/share.png"
               onClick={() => {
-                setPopupState_Share(true);
+                dispatch(setPopup("sharePlaylist"));
                 const url = location.href;
                 navigator.clipboard.writeText(url);
               }}
@@ -331,38 +326,6 @@ export default function Playlist() {
           </main>
         </div>
       </div>
-      <Popup
-        id="uploadSongPopup"
-        active={popupActive_UploadSong}
-        setActive={setPopupState_UploadSong}
-        canClose={true}
-        html={<UploadSongPopup setActive={setPopupState_UploadSong} />}
-        requiresVerification={() => playlistType != "Playlist"}
-      ></Popup>
-      <Popup
-        id="uploadPlaylistEdit"
-        active={popupActive_Edit}
-        setActive={setPopupState_Edit}
-        canClose={true}
-        html={
-          <PlaylistEdit
-            setName={setPlaylistName}
-            setCover={setCover_URL}
-            setBG={setBG_URL}
-            setPrivacy={setPlaylistPrivacy}
-            set
-          />
-        }
-        requiresVerification={() => playlistType != "Playlist"}
-      ></Popup>
-
-      <Popup
-        id="sharePlaylist"
-        active={popupActive_Share}
-        setActive={setPopupState_Share}
-        canClose={true}
-        html={<div>Copied link to clipboard.</div>}
-      />
     </>
   );
 }

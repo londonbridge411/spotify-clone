@@ -8,7 +8,7 @@ import Popup from "../Popup";
 import { useParams } from "react-router-dom";
 import testbg from "../../../assets/test_bg.jpg";
 
-export default function PlaylistEdit(props: any) {
+export default function PlaylistEdit() {
   const { playlistID } = useParams();
 
   if (playlistID == null) return;
@@ -29,7 +29,6 @@ export default function PlaylistEdit(props: any) {
           .update({ name: playlist_name_text })
           .eq("id", playlistID);
 
-        props.setName(playlist_name_text);
       };
       update();
     }
@@ -73,10 +72,6 @@ export default function PlaylistEdit(props: any) {
         .from("Playlists")
         .update({ cover_url: cover_url })
         .eq("id", playlistID);
-
-      props.setCover(
-        cover_url == "" ? "../../../src/assets/small_record.svg" : cover_url
-      );
     };
 
     update();
@@ -125,8 +120,6 @@ export default function PlaylistEdit(props: any) {
         .from("Playlists")
         .update({ bg_url: background_url })
         .eq("id", playlistID);
-
-      props.setBG(background_url);
     };
 
     update();
@@ -139,7 +132,7 @@ export default function PlaylistEdit(props: any) {
 
     const update = async () => {
       if (dropdown.value == "") return;
-      props.setPrivacy(dropdown.value);
+
       await supabase
         .from("Playlists")
         .update({ privacy_setting: dropdown.value })
@@ -149,40 +142,12 @@ export default function PlaylistEdit(props: any) {
     update();
   }
 
-  function ClearInput() {
-    // Cover
-    (document.getElementById("edit-playlist-cover") as HTMLInputElement).value =
-      "";
-    (document.getElementById("url-playlist-cover") as HTMLInputElement).value =
-      "";
-
-    // Background
-    (
-      document.getElementById("edit-playlist-background") as HTMLInputElement
-    ).value = "";
-
-    (
-      document.getElementById("url-playlist-background") as HTMLInputElement
-    ).value = "";
-
-    // Name
-
-    (document.getElementById("edit-playlist-name") as HTMLInputElement).value =
-      "";
-
-    // Privacy
-    (
-      document.getElementById("playlist-privacy-setting") as HTMLSelectElement
-    ).value = "";
-  }
-
   function SaveSettings() {
     UpdateName();
     UpdateCover();
     UpdateBG();
     UpdateVisibility();
-    ClearInput();
-    //close();
+    window.location.reload();
   }
   const [useLocalCover, setLocalCover] = useState(false);
   const [useLocalBG, setLocalBG] = useState(false);

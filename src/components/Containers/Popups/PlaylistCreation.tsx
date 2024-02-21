@@ -5,13 +5,13 @@ import supabase from "../../../config/supabaseClient";
 import { email } from "../../../main";
 import * as uuid from "uuid";
 import Popup from "../Popup";
+import { setPopup } from "../../../PopupSlice";
+import { useDispatch } from "react-redux";
 
 export default function PlaylistCreation(props: any) {
-  const [popupActive_UploadingWait, setPopupActive_UploadingWait] =
-    useState(false);
+  const dispatch = useDispatch();
 
   function UploadPlaylist() {
-    setPopupActive_UploadingWait(true);
 
     let id = uuid.v4();
 
@@ -100,7 +100,7 @@ export default function PlaylistCreation(props: any) {
         })
         .then(async (result) => {
           if (result.error == null) {
-            setPopupActive_UploadingWait(false);
+            dispatch(setPopup(""));
 
             window.location.reload();
           } else {
@@ -130,7 +130,7 @@ export default function PlaylistCreation(props: any) {
 
   return (
     <>
-      <div id="upload-playlist-menu" hidden={popupActive_UploadingWait}>
+      <div id="upload-playlist-menu">
         <label>Set Visibility:</label>
 
         <select id="playlist-privacy-setting">
@@ -198,15 +198,6 @@ export default function PlaylistCreation(props: any) {
 
         <button onClick={UploadPlaylist}>Create</button>
       </div>
-
-      <Popup
-        id="uploadingWait"
-        active={popupActive_UploadingWait}
-        setActive={setPopupActive_UploadingWait}
-        canClose={false}
-        html={<div>Creating Playlist... </div>}
-        //requiresVerification={() => playlistType != "Playlist"}
-      ></Popup>
     </>
   );
 }

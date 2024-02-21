@@ -3,15 +3,23 @@ import supabase from "../../../../config/supabaseClient";
 import { authUserID } from "../../../../main";
 import { useEffect, useState } from "react";
 import Popup from "../../Popup";
-import { ContextCloseSubs } from "../SongContextMenu";
+import { useDispatch } from "react-redux";
+import { setPopup } from "../../../../PopupSlice";
+import { CloseSongContextMenu } from "../SongContextMenu";
 
 var isPlaylistOwner: boolean = false;
 var playlistType: string = "undefined";
+
+export var DeleteSongs_Exported: any;
 
 export default function ContextOption_RemoveDeleteSong(props: any) {
   const { playlistID } = useParams();
 
   if (playlistID == null) return;
+
+  const dispatch = useDispatch();
+  DeleteSongs_Exported = DeleteSong;
+
   var removeBtn = document.getElementById("RemoveSong_Button") as HTMLElement;
   var deleteBtn = document.getElementById("DeleteSong_Button") as HTMLElement;
 
@@ -48,14 +56,6 @@ export default function ContextOption_RemoveDeleteSong(props: any) {
   useEffect(() => {
     run();
   }, [playlistID]);
-
-  const [popupActive_DeleteSong, setPopupActive_DeleteSong] = useState(false);
-
-  function ForceClose() {
-    setPopupActive_DeleteSong(false);
-  }
-
-  ContextCloseSubs.set("deleteSong", ForceClose);
 
   // Removes the song from the playlist
   function RemoveSong(song_id: string) {
@@ -132,68 +132,15 @@ export default function ContextOption_RemoveDeleteSong(props: any) {
           </div>
           <div
             id="DeleteSong_Button"
-            onClick={() => setPopupActive_DeleteSong(true)}
+            onClick={() => {
+              CloseSongContextMenu();
+              dispatch(setPopup("DeleteSong"));
+            }}
           >
             Delete Song
           </div>
         </div>
-
-        <Popup
-          id="DeleteSong"
-          active={popupActive_DeleteSong}
-          setActive={setPopupActive_DeleteSong}
-          canClose={false}
-          requiresVerification={true}
-          html={
-            <>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: "300px",
-                  height: "125px",
-                }}
-              >
-                <h2>Are you sure?</h2>
-                <div>
-                  This will permanently delete the song and remove it from the
-                  platform.
-                </div>
-                <div style={{ display: "flex", flexDirection: "row" }}>
-                  <button onClick={() => DeleteSong(props.targ)}>Yes</button>
-                  <button onClick={() => setPopupActive_DeleteSong(false)}>
-                    No
-                  </button>
-                </div>
-              </div>
-            </>
-          }
-        />
       </div>
     </>
   );
 }
-
-/*
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <h2>Are you sure?</h2>
-              <div>
-                This will permanently delete the song and remove it from the
-                platform.
-              </div>
-              <div style={{ display: "flex", flexDirection: "row" }}>
-                <button onClick={() => DeleteSong(props.targ)}>Yes</button>
-                <button onClick={() => setPopupActive_DeleteSong(false)}>
-                  No
-                </button>
-              </div>
-            </div>
-*/

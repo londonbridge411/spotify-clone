@@ -11,6 +11,7 @@ import { Artist } from "./Popups/UploadSongPopup";
 
 // Song Row
 export default function SongRow(props: any) {
+
   const [songName, setSongName] = useState("");
   const [artists, setArtists] = useState([] as Artist[]);
   const [albumName, setAlbumName] = useState("");
@@ -108,7 +109,7 @@ export default function SongRow(props: any) {
 
   return (
     <>
-      <div
+      <div 
         id={props.song_id}
         className="song-row"
         // On right click

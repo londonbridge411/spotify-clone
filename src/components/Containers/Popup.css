@@ -1,6 +1,6 @@
 .popup-box {
   background-color: rgb(1, 1, 1, 85%);
-
+color: white;
   display: flex;
   flex-direction: column;
   justify-content: center;
