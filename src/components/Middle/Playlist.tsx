@@ -10,11 +10,6 @@ import * as uuid from "uuid";
 import { setSongID, setSongList, shufflePlay } from "../../PlayerSlice";
 import { useDispatch } from "react-redux";
 import SongRow from "../Containers/SongRow";
-import PlaylistEdit, {
-  CustomInputField,
-} from "../Containers/Popups/PlaylistEdit";
-import SearchBar from "../SearchBar";
-import { UploadSongPopup } from "../Containers/Popups/UploadSongPopup";
 import { setPopup } from "../../PopupSlice";
 
 export default function Playlist() {

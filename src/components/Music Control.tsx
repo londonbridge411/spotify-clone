@@ -1,5 +1,6 @@
 import "./Music Control.css";
 import "./Marquee.css";
+import "./../Links.css";
 import play from "../assets/circle-play-solid.svg";
 import pause from "../assets/circle-pause-solid.svg";
 import prev from "../assets/backward-step-solid.svg";
@@ -270,7 +271,10 @@ export default function MusicControl() {
                   {artists.map((item: any) => {
                     return (
                       <li key={item.id}>
-                        <NavLink to={"/app/account/" + item.id}>
+                        <NavLink
+                          className="customLink"
+                          to={"/app/account/" + item.id}
+                        >
                           {item.username}
                         </NavLink>
                       </li>

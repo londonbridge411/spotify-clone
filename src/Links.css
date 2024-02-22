@@ -1,0 +1,7 @@
+.customLink {
+  color: rgb(197, 197, 197);
+}
+
+.customLink:hover {
+  color: #8dffff;
+}

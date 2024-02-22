@@ -2,13 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import supabase from "../../../config/supabaseClient";
 import SearchBar from "../../SearchBar";
 import Popup from "../Popup";
-import { CustomInputField } from "./AccountEdit";
 import * as uuid from "uuid";
 import { useParams } from "react-router-dom";
 import { PostgrestSingleResponse } from "@supabase/supabase-js";
 import { authUserID, username } from "../../../main";
 import { useDispatch } from "react-redux";
 import { setPopup } from "../../../PopupSlice";
+import CustomInputField from "../../CustomInputField";
 
 export interface Artist {
   id: string;
@@ -81,18 +81,16 @@ export function UploadSongPopup(props: any) {
 
         var song_name_text = song_name?.value;
 
-        await supabase
-          .from("Songs")
-          .insert({
-            id: id,
-            title: song_name_text,
-            owner_id: (await supabase.auth.getUser()).data.user?.id,
-            album_id: playlistID!,
-            created_at: new Date(),
-            artist_data: hasMultipleArtists
-              ? artists
-              : [{ id: authUserID, username: username }],
-          })
+        await supabase.from("Songs").insert({
+          id: id,
+          title: song_name_text,
+          owner_id: (await supabase.auth.getUser()).data.user?.id,
+          album_id: playlistID!,
+          created_at: new Date(),
+          artist_data: hasMultipleArtists
+            ? artists
+            : [{ id: authUserID, username: username }],
+        });
 
         await supabase.storage
           .from("music-files")

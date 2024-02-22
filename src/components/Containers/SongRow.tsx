@@ -8,10 +8,9 @@ import SongContextMenu, {
 } from "./ContextMenus/SongContextMenu";
 import { NavLink } from "react-router-dom";
 import { Artist } from "./Popups/UploadSongPopup";
-
+import "../../Links.css";
 // Song Row
 export default function SongRow(props: any) {
-
   const [songName, setSongName] = useState("");
   const [artists, setArtists] = useState([] as Artist[]);
   const [albumName, setAlbumName] = useState("");
@@ -109,7 +108,7 @@ export default function SongRow(props: any) {
 
   return (
     <>
-      <div 
+      <div
         id={props.song_id}
         className="song-row"
         // On right click
@@ -188,7 +187,10 @@ export default function SongRow(props: any) {
               {artists.map((item: any) => {
                 return (
                   <li key={item.id}>
-                    <NavLink to={"../account/" + item.id}>
+                    <NavLink
+                      className="customLink"
+                      to={"../account/" + item.id}
+                    >
                       {item.username}
                     </NavLink>
                   </li>
@@ -198,7 +200,9 @@ export default function SongRow(props: any) {
           </div>
         </div>
         <div className="song-row-album">
-          <NavLink to={"../playlist/" + albumID}>{albumName}</NavLink>
+          <NavLink className="customLink" to={"../playlist/" + albumID}>
+            {albumName}
+          </NavLink>
         </div>
         <div className="song-row-date">{dateCreated}</div>
       </div>

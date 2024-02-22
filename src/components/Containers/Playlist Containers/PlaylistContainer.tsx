@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import supabase from "../../../config/supabaseClient";
 import "./PlaylistContainer.css";
-import { NavLink } from "react-router-dom";
+import "../../../Links.css";
+import { NavLink, useNavigate } from "react-router-dom";
 import PlaylistContextMenu, {
   ViewPlaylistContextMenu,
 } from "../ContextMenus/PlaylistContextMenu";
-import ContextMenuOption from "../ContextMenuOption";
 
 export default function PlaylistContainer(props: any) {
   if (props.playlist_id == null) return;
@@ -17,6 +17,7 @@ export default function PlaylistContainer(props: any) {
     "../../../src/assets/small_record.svg"
   );
 
+  const navigate = useNavigate();
   useEffect(() => {
     supabase
       .from("Playlists")
@@ -53,7 +54,16 @@ export default function PlaylistContainer(props: any) {
           <div className="pl-container-content">
             <img src={coverUrl} />
             <div className="pl-container-name_holder">{playlistName}</div>
-            <NavLink to={"../account/" + artistID}>{artistName}</NavLink>
+            <div
+              className="customLink"
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                navigate("../account/" + artistID);
+              }}
+            >
+              {artistName}
+            </div>
           </div>
         </div>
       </NavLink>

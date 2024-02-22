@@ -51,11 +51,3 @@
   background-color: rgb(24, 24, 24);
   margin-bottom: 5px;
 }
-
-.pl-container-content a {
-  color: rgb(197, 197, 197);
-}
-
-.pl-container-content a:hover {
-  color: #8dffff;
-}

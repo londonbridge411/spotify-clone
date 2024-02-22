@@ -16,7 +16,7 @@ import { RootState } from "../../../store";
 Want to display icon, username, bio, followers, isVerified, upload song.
 */
 
-export var UnfollowUser_Exported:any;
+export var UnfollowUser_Exported: any;
 
 export default function AccountPage() {
   const { userID } = useParams();
@@ -60,7 +60,6 @@ export default function AccountPage() {
       });
   }, [userID, username]);
 
-
   // Exports the function so the popup control can see it.
   UnfollowUser_Exported = UnfollowUser;
 
@@ -84,9 +83,8 @@ export default function AccountPage() {
           // We will want to sort by popularity, then go to 5
 
           // Fix this
-         // console.log(myData);
-          if (myData.length > 0)
-          {
+          // console.log(myData);
+          if (myData.length > 0) {
             for (let i = 0; i < 5; i++) {
               await supabase
                 .from("Songs")
@@ -95,7 +93,7 @@ export default function AccountPage() {
                 .then((result2) => {
                   let myData2 = result2.data?.at(0);
                   let setting = (myData2?.Playlists as any).privacy_setting;
-  
+
                   if (setting != "Private" || myData2?.owner_id == authUserID) {
                     songs.push(myData[i].id);
                   }
@@ -309,13 +307,12 @@ export default function AccountPage() {
 
             {/*Popular Songs*/}
             <section hidden={popularSongsList.length == 0}>
-              
               <h2>Popular Songs</h2>
               <div className="playlist-content">
                 <ul
                   className="song-table"
                   style={{
-                    gridTemplateColumns: "20px 62px 50% 20% 10%"
+                    gridTemplateColumns: "20px 62px 50% 20% 10%",
                   }}
                 >
                   <div style={{ color: "rgba(0, 0, 0, 0)" }}>
@@ -337,13 +334,14 @@ export default function AccountPage() {
                   {popularSongsList.map((item, index) => {
                     // item broke somehow
                     return (
-                      <div key={index} style={{display:"contents"}}><div style={{alignSelf:"center"}}>{index + 1}.</div>
+                      <div key={index} style={{ display: "contents" }}>
+                        <div style={{ alignSelf: "center" }}>{index + 1}.</div>
                         <SongRow
                           song_id={item}
                           song_list={popularSongsList}
                           //forceUpdate={[username]}
-                        /></div>
-
+                        />
+                      </div>
                     );
                   })}
                 </ul>
@@ -351,11 +349,10 @@ export default function AccountPage() {
             </section>
 
             {/*Albums Songs*/}
-            <section hidden={albumList.length == 0  && !isOwner}>
+            <section hidden={albumList.length == 0 && !isOwner}>
               <h2>Albums</h2>
               <div className="myAlbums">
-                {
-                albumList.map((item) => (
+                {albumList.map((item) => (
                   <li key={item}>
                     <PlaylistContainer playlist_id={item} />
                   </li>
@@ -371,7 +368,7 @@ export default function AccountPage() {
                     }}
                     hidden={!userVerified || !isOwner}
                     onClick={() => {
-                      dispatch(setPopup("Popup_UploadAlbum"))
+                      dispatch(setPopup("Popup_UploadAlbum"));
                     }}
                   />
                 </li>
