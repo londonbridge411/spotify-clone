@@ -116,7 +116,7 @@ export default function SongRow(props: any) {
           e.preventDefault();
 
           // Don't even have to do this. Just send the song_id to state
-          ViewSongContextMenu("Song_ContextMenu", e);
+          ViewSongContextMenu("SongContext_" + props.song_id, e);
         }}
         // On left click
         onDoubleClick={() => {
@@ -208,8 +208,10 @@ export default function SongRow(props: any) {
       </div>
 
       <SongContextMenu
-      // About to leave but a thought is to store the selected song in a state
-      //requiresVerification={() => playlistType != "Playlist"}
+        //id={"SongContext_" + props.song_id}
+        songID={props.song_id}
+        // About to leave but a thought is to store the selected song in a state
+        //requiresVerification={() => playlistType != "Playlist"}
       />
     </>
   );

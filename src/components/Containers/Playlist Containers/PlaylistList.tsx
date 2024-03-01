@@ -4,6 +4,7 @@ import { authUserID, email } from "../../../main";
 import PlaylistContainerHorizontal from "./PlaylistContainerHorizontal";
 import "./PlaylistList.css";
 import { CloseSongContextMenu, targ } from "../ContextMenus/SongContextMenu";
+import { useDispatch } from "react-redux";
 import { ClosePopup } from "../../../PopupControl";
 
 export default function PlaylistList(props: any) {

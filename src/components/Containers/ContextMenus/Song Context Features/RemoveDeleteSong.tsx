@@ -18,15 +18,18 @@ export default function ContextOption_RemoveDeleteSong(props: any) {
 
   DeleteSongs_Exported = DeleteSong;
 
-  var removeBtn = document.getElementById("RemoveSong_Button") as HTMLElement;
-  var deleteBtn = document.getElementById("DeleteSong_Button") as HTMLElement;
+  var removeBtnID = "RemoveSong_Button_" + props.target;
+  var deleteBtnID = "DeleteSong_Button_" + props.target;
+
+  var removeBtn = document.getElementById(removeBtnID) as HTMLElement;
+  var deleteBtn = document.getElementById(deleteBtnID) as HTMLElement;
 
   removeBtn?.style.setProperty("display", "none");
   deleteBtn?.style.setProperty("display", "none");
 
   let run = async () => {
-    removeBtn = document.getElementById("RemoveSong_Button") as HTMLElement;
-    deleteBtn = document.getElementById("DeleteSong_Button") as HTMLElement;
+    removeBtn = document.getElementById(removeBtnID) as HTMLElement;
+    deleteBtn = document.getElementById(deleteBtnID) as HTMLElement;
 
     //console.log("\nupdating");
     await supabase
@@ -72,7 +75,7 @@ export default function ContextOption_RemoveDeleteSong(props: any) {
             .update({ song_ids: songs })
             .eq("id", playlistID);
 
-          //setListRef(songs);
+          setListRef(songs);
           CloseSongContextMenu();
         });
     } else {
@@ -122,6 +125,7 @@ export default function ContextOption_RemoveDeleteSong(props: any) {
       window.location.reload();
     }
   }
+
   return (
     <>
       <div
@@ -129,11 +133,11 @@ export default function ContextOption_RemoveDeleteSong(props: any) {
         hidden={playlistType == "undefined" || !isPlaylistOwner}
       >
         <div>
-          <div id="RemoveSong_Button" onClick={() => console.log(props.targ)}>
+          <div id={removeBtnID} onClick={() => RemoveSong(props.target)}>
             Remove Song
           </div>
           <div
-            id="DeleteSong_Button"
+            id={deleteBtnID}
             onClick={() => {
               CloseSongContextMenu();
               SwitchToPopup("DeleteSong");
