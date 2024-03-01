@@ -4,15 +4,10 @@ import PlaylistContainerHorizontal from "../Playlist Containers/PlaylistContaine
 import supabase from "../../../config/supabaseClient";
 import { email } from "../../../main";
 import * as uuid from "uuid";
-import Popup from "../Popup";
-import { setPopup } from "../../../PopupSlice";
-import { useDispatch } from "react-redux";
+import { ClosePopup } from "../../../PopupControl";
 
 export default function PlaylistCreation(props: any) {
-  const dispatch = useDispatch();
-
   function UploadPlaylist() {
-
     let id = uuid.v4();
 
     const insertIntoTable = async () => {
@@ -100,7 +95,7 @@ export default function PlaylistCreation(props: any) {
         })
         .then(async (result) => {
           if (result.error == null) {
-            dispatch(setPopup(""));
+            ClosePopup();
 
             window.location.reload();
           } else {

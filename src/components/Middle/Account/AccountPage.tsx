@@ -5,12 +5,9 @@ import PlaylistCreation from "../../Containers/Popups/PlaylistCreation";
 import supabase from "../../../config/supabaseClient";
 import PlaylistContainer from "../../Containers/Playlist Containers/PlaylistContainer";
 import { useParams } from "react-router-dom";
-import { authUserID, email, isVerified } from "../../../main";
-import AccountEdit from "../../Containers/Popups/AccountEdit";
+import { authUserID } from "../../../main";
 import SongRow from "../../Containers/SongRow";
-import { setPopup } from "../../../PopupSlice";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../../../store";
+import { SwitchToPopup } from "../../../PopupControl";
 
 /*
 Want to display icon, username, bio, followers, isVerified, upload song.
@@ -22,7 +19,6 @@ export default function AccountPage() {
   const { userID } = useParams();
 
   if (userID == null) return;
-  const dispatch = useDispatch();
 
   let isOwner: boolean = false;
   isOwner = userID == authUserID;
@@ -189,7 +185,7 @@ export default function AccountPage() {
         });
 
       setIsFollowing(true);
-      dispatch(setPopup("Popup_FollowingUser"));
+      SwitchToPopup("Popup_FollowingUser");
     }
   }
 
@@ -269,7 +265,7 @@ export default function AccountPage() {
               src="../../../src/assets/edit_button.png"
               hidden={!isOwner}
               onClick={() => {
-                dispatch(setPopup("account-edit"));
+                SwitchToPopup("account-edit");
               }}
             />
 
@@ -282,13 +278,13 @@ export default function AccountPage() {
             <img
               src="../../../src/assets/unadd_person.png"
               hidden={!isFollowing}
-              onClick={() => dispatch(setPopup("Popup_UnfollowingUser"))}
+              onClick={() => SwitchToPopup("Popup_UnfollowingUser")}
             />
 
             <img
               src="../../../src/assets/share.png"
               onClick={() => {
-                dispatch(setPopup("shareAccount"));
+                SwitchToPopup("shareAccount");
                 const url = location.href;
                 navigator.clipboard.writeText(url);
               }}
@@ -299,7 +295,7 @@ export default function AccountPage() {
             <button
               hidden={userVerified || !isOwner}
               onClick={() => {
-                dispatch(setPopup("Popup_Verification"));
+                SwitchToPopup("Popup_Verification");
               }}
             >
               Get Verified
@@ -368,7 +364,7 @@ export default function AccountPage() {
                     }}
                     hidden={!userVerified || !isOwner}
                     onClick={() => {
-                      dispatch(setPopup("Popup_UploadAlbum"));
+                      SwitchToPopup("Popup_UploadAlbum");
                     }}
                   />
                 </li>

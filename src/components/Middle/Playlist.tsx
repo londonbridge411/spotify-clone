@@ -10,7 +10,9 @@ import * as uuid from "uuid";
 import { setSongID, setSongList, shufflePlay } from "../../PlayerSlice";
 import { useDispatch } from "react-redux";
 import SongRow from "../Containers/SongRow";
-import { setPopup } from "../../PopupSlice";
+import { SwitchToPopup } from "../../PopupControl";
+
+export var setListRef: any;
 
 export default function Playlist() {
   const dispatch = useDispatch();
@@ -104,11 +106,17 @@ export default function Playlist() {
   // Song List
   const [list, setList] = useState([]);
 
+  setListRef = setList;
   // Make it so songs in private (not unlisted playlists) are hidden
   useEffect(() => {
     let update = async () => {
       setHideTable(true);
       setLoading(true);
+
+      /*
+      Get list of songs in playlist that are public.
+      If current user is owner, show even if priv
+      */
       await supabase
         .from("Playlists")
         .select("song_ids")
@@ -226,7 +234,7 @@ export default function Playlist() {
               src="../../../src/assets/edit_button.png"
               hidden={!isOwner}
               onClick={() => {
-                dispatch(setPopup("uploadPlaylistEdit"));
+                SwitchToPopup("uploadPlaylistEdit");
               }}
             />
 
@@ -234,7 +242,7 @@ export default function Playlist() {
               src="../../../src/assets/add_button.png"
               hidden={!isOwner || playlistType == "Playlist"}
               onClick={() => {
-                dispatch(setPopup("uploadSongPopup"));
+                SwitchToPopup("uploadSongPopup");
               }}
             />
 
@@ -269,7 +277,7 @@ export default function Playlist() {
             <img
               src="../../../src/assets/share.png"
               onClick={() => {
-                dispatch(setPopup("sharePlaylist"));
+                SwitchToPopup("sharePlaylist");
                 const url = location.href;
                 navigator.clipboard.writeText(url);
               }}

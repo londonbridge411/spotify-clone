@@ -8,7 +8,6 @@ import Popup from "../Popup";
 import { useParams } from "react-router-dom";
 import testbg from "../../../assets/test_bg.jpg";
 import { useDispatch } from "react-redux";
-import { setPopup } from "../../../PopupSlice";
 import CustomInputField from "../../CustomInputField";
 
 export default function PlaylistEdit() {

@@ -2,10 +2,9 @@ import { useParams } from "react-router-dom";
 import supabase from "../../../../config/supabaseClient";
 import { authUserID } from "../../../../main";
 import { useEffect, useState } from "react";
-import Popup from "../../Popup";
-import { useDispatch } from "react-redux";
-import { setPopup } from "../../../../PopupSlice";
 import { CloseSongContextMenu } from "../SongContextMenu";
+import { SwitchToPopup } from "../../../../PopupControl";
+import { setListRef } from "../../../Middle/Playlist";
 
 var isPlaylistOwner: boolean = false;
 var playlistType: string = "undefined";
@@ -17,7 +16,6 @@ export default function ContextOption_RemoveDeleteSong(props: any) {
 
   if (playlistID == null) return;
 
-  const dispatch = useDispatch();
   DeleteSongs_Exported = DeleteSong;
 
   var removeBtn = document.getElementById("RemoveSong_Button") as HTMLElement;
@@ -74,7 +72,8 @@ export default function ContextOption_RemoveDeleteSong(props: any) {
             .update({ song_ids: songs })
             .eq("id", playlistID);
 
-          window.location.reload();
+          //setListRef(songs);
+          CloseSongContextMenu();
         });
     } else {
       // Safeguard from modifying
@@ -125,16 +124,19 @@ export default function ContextOption_RemoveDeleteSong(props: any) {
   }
   return (
     <>
-      <div className="contextButton">
+      <div
+        className="contextButton"
+        hidden={playlistType == "undefined" || !isPlaylistOwner}
+      >
         <div>
-          <div id="RemoveSong_Button" onClick={() => RemoveSong(props.targ)}>
+          <div id="RemoveSong_Button" onClick={() => console.log(props.targ)}>
             Remove Song
           </div>
           <div
             id="DeleteSong_Button"
             onClick={() => {
               CloseSongContextMenu();
-              dispatch(setPopup("DeleteSong"));
+              SwitchToPopup("DeleteSong");
             }}
           >
             Delete Song

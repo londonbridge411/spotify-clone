@@ -10,7 +10,7 @@ import PlaylistEdit from "./components/Containers/Popups/PlaylistEdit";
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { UnfollowUser_Exported } from "./components/Middle/Account/AccountPage";
-import { targ as songContextTarg} from "./components/Containers/ContextMenus/SongContextMenu";
+import { targ as songContextTarg } from "./components/Containers/ContextMenus/SongContextMenu";
 import { DeleteSongs_Exported } from "./components/Containers/ContextMenus/Song Context Features/RemoveDeleteSong";
 import PlaylistList from "./components/Containers/Playlist Containers/PlaylistList";
 
@@ -19,8 +19,16 @@ var dispatchRef:
   | Dispatch<UnknownAction>
   | ((arg0: { payload: any; type: "popup/setPopup" }) => void);
 
+export function ClosePopup() {
+  dispatchRef(setPopup(""));
+}
+
+export function SwitchToPopup(key: string) {
+  dispatchRef(setPopup(key));
+}
+
 // {keyName : HTML}
-export var POPUP_MAP = new Map<string, any>([
+var POPUP_MAP = new Map<string, any>([
   ["", ""],
   [
     "Popup_Verification",
@@ -59,12 +67,12 @@ export var POPUP_MAP = new Map<string, any>([
           <button
             onClick={() => {
               UnfollowUser_Exported();
-              dispatchRef(setPopup(""));
+              ClosePopup();
             }}
           >
             Yes
           </button>
-          <button onClick={() => dispatchRef(setPopup(""))}>No</button>
+          <button onClick={() => ClosePopup()}>No</button>
         </>
       }
     />,
@@ -114,10 +122,12 @@ export var POPUP_MAP = new Map<string, any>([
     <Popup
       id="uploadingWait"
       canClose={false}
-      html={          <img
-        src="https://i.gifer.com/ZZ5H.gif"
-        style={{ height: "35px", width: "35px" }}
-      />}
+      html={
+        <img
+          src="https://i.gifer.com/ZZ5H.gif"
+          style={{ height: "35px", width: "35px" }}
+        />
+      }
     />,
   ],
   [
@@ -129,49 +139,54 @@ export var POPUP_MAP = new Map<string, any>([
     />,
   ],
 
-  ["DeleteSong",
+  [
+    "DeleteSong",
     <Popup
-    id="DeleteSong"
-    canClose={false}
-    html={
-      <>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "300px",
-            height: "125px",
-          }}
-        >
-          <h2>Are you sure?</h2>
-          <div>
-            This will permanently delete the song and remove it from the
-            platform.
+      id="DeleteSong"
+      canClose={false}
+      html={
+        <>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "300px",
+              height: "125px",
+            }}
+          >
+            <h2>Are you sure?</h2>
+            <div>
+              This will permanently delete the song and remove it from the
+              platform.
+            </div>
+            <div style={{ display: "flex", flexDirection: "row" }}>
+              <button onClick={() => DeleteSongs_Exported(songContextTarg)}>
+                Yes
+              </button>
+              <button onClick={() => ClosePopup()}>No</button>
+            </div>
           </div>
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            <button onClick={() => DeleteSongs_Exported(songContextTarg)}>Yes</button>
-            <button onClick={() => dispatchRef(setPopup(""))}>
-              No
-            </button>
+        </>
+      }
+    />,
+  ],
+  [
+    "AddToPlaylist",
+    <Popup
+      id="AddToPlaylist"
+      canClose={true}
+      requiresVerification={false}
+      html={
+        <>
+          <div className="AddToPlaylist-content">
+            <PlaylistList />
           </div>
-        </div>
-      </>
-    }
-  />],
-  ["AddToPlaylist", <Popup
-    id="AddToPlaylist"
-    canClose={true}
-    requiresVerification={false}
-    html={
-      <>
-        <div className="AddToPlaylist-content">
-          <PlaylistList />
-        </div>
-      </>
-    }
-  />]
+        </>
+      }
+    />,
+  ],
 ]);
 
 export default function PopupControl() {

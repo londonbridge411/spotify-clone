@@ -1,11 +1,8 @@
-import { useEffect, useState } from "react";
 import "./Popup.css";
 import { isVerified } from "../../main";
-import { useSelector, useDispatch } from "react-redux";
-import { setPopup } from "../../PopupSlice";
+import { ClosePopup } from "../../PopupControl";
 
 export default function Popup(props: any) {
-  const dispatch = useDispatch();
   /*
   useEffect(() => {
     setFadeIn(props.active);
@@ -17,7 +14,7 @@ export default function Popup(props: any) {
     return;
   }
 
-  return(
+  return (
     <>
       <div id={props.id} className="popup-box fadeIn">
         <div className="popup-content">
@@ -25,7 +22,7 @@ export default function Popup(props: any) {
           <button
             hidden={!props.canClose}
             onClick={() => {
-              dispatch(setPopup(""))
+              ClosePopup();
             }}
           >
             Close

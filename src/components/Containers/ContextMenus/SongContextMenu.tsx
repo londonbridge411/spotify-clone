@@ -1,17 +1,12 @@
-import { useEffect, useLayoutEffect, useState } from "react";
-import { authUserID, email, isVerified } from "../../../main";
+import { isVerified } from "../../../main";
 import "./SongContextMenu.css";
 import "./ContextButton.css";
-
-import Popup from "../Popup";
-import supabase from "../../../config/supabaseClient";
-import PlaylistList from "../Playlist Containers/PlaylistList";
-import { useParams } from "react-router-dom";
 import ContextOption_RemoveDeleteSong from "./Song Context Features/RemoveDeleteSong";
 import ContextOption_AddToPlaylist from "./Song Context Features/AddToPlaylist";
+import { useEffect, useState } from "react";
 
 export var targ: string = "";
-var isInPlaylist = document.location.href.includes("playlist");
+var setTargRef: any;
 
 export function CloseSongContextMenu() {
   var menu = document.getElementById("Song_ContextMenu") as HTMLElement;
@@ -24,8 +19,8 @@ export default function SongContextMenu(props: any) {
     return;
   }
 
-  // Run this so it updates. I don't use useState because it crashes due to infinite looping
-  isInPlaylist = document.location.href.includes("playlist");
+  const [targState, setTargState] = useState("empty");
+  setTargRef = setTargState;
 
   //setIsPlaylist(document.location.href.includes("playlist"))
   // Clicking outside the context container sets it inactive
@@ -35,7 +30,6 @@ export default function SongContextMenu(props: any) {
 
     if (!container?.contains(clickedHTML)) {
       CloseSongContextMenu();
-
       // Calls every subscriber this is closed.
       //ContextCloseSubs.forEach((value: boolean) => (value as any)());
     }
@@ -50,11 +44,9 @@ export default function SongContextMenu(props: any) {
         className="song-context-box"
       >
         <div className="song-context-content">
+          <p>{targState}</p>
           <ContextOption_AddToPlaylist />
-
-          <div hidden={!isInPlaylist}>
-            <ContextOption_RemoveDeleteSong targ={targ} />
-          </div>
+          <ContextOption_RemoveDeleteSong targ={targ} />
         </div>
       </div>
     </>
@@ -63,12 +55,16 @@ export default function SongContextMenu(props: any) {
 
 export function ViewSongContextMenu(id: string, event: any) {
   let selectedID = event.currentTarget.getAttribute("id");
-  //console.log("ID is " + selectedID);
+  console.log("ID is " + selectedID);
 
+  //setTargRef(selectedID);
   var menu = document.getElementById(id) as HTMLElement;
 
   targ = selectedID;
+
   menu.style.setProperty("display", "block");
   menu.style.setProperty("--mouse-x", event.clientX + "px");
   menu.style.setProperty("--mouse-y", event.clientY + "px");
+
+  setTargRef("asd");
 }

@@ -6,9 +6,8 @@ import * as uuid from "uuid";
 import { useParams } from "react-router-dom";
 import { PostgrestSingleResponse } from "@supabase/supabase-js";
 import { authUserID, username } from "../../../main";
-import { useDispatch } from "react-redux";
-import { setPopup } from "../../../PopupSlice";
 import CustomInputField from "../../CustomInputField";
+import { SwitchToPopup } from "../../../PopupControl";
 
 export interface Artist {
   id: string;
@@ -19,8 +18,6 @@ export function UploadSongPopup(props: any) {
   // Get Playlist ID
   const { playlistID } = useParams();
   if (playlistID == null) return;
-
-  const dispatch = useDispatch();
 
   // States
   const [artists, setArtists] = useState([] as Artist[]);
@@ -73,7 +70,7 @@ export function UploadSongPopup(props: any) {
     let id = uuid.v4();
 
     if (uploaded_song != null) {
-      dispatch(setPopup("uploadingWait"));
+      SwitchToPopup("uploadingWait");
       const insertIntoTable = async () => {
         var song_name = document.getElementById(
           "upload-song-name"

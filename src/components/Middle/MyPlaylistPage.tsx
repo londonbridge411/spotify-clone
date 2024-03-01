@@ -1,18 +1,12 @@
 import { useState, useEffect } from "react";
 import supabase from "../../config/supabaseClient";
-import { authUserID, email } from "../../main";
+import { authUserID } from "../../main";
 import PlaylistContainer from "../Containers/Playlist Containers/PlaylistContainer";
 import "./Account/AccountPage.css";
 import "./MyPlaylistPage.css";
-import Popup from "../Containers/Popup";
-import PlaylistCreation from "../Containers/Popups/PlaylistCreation";
-import AddPlaylistButton from "../AddPlaylistButton";
-import { useDispatch } from "react-redux";
-import { setPopup } from "../../PopupSlice";
+import { SwitchToPopup } from "../../PopupControl";
+
 export default function MyPlaylistPage() {
-
-  const dispatch = useDispatch();
-
   const [list, setList] = useState([null]);
   useEffect(() => {
     supabase
@@ -85,7 +79,7 @@ export default function MyPlaylistPage() {
                       cursor: "pointer",
                     }}
                     onClick={() => {
-                      dispatch(setPopup("Popup_UploadPlaylist"))
+                      SwitchToPopup("Popup_UploadPlaylist");
                     }}
                   />
                 </li>
