@@ -65,7 +65,12 @@ export default function AccountPage() {
       setHideEverything(true);
       setPopularSongsList([]);
 
+      let a = JSON.stringify([{ id: userID }]);
+      //user_id: '[{"id":' + userID + "}]"
       await supabase
+        .rpc("SelectTop5Songs", { user_id: a })
+        .then(async (result) => console.log(result.data));
+      /*await supabase
         .from("Songs")
         .select("id")
         .contains("artist_data", JSON.stringify([{ id: userID }]))
@@ -84,23 +89,26 @@ export default function AccountPage() {
             for (let i = 0; i < 5; i++) {
               await supabase
                 .from("Songs")
-                .select("owner_id, Playlists(privacy_setting)")
+                .select("title, owner_id, Playlists(privacy_setting)")
                 .eq("id", myData?.at(i).id)
+                .neq("Playlists.privacy_setting", "Private")
                 .then((result2) => {
                   let myData2 = result2.data?.at(0);
-                  let setting = (myData2?.Playlists as any).privacy_setting;
 
-                  if (setting != "Private" || myData2?.owner_id == authUserID) {
-                    songs.push(myData[i].id);
-                  }
+                  console.log(myData2);
+                  //let setting = (myData2?.Playlists as any).privacy_setting;
+
+                  songs.push(myData[i].id);
                 });
             }
+
+            console.log(songs);
             setPopularSongsList(songs as string[]);
           }
 
           setLoading(false);
           setHideEverything(false);
-        });
+        });*/
     };
 
     update();
