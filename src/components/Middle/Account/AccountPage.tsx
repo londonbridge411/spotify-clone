@@ -66,49 +66,26 @@ export default function AccountPage() {
       setPopularSongsList([]);
 
       let a = JSON.stringify([{ id: userID }]);
-      //user_id: '[{"id":' + userID + "}]"
+      console.log(a);
+      //user_id: '[{"id":' + userID + "}]" "{ user_id: a }"
       await supabase
-        .rpc("SelectTop5Songs", { user_id: a })
-        .then(async (result) => console.log(result.data));
-      /*await supabase
-        .from("Songs")
-        .select("id")
-        .contains("artist_data", JSON.stringify([{ id: userID }]))
-        .order("view_count", { ascending: false }) // Most views up top
-        .then(async (result) => {
-          var myData = result.data as any[];
+        .rpc("selecttop5songs", {uid: a}
+        ).then(async (result) => {
 
           var songs: string[] = [];
 
-          // Instead of 5, myData.length gets all
-          // We will want to sort by popularity, then go to 5
-
-          // Fix this
-          // console.log(myData);
-          if (myData.length > 0) {
-            for (let i = 0; i < 5; i++) {
-              await supabase
-                .from("Songs")
-                .select("title, owner_id, Playlists(privacy_setting)")
-                .eq("id", myData?.at(i).id)
-                .neq("Playlists.privacy_setting", "Private")
-                .then((result2) => {
-                  let myData2 = result2.data?.at(0);
-
-                  console.log(myData2);
-                  //let setting = (myData2?.Playlists as any).privacy_setting;
-
-                  songs.push(myData[i].id);
-                });
-            }
-
-            console.log(songs);
-            setPopularSongsList(songs as string[]);
+          console.log(result.data)
+          for (let i = 0; i < result.data.length; i++)
+          {
+            songs.push(result.data?.at(i).songid);
           }
 
+          setPopularSongsList(songs as string[]);
           setLoading(false);
           setHideEverything(false);
-        });*/
+        }
+
+        );
     };
 
     update();
@@ -343,7 +320,7 @@ export default function AccountPage() {
                         <SongRow
                           song_id={item}
                           song_list={popularSongsList}
-                          //forceUpdate={[username]}
+                        //forceUpdate={[username]}
                         />
                       </div>
                     );

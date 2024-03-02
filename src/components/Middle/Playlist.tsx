@@ -129,13 +129,17 @@ export default function Playlist() {
           for (let i = 0; i < myData.length; i++) {
             await supabase
               .from("Songs")
-              .select("owner_id, Playlists(privacy_setting)")
+              .select("owner_id, artist_data, Playlists(privacy_setting)")
               .eq("id", myData.at(i))
               .then((result2) => {
                 let myData2 = result2.data?.at(0);
                 let setting = (myData2?.Playlists as any).privacy_setting;
 
-                if (setting != "Private" || myData2?.owner_id == authUserID) {
+
+                let anArtist = JSON.stringify(myData2?.artist_data).includes(authUserID as string)
+                console.log();
+                if (setting != "Private" || myData2?.owner_id == authUserID || anArtist)
+                {
                   songs.push(myData[i]);
                 }
               });
