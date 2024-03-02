@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./PlaylistCreation.css";
 import PlaylistContainerHorizontal from "../Playlist Containers/PlaylistContainerHorizontal";
 import supabase from "../../../config/supabaseClient";
@@ -9,13 +9,12 @@ import { useParams } from "react-router-dom";
 import testbg from "../../../assets/test_bg.jpg";
 import { useDispatch } from "react-redux";
 import CustomInputField from "../../CustomInputField";
+import { SwitchToPopup } from "../../../PopupControl";
 
 export default function PlaylistEdit() {
   const { playlistID } = useParams();
 
   if (playlistID == null) return;
-
-  const [isLoading, setLoading] = useState(false);
 
   async function UpdateName() {
     console.log("Updating Name");
@@ -35,13 +34,7 @@ export default function PlaylistEdit() {
   }
 
   async function UpdateCover() {
-    var cover_url = "";
-
     if (useLocalCover) {
-      const uploaded_cover = (
-        document.getElementById("edit-playlist-cover") as HTMLInputElement
-      ).files![0];
-
       // Update Cover
       await supabase.storage
         .from("music-files")
@@ -57,9 +50,6 @@ export default function PlaylistEdit() {
           }
         });
     } else {
-      cover_url = (
-        document.getElementById("url-playlist-cover") as HTMLInputElement
-      )?.value;
 
       if (cover_url == "") return;
 
@@ -74,17 +64,9 @@ export default function PlaylistEdit() {
       .eq("id", playlistID);
   }
   async function UpdateBG() {
-    var background_url = "";
-
     if (useLocalBG) {
-      const uploaded_bg = (
-        document.getElementById("edit-playlist-background") as HTMLInputElement
-      ).files![0];
-      console.log(uploaded_bg);
 
       if (uploaded_bg == null) console.log("IS NULL");
-
-      //          .update("/pictures/backgrounds/" + playlistID, uploaded_bg, {
 
       // Update Cover
       await supabase.storage
@@ -99,10 +81,6 @@ export default function PlaylistEdit() {
             .getPublicUrl("pictures/backgrounds/" + playlistID).data.publicUrl;
         });
     } else {
-      background_url = (
-        document.getElementById("url-playlist-background") as HTMLInputElement
-      )?.value;
-
       if (background_url == "") return;
 
       await supabase.storage
@@ -133,10 +111,15 @@ export default function PlaylistEdit() {
     // Can't do this because it causes the other stuff to go missing
     // dispatch(setPopup("uploadingWait"));
 
-    setLoading(true);
+
+    // UPDATE: Ignore the above. On input change, I save the file/url to a variable
+    // so whenever the popup changes, the variables remain the same.
+
+    UpdateName(); // I can do this here because the query is so fast.
+    SwitchToPopup("uploadingWait")
+    //setLoading(true);
     let update = async () => {
       await UpdateVisibility();
-      await UpdateName();
       await UpdateCover();
       await UpdateBG();
       window.location.reload();
@@ -144,6 +127,14 @@ export default function PlaylistEdit() {
 
     update();
   }
+
+  var uploaded_cover:File;
+  var uploaded_bg:File;
+  var cover_url:string = "";
+  var background_url:string = "";
+
+
+  // Handlers (For OnChange)
   const [useLocalCover, setLocalCover] = useState(false);
   const [useLocalBG, setLocalBG] = useState(false);
 
@@ -155,9 +146,51 @@ export default function PlaylistEdit() {
     setLocalBG(!useLocalBG);
   };
 
+
+  const handleCoverFile = () => {
+    uploaded_cover = (
+      document.getElementById("edit-playlist-cover") as HTMLInputElement
+    ).files![0];
+
+    console.log("change cover file");
+  };
+
+  const handleBGFile = () => {
+    uploaded_bg = (
+      document.getElementById("edit-playlist-background") as HTMLInputElement
+    ).files![0];
+
+    console.log("change background file");
+  };
+
+
+  const handleCoverURL = () => {
+    cover_url = (
+      document.getElementById("url-playlist-cover") as HTMLInputElement
+    )?.value;
+
+    console.log("change cover url");
+  };
+
+  const handleBGURL = () => {
+    background_url = (
+      document.getElementById("url-playlist-background") as HTMLInputElement
+    )?.value;
+
+    console.log("change background url");
+  };
+
+  const handleName = () => {
+    background_url = (
+      document.getElementById("url-playlist-background") as HTMLInputElement
+    )?.value;
+
+    console.log("change background url");
+  };
+
   return (
     <>
-      <div hidden={isLoading}>
+      <div>
         <div
           id="edit-playlist-menu"
           style={{ display: "flex", flexDirection: "column", width: "400px" }}
@@ -204,6 +237,7 @@ export default function PlaylistEdit() {
             inputID={"edit-playlist-name"}
             setType={"none"}
             OnSet={UpdateName}
+            OnChange={handleName}
           />
 
           <div style={{ paddingLeft: "150px" }}>
@@ -224,6 +258,7 @@ export default function PlaylistEdit() {
             accept=".jpg, .jpeg, .png"
             setType={"none"}
             OnSet={UpdateCover}
+            onChange={handleCoverURL}
           />
 
           <CustomInputField
@@ -232,6 +267,7 @@ export default function PlaylistEdit() {
             inputID={"edit-playlist-cover"}
             setType={"none"}
             OnSet={UpdateCover}
+            onChange={handleCoverFile}
             accept=".jpg, .jpeg, .png"
           />
 
@@ -251,6 +287,7 @@ export default function PlaylistEdit() {
             placeholder={"www.somesite.com/img.png"}
             setType={"none"}
             OnSet={UpdateBG}
+            onChange={handleBGURL}
           />
 
           <CustomInputField
@@ -259,6 +296,7 @@ export default function PlaylistEdit() {
             inputID={"edit-playlist-background"}
             setType={"none"}
             OnSet={UpdateBG}
+            onChange={handleBGFile}
             accept=".jpg, .jpeg, .png"
           />
 
@@ -288,13 +326,6 @@ export default function PlaylistEdit() {
             Save Settings
           </button>
         </div>
-      </div>
-
-      <div hidden={!isLoading}>
-        <img
-          src="https://i.gifer.com/ZZ5H.gif"
-          style={{ height: "35px", width: "35px" }}
-        />
       </div>
     </>
   );

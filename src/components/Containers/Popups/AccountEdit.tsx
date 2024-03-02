@@ -8,13 +8,15 @@ import Popup from "../Popup";
 import { useParams } from "react-router-dom";
 import testbg from "../../../assets/test_bg.jpg";
 import CustomInputField from "../../CustomInputField";
+import { SwitchToPopup } from "../../../PopupControl";
 
 export default function AccountEdit() {
   const { userID } = useParams();
 
   if (userID == null) return;
-  const [isLoading, setLoading] = useState(false);
 
+var uploaded_cover: File;
+var cover_url: string = "";
   async function UpdateName() {
     console.log("Updating Name");
 
@@ -25,20 +27,52 @@ export default function AccountEdit() {
     var account_name_text = account_name?.value;
 
     if (account_name_text != "") {
+
+      // Update the username in the users table
       await supabase
         .from("Users")
         .update({ username: account_name_text })
         .eq("id", userID);
+
+
+
+      await supabase
+        .from("Songs")
+        .select("id, artist_data")
+        .contains("artist_data", JSON.stringify([{ id: userID }]))
+        .then(async (result) => {
+
+          // Store the results
+          let songs: any[] = result.data as any[];
+
+          for (let i = 0; i < songs.length; i++) {
+
+            // Get current song's artist_data
+            let artistData: any[] = songs[i].artist_data;
+
+            for (let j = 0; j < artistData.length; j++) {
+
+              // When we find the position of the id
+              if (artistData[j].id == userID) {
+
+                // Update local objects username
+                artistData[j].username = account_name_text;
+
+                // Update the database username
+                await supabase
+                  .from("Songs")
+                  .update({ artist_data: artistData })
+                  .eq("id", songs[i].id);
+
+                break;
+              }
+            }
+          }
+        });
     }
   }
   async function UpdateCover() {
-    var cover_url = "";
-
     if (useLocalCover) {
-      const uploaded_cover = (
-        document.getElementById("edit-account-cover") as HTMLInputElement
-      ).files![0];
-
       // Update Cover
       await supabase.storage
         .from("user-files")
@@ -54,9 +88,6 @@ export default function AccountEdit() {
           }
         });
     } else {
-      cover_url = (
-        document.getElementById("url-account-cover") as HTMLInputElement
-      )?.value;
 
       if (cover_url == "") return;
 
@@ -72,8 +103,7 @@ export default function AccountEdit() {
   }
 
   function SaveSettings() {
-    setLoading(true);
-
+    SwitchToPopup("uploadingWait");
     let update = async () => {
       await UpdateName();
       await UpdateCover();
@@ -83,17 +113,33 @@ export default function AccountEdit() {
     update();
   }
   const [useLocalCover, setLocalCover] = useState(false);
-  const [useLocalBG, setLocalBG] = useState(false);
+  //const [useLocalBG, setLocalBG] = useState(false);
 
   const handleLocalCover = () => {
     setLocalCover(!useLocalCover);
+  };
+
+
+  const handleCoverFile = () => {
+    uploaded_cover = (
+      document.getElementById("edit-account-cover") as HTMLInputElement
+    ).files![0];
+
+    console.log("change cover file");
+  };
+
+  const handleCoverURL = () => {
+    cover_url = (
+      document.getElementById("url-account-cover") as HTMLInputElement
+    )?.value;
+
+    console.log("change cover url");
   };
 
   return (
     <>
       <div
         id="edit-account-menu"
-        hidden={isLoading}
         style={{ display: "flex", flexDirection: "column", width: "400px" }}
       >
         <h2
@@ -141,6 +187,7 @@ export default function AccountEdit() {
           accept=".jpg, .jpeg, .png"
           setType={"none"}
           OnSet={UpdateCover}
+          onChange={handleCoverURL}
         />
 
         <CustomInputField
@@ -150,10 +197,11 @@ export default function AccountEdit() {
           setType={"none"}
           OnSet={UpdateCover}
           accept=".jpg, .jpeg, .png"
+          onChange={handleCoverFile}
         />
 
         <div
-          hidden={!useLocalCover && !useLocalBG}
+          hidden={!useLocalCover}
           style={{
             display: "flex",
             justifyContent: "center",
@@ -177,13 +225,6 @@ export default function AccountEdit() {
         >
           Update Profile
         </button>
-      </div>
-
-      <div hidden={!isLoading}>
-        <img
-          src="https://i.gifer.com/ZZ5H.gif"
-          style={{ height: "35px", width: "35px" }}
-        />
       </div>
     </>
   );

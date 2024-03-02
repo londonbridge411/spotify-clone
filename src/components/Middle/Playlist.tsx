@@ -278,7 +278,7 @@ export default function Playlist() {
               onClick={UnfollowPlaylist}
             />
 
-            <img
+            <img hidden={playlistPrivacy == "Private"}
               src="../../../src/assets/share.png"
               onClick={() => {
                 SwitchToPopup("sharePlaylist");
@@ -295,6 +295,9 @@ export default function Playlist() {
                 </div>
                 <div className="text-bold">
                   Name <hr></hr>
+                </div>
+                <div className="text-bold">
+                    Views <hr></hr>
                 </div>
                 <div className="text-bold">
                   Album <hr></hr>

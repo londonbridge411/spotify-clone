@@ -13,6 +13,7 @@ export default function CustomInputField(props: any) {
         >
           <label>{props.label}</label>
           <input
+          onChange={props.onChange}
             id={props.inputID}
             type={props.inputType}
             placeholder={props.placeholder}

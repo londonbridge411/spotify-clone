@@ -66,26 +66,20 @@ export default function AccountPage() {
       setPopularSongsList([]);
 
       let a = JSON.stringify([{ id: userID }]);
-      console.log(a);
+
       //user_id: '[{"id":' + userID + "}]" "{ user_id: a }"
-      await supabase
-        .rpc("selecttop5songs", {uid: a}
-        ).then(async (result) => {
+      await supabase.rpc("selecttop5songs", { uid: a }).then(async (result) => {
+        var songs: string[] = [];
 
-          var songs: string[] = [];
-
-          console.log(result.data)
-          for (let i = 0; i < result.data.length; i++)
-          {
-            songs.push(result.data?.at(i).songid);
-          }
-
-          setPopularSongsList(songs as string[]);
-          setLoading(false);
-          setHideEverything(false);
+        for (let i = 0; i < result.data.length; i++) {
+          songs.push(result.data?.at(i).songid);
         }
+        setPopularSongsList(songs as string[]);
 
-        );
+      });
+
+      setLoading(false);
+      setHideEverything(false);
     };
 
     update();
@@ -293,7 +287,7 @@ export default function AccountPage() {
                 <ul
                   className="song-table"
                   style={{
-                    gridTemplateColumns: "20px 62px 50% 20% 10%",
+                    gridTemplateColumns: "20px 62px 30% 20% 20% 10%",
                   }}
                 >
                   <div style={{ color: "rgba(0, 0, 0, 0)" }}>
@@ -304,6 +298,9 @@ export default function AccountPage() {
                   </div>
                   <div className="text-bold">
                     Name <hr></hr>
+                  </div>
+                  <div className="text-bold">
+                    Views <hr></hr>
                   </div>
                   <div className="text-bold">
                     Album <hr></hr>
@@ -320,7 +317,7 @@ export default function AccountPage() {
                         <SongRow
                           song_id={item}
                           song_list={popularSongsList}
-                        //forceUpdate={[username]}
+                          //forceUpdate={[username]}
                         />
                       </div>
                     );
