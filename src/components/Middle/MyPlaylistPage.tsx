@@ -14,6 +14,7 @@ export default function MyPlaylistPage() {
       .select("id")
       .eq("owner_id", authUserID)
       .eq("type", "Playlist")
+      .order("created_at")
       .then(async (result) => {
         var array = [];
         var myData = result.data;
@@ -46,6 +47,7 @@ export default function MyPlaylistPage() {
               .from("Playlists")
               .select("privacy_setting")
               .eq("id", resultList.at(i))
+              .order("created_at")
               .then((result2) => {
                 if (result2.data?.at(0)?.privacy_setting != "Private") {
                   array.push(resultList.at(i));
