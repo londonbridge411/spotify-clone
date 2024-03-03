@@ -297,13 +297,16 @@ export default function Playlist() {
                   Name <hr></hr>
                 </div>
                 <div className="text-bold">
-                    Views <hr></hr>
+                  Views <hr></hr>
                 </div>
                 <div className="text-bold">
                   Album <hr></hr>
                 </div>
                 <div className="text-bold">
                   Created <hr></hr>
+                </div>      
+                <div className="text-bold">
+                  Duration <hr></hr>
                 </div>
 
                 {list.map((item) => {

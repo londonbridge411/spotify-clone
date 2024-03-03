@@ -75,7 +75,6 @@ export default function AccountPage() {
           songs.push(result.data?.at(i).songid);
         }
         setPopularSongsList(songs as string[]);
-
       });
 
       setLoading(false);
@@ -287,7 +286,7 @@ export default function AccountPage() {
                 <ul
                   className="song-table"
                   style={{
-                    gridTemplateColumns: "20px 62px 30% 20% 20% 10%",
+                    gridTemplateColumns: "20px 62px 30% 20% 20% 150px 10%",
                   }}
                 >
                   <div style={{ color: "rgba(0, 0, 0, 0)" }}>
@@ -307,6 +306,9 @@ export default function AccountPage() {
                   </div>
                   <div className="text-bold">
                     Created <hr></hr>
+                  </div>
+                  <div className="text-bold">
+                    Duration <hr></hr>
                   </div>
 
                   {popularSongsList.map((item, index) => {

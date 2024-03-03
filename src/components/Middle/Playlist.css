@@ -98,7 +98,7 @@ div::-webkit-scrollbar-thumb {
 
 .song-table {
   display: grid;
-  grid-template-columns: 62px 30% 20% 20% 10%;
+  grid-template-columns: 62px 30% 20% 20% 10% 10%;
   row-gap: 10px;
   width: calc(100% - 150px);
   grid-auto-rows: 1fr;
@@ -181,15 +181,13 @@ div::-webkit-scrollbar-thumb {
 }
 
 .song-row-album {
-  display: flex;
-  align-items: center;
   padding-right: 50px;
 }
 .song-row-album a {
   color: white;
 }
 
-.song-row-date {
+.song-row-item {
   display: flex;
   align-items: center;
 }

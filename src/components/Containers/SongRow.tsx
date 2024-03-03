@@ -16,6 +16,7 @@ export default function SongRow(props: any) {
   const [albumName, setAlbumName] = useState("");
   const [dateCreated, setDateCreated] = useState("");
   const [views, setViews] = useState(0);
+  const [duration, setDuration] = useState("");
   const [albumID, setAlbumID] = useState();
 
   const [albumCoverURL, setAlbumCoverURL] = useState(
@@ -31,7 +32,7 @@ export default function SongRow(props: any) {
       supabase
         .from("Songs")
         .select(
-          "title, artist_data, created_at, album_id, view_count, Playlists(id, name, cover_url)"
+          "title, artist_data, created_at, album_id, view_count, duration, Playlists(id, name, cover_url)"
         )
         .eq("id", props.song_id)
         .then(async (result) => {
@@ -40,7 +41,8 @@ export default function SongRow(props: any) {
 
           if (row != null) {
             setSongName(row.title);
-            setViews(row.view_count)
+            setViews(row.view_count);
+            setDuration(row.duration);
             setDateCreated(row.created_at);
             setAlbumName(playlistData.name);
             setAlbumID(row.album_id);
@@ -201,15 +203,15 @@ export default function SongRow(props: any) {
             </div>
           </div>
         </div>
-        <div className="song-row-views">{views}</div>
-        <div className="song-row-album">
+        <div className="song-row-views, song-row-item">{views}</div>
+        <div className="song-row-album, song-row-item">
           <NavLink className="customLink" to={"../playlist/" + albumID}>
             {albumName}
           </NavLink>
         </div>
-        <div className="song-row-date">{dateCreated}</div>
+        <div className="song-row-date, song-row-item ">{dateCreated}</div>
+        <div className="song-row-duration, song-row-item">{duration}</div>
       </div>
-
       <SongContextMenu
         //id={"SongContext_" + props.song_id}
         songID={props.song_id}
