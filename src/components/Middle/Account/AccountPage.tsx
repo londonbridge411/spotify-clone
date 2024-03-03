@@ -92,6 +92,7 @@ export default function AccountPage() {
       .from("Playlists")
       .select("id, type, privacy_setting")
       .eq("owner_id", userID)
+      .order("created_at")
       .then((result) => {
         var albums = [];
         var playlists = [];
