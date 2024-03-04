@@ -135,8 +135,8 @@ function SearchBar(props: any) {
     //console.log("Filtering by " + filterBy);
   };
   return (
-    <div>
-      <div style={{ display: "flex" }}>
+    <>
+      <div style={{ display: "flex", height: "30px" }}>
         <CustomInputField
           type="search"
           placeholder="Search by..."
@@ -164,7 +164,7 @@ function SearchBar(props: any) {
           <option value="Playlists">Playlists</option>
         </select>
       </div>
-    </div>
+    </>
   );
 }
 

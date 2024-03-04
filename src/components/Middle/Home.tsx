@@ -23,6 +23,7 @@ export default function Home() {
   return (
     <div className="home-page">
       <div className="home-layout">
+        <h1>Home</h1>
         <SearchBar
           setSearchResults_Users={setSearchResults_Users}
           setSearchResults_Songs={setSearchResults_Songs}
@@ -30,7 +31,7 @@ export default function Home() {
           setSearchResults_Playlists={setSearchResults_Playlists}
         />
 
-        <div hidden={searchResults_Songs.length == 0}>
+        <section hidden={searchResults_Songs.length == 0}>
           <h2>Songs</h2>
 
           <ul className="song-table">
@@ -58,20 +59,22 @@ export default function Home() {
               );
             })}
           </ul>
-        </div>
+        </section>
 
-        <h2 hidden={searchResults_Users?.length == 0}>Users</h2>
-        <ul>
-          {searchResults_Users?.map((item: any) => {
-            return (
-              <li key={item.id}>
-                <NavLink className="customLink" to={"../account/" + item.id}>
-                  {item.username}
-                </NavLink>
-              </li>
-            );
-          })}
-        </ul>
+        <section hidden={searchResults_Users?.length == 0}>
+          <h2>Users</h2>
+          <ul>
+            {searchResults_Users?.map((item: any) => {
+              return (
+                <li key={item.id}>
+                  <NavLink className="customLink" to={"../account/" + item.id}>
+                    {item.username}
+                  </NavLink>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
 
         <section hidden={searchResults_Albums?.length == 0}>
           <h2>Albums</h2>
@@ -94,6 +97,19 @@ export default function Home() {
             ))}
           </div>
         </section>
+
+        <h3
+          hidden={
+            !(
+              searchResults_Users?.length == 0 &&
+              searchResults_Songs?.length == 0 &&
+              searchResults_Albums?.length == 0 &&
+              searchResults_Playlists?.length == 0
+            )
+          }
+        >
+          No results
+        </h3>
       </div>
     </div>
   );

@@ -19,6 +19,14 @@
   width: 90%;
 }
 
+.home-layout h1 {
+  margin: 0;
+  overflow-x: hidden;
+  height: 70px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 .home-layout .myAlbums {
   display: flex;
   flex-direction: row;
