@@ -284,10 +284,10 @@ export default function AccountPage() {
             <section hidden={popularSongsList.length == 0}>
               <h2>Popular Songs</h2>
               <div className="playlist-content">
-                <ul
+                <div
                   className="song-table"
                   style={{
-                    gridTemplateColumns: "20px 62px 30% 20% 20% 150px 10%",
+                    gridTemplateColumns: "20px 62px 30% 20% 20% 150px 5%",
                   }}
                 >
                   <div style={{ color: "rgba(0, 0, 0, 0)" }}>
@@ -325,7 +325,7 @@ export default function AccountPage() {
                       </div>
                     );
                   })}
-                </ul>
+                </div>
               </div>
             </section>
 

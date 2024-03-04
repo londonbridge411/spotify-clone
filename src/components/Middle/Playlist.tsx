@@ -135,11 +135,15 @@ export default function Playlist() {
                 let myData2 = result2.data?.at(0);
                 let setting = (myData2?.Playlists as any).privacy_setting;
 
-
-                let anArtist = JSON.stringify(myData2?.artist_data).includes(authUserID as string)
+                let anArtist = JSON.stringify(myData2?.artist_data).includes(
+                  authUserID as string
+                );
                 console.log();
-                if (setting != "Private" || myData2?.owner_id == authUserID || anArtist)
-                {
+                if (
+                  setting != "Private" ||
+                  myData2?.owner_id == authUserID ||
+                  anArtist
+                ) {
                   songs.push(myData[i]);
                 }
               });
@@ -278,7 +282,8 @@ export default function Playlist() {
               onClick={UnfollowPlaylist}
             />
 
-            <img hidden={playlistPrivacy == "Private"}
+            <img
+              hidden={playlistPrivacy == "Private"}
               src="../../../src/assets/share.png"
               onClick={() => {
                 SwitchToPopup("sharePlaylist");
@@ -289,7 +294,7 @@ export default function Playlist() {
           </div>
           <main>
             <div hidden={hideTable} className="playlist-content">
-              <ul className="song-table">
+              <div className="song-table">
                 <div style={{ color: "rgba(0, 0, 0, 0)" }}>
                   ?<hr></hr>
                 </div>
@@ -304,7 +309,7 @@ export default function Playlist() {
                 </div>
                 <div className="text-bold">
                   Created <hr></hr>
-                </div>      
+                </div>
                 <div className="text-bold">
                   Duration <hr></hr>
                 </div>
@@ -320,7 +325,7 @@ export default function Playlist() {
                     />
                   );
                 })}
-              </ul>
+              </div>
             </div>
             <div
               hidden={!hideTable}

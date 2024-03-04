@@ -50,7 +50,6 @@ export default function PlaylistEdit() {
           }
         });
     } else {
-
       if (cover_url == "") return;
 
       await supabase.storage
@@ -65,7 +64,6 @@ export default function PlaylistEdit() {
   }
   async function UpdateBG() {
     if (useLocalBG) {
-
       if (uploaded_bg == null) console.log("IS NULL");
 
       // Update Cover
@@ -95,15 +93,11 @@ export default function PlaylistEdit() {
   }
 
   async function UpdateVisibility() {
-    let dropdown = document.getElementById(
-      "playlist-privacy-setting"
-    ) as HTMLSelectElement;
-
-    if (dropdown?.value == "") return;
+    if (dropdown_value == "") return;
 
     await supabase
       .from("Playlists")
-      .update({ privacy_setting: dropdown.value })
+      .update({ privacy_setting: dropdown_value })
       .eq("id", playlistID);
   }
 
@@ -111,14 +105,13 @@ export default function PlaylistEdit() {
     // Can't do this because it causes the other stuff to go missing
     // dispatch(setPopup("uploadingWait"));
 
-
     // UPDATE: Ignore the above. On input change, I save the file/url to a variable
     // so whenever the popup changes, the variables remain the same.
 
-    UpdateName(); // I can do this here because the query is so fast.
-    SwitchToPopup("uploadingWait")
+    SwitchToPopup("uploadingWait");
     //setLoading(true);
     let update = async () => {
+      await UpdateName(); // I can do this here because the query is so fast.
       await UpdateVisibility();
       await UpdateCover();
       await UpdateBG();
@@ -128,11 +121,11 @@ export default function PlaylistEdit() {
     update();
   }
 
-  var uploaded_cover:File;
-  var uploaded_bg:File;
-  var cover_url:string = "";
-  var background_url:string = "";
-
+  var uploaded_cover: File;
+  var uploaded_bg: File;
+  var cover_url: string = "";
+  var background_url: string = "";
+  var dropdown_value: string = "";
 
   // Handlers (For OnChange)
   const [useLocalCover, setLocalCover] = useState(false);
@@ -146,13 +139,12 @@ export default function PlaylistEdit() {
     setLocalBG(!useLocalBG);
   };
 
-
   const handleCoverFile = () => {
     uploaded_cover = (
       document.getElementById("edit-playlist-cover") as HTMLInputElement
     ).files![0];
 
-    console.log("change cover file");
+    //console.log("change cover file");
   };
 
   const handleBGFile = () => {
@@ -160,16 +152,15 @@ export default function PlaylistEdit() {
       document.getElementById("edit-playlist-background") as HTMLInputElement
     ).files![0];
 
-    console.log("change background file");
+    //console.log("change background file");
   };
-
 
   const handleCoverURL = () => {
     cover_url = (
       document.getElementById("url-playlist-cover") as HTMLInputElement
     )?.value;
 
-    console.log("change cover url");
+    //console.log("change cover url");
   };
 
   const handleBGURL = () => {
@@ -177,7 +168,7 @@ export default function PlaylistEdit() {
       document.getElementById("url-playlist-background") as HTMLInputElement
     )?.value;
 
-    console.log("change background url");
+    //console.log("change background url");
   };
 
   const handleName = () => {
@@ -185,7 +176,15 @@ export default function PlaylistEdit() {
       document.getElementById("url-playlist-background") as HTMLInputElement
     )?.value;
 
-    console.log("change background url");
+    //console.log("change name");
+  };
+
+  const handleDropdown = () => {
+    dropdown_value = (
+      document.getElementById("playlist-privacy-setting") as HTMLSelectElement
+    )?.value;
+
+    //console.log("change vis");
   };
 
   return (
@@ -222,6 +221,7 @@ export default function PlaylistEdit() {
                 borderRadius: "10px",
                 border: "none",
               }}
+              onChange={handleDropdown}
             >
               <option value=""></option>
               <option value="Public">Public</option>
@@ -237,7 +237,7 @@ export default function PlaylistEdit() {
             inputID={"edit-playlist-name"}
             setType={"none"}
             OnSet={UpdateName}
-            OnChange={handleName}
+            onChange={handleName}
           />
 
           <div style={{ paddingLeft: "150px" }}>

@@ -16,12 +16,13 @@
 }
 
 .account-layout {
-  margin-left: 100px;
   margin-top: 50px;
+  justify-self: center;
+  width: 90%;
 }
 
-.account-page section{
-  margin-top:20px;
+.account-page section {
+  margin-top: 20px;
 }
 .account-layout header {
   max-height: 175px;

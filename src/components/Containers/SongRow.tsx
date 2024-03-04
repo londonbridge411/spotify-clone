@@ -126,7 +126,7 @@ export default function SongRow(props: any) {
         onDoubleClick={() => {
           let nameArea = document.getElementById(props.song_id);
           if (player.song_id != nameArea?.id) {
-            dispatch(setSongList(props.song_list));
+            if (props.song_list != null) dispatch(setSongList(props.song_list));
             dispatch(setSongID(props.song_id));
           } else {
             let a = document.getElementById("audioControl") as HTMLAudioElement;
@@ -167,7 +167,8 @@ export default function SongRow(props: any) {
               //setPlayIcon(play);
             } else {
               a.play();
-              dispatch(setSongList(props.song_list));
+              if (props.song_list != null)
+                dispatch(setSongList(props.song_list));
               dispatch(setSongID(props.song_id));
               dispatch(setIsPlaying(!player.isPlaying));
             }
