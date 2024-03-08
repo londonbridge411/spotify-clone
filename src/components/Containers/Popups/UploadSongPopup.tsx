@@ -64,6 +64,13 @@ export function UploadSongPopup(props: any) {
   var uploaded_song: File;
   // Uploads the song
   function UploadSong() {
+    if (hasMultipleArtists && artists.length == 0) {
+      alert(
+        "Not allowed. When multiple artists is checked, you have to at least have one artists id inserted."
+      );
+      return;
+    }
+
     uploaded_song = (
       document.getElementById("uploaded_song") as HTMLInputElement
     ).files![0];
@@ -78,7 +85,7 @@ export function UploadSongPopup(props: any) {
         ) as HTMLInputElement;
 
         var song_name_text = song_name?.value;
-        var song_duration:string;
+        var song_duration: string;
         await supabase.storage
           .from("music-files")
           .upload("/audio-files/" + id, uploaded_song, {
@@ -93,10 +100,10 @@ export function UploadSongPopup(props: any) {
             let au = new Audio(a);
 
             au.onloadedmetadata = async () => {
-
               const minutes = Math.floor(au.duration / 60);
               const seconds = Math.floor(au.duration % 60);
-              const returnedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
+              const returnedSeconds =
+                seconds < 10 ? `0${seconds}` : `${seconds}`;
               song_duration = `${minutes}:${returnedSeconds}`;
 
               await supabase.from("Songs").insert({
@@ -110,29 +117,27 @@ export function UploadSongPopup(props: any) {
                   : [{ id: authUserID, username: username }],
                 duration: song_duration!,
               });
-      
+
               // Now we need to append ID to array in playlist
-      
+
               await supabase
                 .from("Playlists")
                 .select("song_ids")
                 .eq("id", playlistID)
                 .then(async (result) => {
                   var array: string[] = result.data?.at(0)?.song_ids;
-      
+
                   array.push(id as string);
-      
+
                   await supabase
                     .from("Playlists")
                     .update({ song_ids: array })
                     .eq("id", playlistID);
-      
+
                   window.location.reload();
                 });
             };
           });
-
-
       };
 
       insertIntoTable();
@@ -161,7 +166,7 @@ export function UploadSongPopup(props: any) {
           placeholder={"Some name"}
           label={"Choose file:"}
           inputID={"uploaded_song"}
-          accept="audio/mp3"
+          accept=".mp3, .wav, .m4a"
         />
         <CustomInputField
           inputType={"url"}

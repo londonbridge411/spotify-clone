@@ -44,7 +44,7 @@ function LoginUser(navigate: NavigateFunction) {
     if (error == null) {
       SetLoginStatus(true); //This is technically done automatically, but this is a safeguard to make sure it works
       await getInfo();
-      navigate("/app");
+      navigate("/app/home");
     }
   };
   login();
