@@ -42,6 +42,7 @@ function SearchBar(props: any) {
             //.or("id.eq.(london%), username.ilike.(london%)")
             //.eq("username", searchInput)
             .ilike("username", regex)
+            //.textSearch("username", "londonbridge411")
             .then((result) => {
               //console.log(result.data);
 
