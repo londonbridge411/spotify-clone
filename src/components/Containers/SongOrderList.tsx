@@ -19,27 +19,36 @@ export default function SongOrderList(props: any) {
   useEffect(() => {
     supabase
       .from("Playlists")
-      .select("song_ids, Songs(title, id)")
+      .select("song_ids")
       .eq("id", playlistID)
       .eq("owner_id", authUserID)
-      .then((result) => {
-        var array = [];
+      .then(async (result) => {
+        var array: any[] = [];
         var myData = result.data?.at(0);
 
         //console.log(myData);
         //setList(myData as any);
         if (myData != null) {
           for (let i = 0; i < myData.song_ids.length; i++) {
-            let songID = myData.song_ids[i];
-            let songTitleIndex = myData.Songs.findIndex(
-              (song: any) => song.id == myData?.song_ids[i]
-            );
+            //await supabase.Songs(title, id)
 
-            let item = {
-              title: myData.Songs[songTitleIndex].title,
-              id: songID,
-            };
-            array.push(item);
+            let songID = myData?.song_ids[i];
+            //console.log(songID);
+
+            // Cannot do a join. Join only works when it is an album. Tested in actual sql too.
+            await supabase
+              .from("Songs")
+              .select("title")
+              .eq("id", songID)
+              .then((result2) => {
+                let myData2 = result2.data?.at(0);
+
+                let item = {
+                  title: myData2?.title,
+                  id: songID,
+                };
+                array.push(item);
+              });
           }
 
           setList(array as any);
