@@ -37,14 +37,9 @@ function SearchBar(props: any) {
 
         if (filterBy == Filter.USERS || filterBy == Filter.ALL) {
           await supabase
-            .from("Users")
-            .select("*")
-            //.or("id.eq.(london%), username.ilike.(london%)")
-            //.eq("username", searchInput)
-            .ilike("username", regex)
-            //.textSearch("username", "londonbridge411")
+            .rpc("searchusers", { input: searchInput, threshhold: 0.35 })
             .then((result) => {
-              //console.log(result.data);
+              console.log(result.data);
 
               props.setSearchResults_Users(result.data as any);
             });
@@ -53,46 +48,27 @@ function SearchBar(props: any) {
         if (filterBy == Filter.SONGS || filterBy == Filter.ALL) {
           /*Query selects all public songs with the matching regex*/
           await supabase
-            .from("Songs")
-            .select("id, setting:Playlists!inner(privacy_setting)")
-            .eq("setting.privacy_setting", "Public")
-            .order("view_count", { ascending: false })
-            .ilike("title", regex)
+            .rpc("searchsongs", { input: searchInput, threshhold: 0.35 })
             .then((result) => {
-              //console.log(result.data);
-              //        .contains("artist_data", JSON.stringify([{ id: userID }]))
               props.setSearchResults_Songs(result.data as any);
             });
         }
 
         if (filterBy == Filter.ALBUMS || filterBy == Filter.ALL) {
-          let query = supabase
-            .from("Playlists")
-            .select("*, owner_username:Users!inner(username)")
-            .eq("type", "Album")
-            .eq("privacy_setting", "Public")
-            .ilike("name", regex);
-
-          // if (filterBy == Filter.ALL) {
-          //   //query.ilike("owner_username", regex);
-          //   //query.or("ilike.owner_username");
-          // } else {
-          //   query.ilike("name", regex);
-          // }
+          let query = supabase.rpc("searchalbums", {
+            input: searchInput,
+            threshhold: 0.35,
+          });
 
           const result = await query;
 
-          console.log(result.data);
+          //console.log(result.data);
           props.setSearchResults_Albums(result.data as any);
         }
 
         if (filterBy == Filter.PLAYLISTS || filterBy == Filter.ALL) {
           await supabase
-            .from("Playlists")
-            .select("*")
-            .eq("type", "Playlist")
-            .eq("privacy_setting", "Public")
-            .ilike("name", regex)
+            .rpc("searchplaylists", { input: searchInput, threshhold: 0.35 })
             .then((result) => {
               //console.log(result.data);
 

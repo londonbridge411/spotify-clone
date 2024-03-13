@@ -321,6 +321,21 @@ export default function PlaylistEdit() {
               justifyContent: "center",
               marginBottom: "15px",
             }}
+            onClick={() => {
+              SwitchToPopup("EditPlaylistOrder");
+            }}
+          >
+            Edit Order
+          </button>
+
+          <button
+            style={{
+              display: "flex",
+              alignContent: "center",
+              alignSelf: "center",
+              justifyContent: "center",
+              marginBottom: "15px",
+            }}
             onClick={SaveSettings}
           >
             Save Settings

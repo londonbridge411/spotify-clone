@@ -1,0 +1,22 @@
+.songOrderContainer {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  row-gap: 10px;
+}
+
+.songOrderItem {
+  user-select: none;
+  background-color: black;
+}
+
+.songOrderItem-Follow {
+  background-color: red;
+  opacity: 50%;
+  /*--mouse-y: 0;
+  background-color: red;
+  position: fixed;
+  transform: translateX(min(var(--mouse-x), calc(100vw - 100%)))
+    translateY(min(var(--mouse-y), calc(100vh - 100%)));
+  z-index: 10000;*/
+}

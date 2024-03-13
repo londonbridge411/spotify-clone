@@ -13,6 +13,7 @@ import { UnfollowUser_Exported } from "./components/Middle/Account/AccountPage";
 import { targ as songContextTarg } from "./components/Containers/ContextMenus/SongContextMenu";
 import { DeleteSongs_Exported } from "./components/Containers/ContextMenus/Song Context Features/RemoveDeleteSong";
 import PlaylistList from "./components/Containers/Playlist Containers/PlaylistList";
+import SongOrderList from "./components/Containers/SongOrderList";
 
 // Used for things in-line here.
 var dispatchRef:
@@ -182,6 +183,33 @@ var POPUP_MAP = new Map<string, any>([
         <>
           <div className="AddToPlaylist-content">
             <PlaylistList />
+          </div>
+        </>
+      }
+    />,
+  ],
+  [
+    "EditPlaylistOrder",
+    <Popup
+      id="EditPlaylistOrder"
+      canClose={true}
+      html={
+        <>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "500px",
+              height: "500px",
+            }}
+          >
+            <h2>Are you gay?</h2>
+            <div>
+              <SongOrderList />
+            </div>
+            <div style={{ display: "flex", flexDirection: "row" }}></div>
           </div>
         </>
       }
