@@ -171,14 +171,6 @@ export default function PlaylistEdit() {
     //console.log("change background url");
   };
 
-  const handleName = () => {
-    background_url = (
-      document.getElementById("url-playlist-background") as HTMLInputElement
-    )?.value;
-
-    //console.log("change name");
-  };
-
   const handleDropdown = () => {
     dropdown_value = (
       document.getElementById("playlist-privacy-setting") as HTMLSelectElement
@@ -236,8 +228,6 @@ export default function PlaylistEdit() {
             label={"Name:"}
             inputID={"edit-playlist-name"}
             setType={"none"}
-            OnSet={UpdateName}
-            onChange={handleName}
           />
 
           <div style={{ paddingLeft: "150px" }}>
@@ -257,7 +247,6 @@ export default function PlaylistEdit() {
             inputID={"url-playlist-cover"}
             accept=".jpg, .jpeg, .png"
             setType={"none"}
-            OnSet={UpdateCover}
             onChange={handleCoverURL}
           />
 
@@ -266,7 +255,6 @@ export default function PlaylistEdit() {
             inputType={"file"}
             inputID={"edit-playlist-cover"}
             setType={"none"}
-            OnSet={UpdateCover}
             onChange={handleCoverFile}
             accept=".jpg, .jpeg, .png"
           />
@@ -286,7 +274,6 @@ export default function PlaylistEdit() {
             inputID={"url-playlist-background"}
             placeholder={"www.somesite.com/img.png"}
             setType={"none"}
-            OnSet={UpdateBG}
             onChange={handleBGURL}
           />
 
@@ -295,7 +282,6 @@ export default function PlaylistEdit() {
             inputType={"file"}
             inputID={"edit-playlist-background"}
             setType={"none"}
-            OnSet={UpdateBG}
             onChange={handleBGFile}
             accept=".jpg, .jpeg, .png"
           />
