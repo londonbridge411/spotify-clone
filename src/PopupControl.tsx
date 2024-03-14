@@ -201,11 +201,12 @@ var POPUP_MAP = new Map<string, any>([
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
+              justifySelf: "center",
               width: "500px",
               height: "500px",
             }}
           >
-            <h2>Are you gay?</h2>
+
             <div>
               <SongOrderList />
             </div>

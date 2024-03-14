@@ -107,13 +107,14 @@ export default function MusicControl() {
         .select("title, view_count, artist_data, album_id")
         .eq("id", player.song_id)
         .then((result) => {
+          //console.log(result.data)
           var row = result.data?.at(0);
 
           if (row != null) {
             setName(row.title);
             setViewCount(row.view_count);
 
-            //console.log(name_text_element.value)
+            
             // Fill In artists"
             let myList = [] as Artist[];
             for (let i = 0; i < row.artist_data.length; i++) {
