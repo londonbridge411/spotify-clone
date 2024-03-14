@@ -66,7 +66,7 @@ export default function Playlist() {
   );
 
   useEffect(() => {
-    console.log("Updating");
+    //console.log("Updating");
     supabase
       .from("Playlists")
       .select("name, type, bg_url, cover_url, owner_id, Users(username)")
@@ -117,6 +117,32 @@ export default function Playlist() {
       Get list of songs in playlist that are public.
       If current user is owner, show even if priv
       */
+
+      let userID_JSON = JSON.stringify(authUserID);
+      await supabase
+        .rpc("getplaylistsongs", {
+          playlist_id: playlistID,
+          user_id: userID_JSON,
+        })
+        .then((result) => {
+          console.log(result.data);
+
+          setLoading(false);
+
+          if (result.data.length == 0) {
+            setHideTable(true);
+          } else {
+            setHideTable(false);
+
+            let arr = [];
+            for (let i = 0; i < result.data.length; i++) {
+              arr.push(result.data[i].id);
+            }
+            setList(arr as any);
+          }
+        });
+
+      /*
       await supabase
         .from("Playlists")
         .select("song_ids")
@@ -138,7 +164,7 @@ export default function Playlist() {
                 let anArtist = JSON.stringify(myData2?.artist_data).includes(
                   authUserID as string
                 );
-                console.log();
+
                 if (
                   setting != "Private" ||
                   myData2?.owner_id == authUserID ||
@@ -157,7 +183,7 @@ export default function Playlist() {
             setHideTable(false);
             setList(songs as any);
           }
-        });
+        });*/
     };
 
     update();

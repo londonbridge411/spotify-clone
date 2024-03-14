@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import supabase from "../../config/supabaseClient";
-import { authUserID } from "../../main";
+import supabase from "../../../config/supabaseClient";
+import { authUserID } from "../../../main";
 import { useDispatch } from "react-redux";
-import { ClosePopup, SwitchToPopup } from "../../PopupControl";
+import { ClosePopup, SwitchToPopup } from "../../../PopupControl";
 import { useLocation, useParams } from "react-router-dom";
 import "./SongOrderList.css";
-import { setListRef } from "../Middle/Playlist";
-import { setSongList } from "../../PlayerSlice";
+import { setListRef } from "../../Middle/Playlist";
+import { setSongList } from "../../../PlayerSlice";
 
 export default function SongOrderList() {
   const [list, setList] = useState([]);
@@ -22,43 +22,11 @@ export default function SongOrderList() {
   //console.log(playlistID);
   useEffect(() => {
     supabase
-      .from("Playlists")
-      .select("song_ids")
-      .eq("id", playlistID)
-      .eq("owner_id", authUserID)
-      .then(async (result) => {
-        var array: any[] = [];
-        var myData = result.data?.at(0);
-
-        //console.log(myData);
-        //setList(myData as any);
-        if (myData != null) {
-          for (let i = 0; i < myData.song_ids.length; i++) {
-            //await supabase.Songs(title, id)
-
-            let songID = myData?.song_ids[i];
-            //console.log(songID);
-
-            // Cannot do a join. Join only works when it is an album. Tested in actual sql too.
-            await supabase
-              .from("Songs")
-              .select("title")
-              .eq("id", songID)
-              .then((result2) => {
-                let myData2 = result2.data?.at(0);
-
-                let item = {
-                  title: myData2?.title,
-                  id: songID,
-                };
-                array.push(item);
-                //SwitchToPopup("EditPlaylistOrder")
-              });
-          }
-
-          setLoaded(true);
-          setList(array as any);
-        }
+      .rpc("get_playlist_songs_edit", { uid: playlistID })
+      .then((result) => {
+        //console.log(result.data);
+        setLoaded(true);
+        setList(result.data as any);
       });
   }, [location]);
 
@@ -92,7 +60,6 @@ export default function SongOrderList() {
   }
 
   function SwapPosition(event: any, index: number) {
-
     let element = document.getElementsByClassName(
       "songOrderItem-Follow"
     )[0] as HTMLDivElement;
@@ -102,7 +69,6 @@ export default function SongOrderList() {
     element.classList.remove("songOrderItem-Follow");
     event.target.classList.add("songOrderItem-Follow");
 
-    
     let item: any = list.find((i: any) => i?.id == selectedItem);
 
     let arr: any[] = [...list];
@@ -112,16 +78,18 @@ export default function SongOrderList() {
     arr.splice(oldIndex, 1);
     arr.splice(index, 0, item);
 
-
     let elem: any = document.getElementById("songOrderContainer");
 
     let boundary = elem.getBoundingClientRect();
 
     //console.log("Top: " + boundary.top);
     //console.log("mosuer: " +  event.clientY * 0.85);
-    if (event.clientY > boundary.bottom * 0.9 || event.clientY * 0.85 < boundary.top) {
+    if (
+      event.clientY > boundary.bottom * 0.9 ||
+      event.clientY * 0.85 < boundary.top
+    ) {
       if (selectedItem != "") {
-        console.log("SCROLL");
+        //console.log("SCROLL");
         //elem?.scrollTo(0,event.clientY + 1)
         (event.target as HTMLElement).scrollIntoView({
           behavior: "smooth",
@@ -141,7 +109,7 @@ export default function SongOrderList() {
       }
 
       SwitchToPopup("uploadingWait");
-      console.log(uploadList);
+      //console.log(uploadList);
       await supabase
         .from("Playlists")
         .update({ song_ids: uploadList })

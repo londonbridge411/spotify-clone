@@ -9,6 +9,7 @@ import PlaylistContainer from "../Containers/Playlist Containers/PlaylistContain
 import { NavLink } from "react-router-dom";
 import SongRow from "../Containers/SongRow";
 import SearchBar from "../SearchBar";
+import ArtistContainer from "../Containers/Artist Containers/ArtistsContainer";
 
 export default function Discover() {
   const [searchResults_Users, setSearchResults_Users] = useState([]);
@@ -59,16 +60,13 @@ export default function Discover() {
 
           <section hidden={searchResults_Users?.length == 0}>
             <h2>Users</h2>
-            <ul>
+            <ul className="ArtistListContainer">
               {searchResults_Users?.map((item: any) => {
                 return (
                   <li key={item.id}>
-                    <NavLink
-                      className="customLink"
-                      to={"../account/" + item.id}
-                    >
+                    <ArtistContainer artist_id={item.id}>
                       {item.username}
-                    </NavLink>
+                    </ArtistContainer>
                   </li>
                 );
               })}

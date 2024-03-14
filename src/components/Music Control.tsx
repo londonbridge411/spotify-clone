@@ -114,7 +114,6 @@ export default function MusicControl() {
             setName(row.title);
             setViewCount(row.view_count);
 
-            
             // Fill In artists"
             let myList = [] as Artist[];
             for (let i = 0; i < row.artist_data.length; i++) {
@@ -144,6 +143,7 @@ export default function MusicControl() {
             audio.load();
 
             audio.onloadedmetadata = () => {
+              setCurrentTime("0:00"); // Maybe delete this? It's meant to fix a bug
               MarqueeCheck();
 
               setInterval(() => {

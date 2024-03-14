@@ -60,7 +60,7 @@
 .myPlaylists-layout header {
 }
 
-.myPlaylists-layout .myAlbums {
+.myAlbums {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;

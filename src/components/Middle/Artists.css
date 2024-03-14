@@ -1,6 +1,6 @@
-.home-page {
+.artists-page {
   width: 100%;
-
+  height: 100%;
   background-size: cover;
 
   display: grid;
@@ -14,13 +14,13 @@
   scrollbar-gutter: stable; /*Keeps the page from shifting*/
 }
 
-.home-layout {
+.artists-layout {
   margin-top: 50px;
   justify-self: center;
   width: 90%;
 }
 
-.home-layout h1 {
+.artists-layout h1 {
   margin: 0;
   overflow-x: hidden;
   height: 70px;
@@ -28,7 +28,7 @@
   text-overflow: ellipsis;
 }
 
-.home-layout .myAlbums {
+.ArtistListContainer {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;

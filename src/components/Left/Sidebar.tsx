@@ -28,7 +28,7 @@ export default function Sidebar() {
         <img className="SidebarLogo" src={logo} />
         <SidebarButton label="Home" to="home" icon={house} />
         <SidebarButton label="Discover" to="discover" icon={search} />
-        <SidebarButton label="Artists" to="playlists" icon={music} />
+        <SidebarButton label="Artists" to="artists" icon={music} />
         <SidebarButton label="Playlists" to="playlists" icon={bars} />
 
         <SidebarButton

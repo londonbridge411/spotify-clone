@@ -13,7 +13,7 @@ import { UnfollowUser_Exported } from "./components/Middle/Account/AccountPage";
 import { targ as songContextTarg } from "./components/Containers/ContextMenus/SongContextMenu";
 import { DeleteSongs_Exported } from "./components/Containers/ContextMenus/Song Context Features/RemoveDeleteSong";
 import PlaylistList from "./components/Containers/Playlist Containers/PlaylistList";
-import SongOrderList from "./components/Containers/SongOrderList";
+import SongOrderList from "./components/Containers/Popups/SongOrderList";
 
 // Used for things in-line here.
 var dispatchRef:
@@ -206,7 +206,6 @@ var POPUP_MAP = new Map<string, any>([
               height: "500px",
             }}
           >
-
             <div>
               <SongOrderList />
             </div>
@@ -221,7 +220,14 @@ var POPUP_MAP = new Map<string, any>([
 export default function PopupControl() {
   const popup = useSelector((state: RootState) => state.popup);
   const dispatch = useDispatch();
+
+  // May break occassionaly??? Just comment and uncomment the line?
   dispatchRef = dispatch;
+
+  //console.log(dispatchRef);
+  // dispatchRef = () => {
+  //   dispatch;
+  // };
 
   const location = useLocation();
 

@@ -21,6 +21,7 @@ import { Provider } from "react-redux";
 import playerSlice from "./PlayerSlice.ts";
 import { store } from "./store.ts";
 import MyPlaylistPage from "./components/Middle/MyPlaylistPage.tsx";
+import Artists from "./components/Middle/Artists.tsx";
 
 export var isLoggedIn: boolean =
   (await supabase.auth.getSession()).data.session != null;
@@ -55,6 +56,7 @@ const router = createBrowserRouter(
         <Route path="home" element={<Home />} />
         <Route path="account/:userID" element={<AccountPage />} />
         <Route path="discover" element={<Discover />} />
+        <Route path="artists" element={<Artists />} />
         <Route path="playlists" element={<MyPlaylistPage />} />
         <Route path="playlist/:playlistID" element={<Playlist />} />
       </Route>

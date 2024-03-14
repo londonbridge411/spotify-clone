@@ -26,7 +26,7 @@ function SearchBar(props: any) {
   useEffect(() => {
     ClearResults();
     if (searchInput.length > 0) {
-      console.log("Searching...: " + searchInput);
+      // console.log("Searching...: " + searchInput);
 
       let regex = searchInput + "%";
       let searchCriteria =
@@ -39,7 +39,7 @@ function SearchBar(props: any) {
           await supabase
             .rpc("searchusers", { input: searchInput, threshhold: 0.35 })
             .then((result) => {
-              console.log(result.data);
+              //console.log(result.data);
 
               props.setSearchResults_Users(result.data as any);
             });
