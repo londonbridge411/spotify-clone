@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "./store";
+import { RootState, store } from "./store";
 import { setPopup } from "./PopupSlice";
 import Popup from "./components/Containers/Popup";
 import PlaylistCreation from "./components/Containers/Popups/PlaylistCreation";
@@ -8,24 +8,24 @@ import { Dispatch, UnknownAction } from "@reduxjs/toolkit";
 import { UploadSongPopup } from "./components/Containers/Popups/UploadSongPopup";
 import PlaylistEdit from "./components/Containers/Popups/PlaylistEdit";
 import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { UnfollowUser_Exported } from "./components/Middle/Account/AccountPage";
 import { targ as songContextTarg } from "./components/Containers/ContextMenus/SongContextMenu";
-import { DeleteSongs_Exported } from "./components/Containers/ContextMenus/Song Context Features/RemoveDeleteSong";
+import { DeleteSong_Exported } from "./components/Containers/ContextMenus/Song Context Features/RemoveDeleteSong";
 import PlaylistList from "./components/Containers/Playlist Containers/PlaylistList";
 import SongOrderList from "./components/Containers/Popups/SongOrderList";
+import { DeletePlaylist_Exported } from "./components/Containers/ContextMenus/Playlist Context Features/DeletePlaylist";
 
 // Used for things in-line here.
-var dispatchRef:
-  | Dispatch<UnknownAction>
-  | ((arg0: { payload: any; type: "popup/setPopup" }) => void);
 
 export function ClosePopup() {
-  dispatchRef(setPopup(""));
+  //const dispatch = useDispatch();
+  store.dispatch(setPopup(""));
 }
 
 export function SwitchToPopup(key: string) {
-  dispatchRef(setPopup(key));
+  //const dispatch = useDispatch();
+  store.dispatch(setPopup(key));
 }
 
 // {keyName : HTML}
@@ -139,7 +139,37 @@ var POPUP_MAP = new Map<string, any>([
       html={<PlaylistCreation playlistType={"Playlist"} />}
     />,
   ],
-
+  [
+    "DeletePlaylist",
+    <Popup
+      id="DeletePlaylist"
+      canClose={false}
+      html={
+        <>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "300px",
+              height: "125px",
+            }}
+          >
+            <h2>Are you sure?</h2>
+            <div>
+              This will permanently delete the playlist and remove it from the
+              platform.
+            </div>
+            <div style={{ display: "flex", flexDirection: "row" }}>
+              <button onClick={() => DeletePlaylist_Exported()}>Yes</button>
+              <button onClick={() => ClosePopup()}>No</button>
+            </div>
+          </div>
+        </>
+      }
+    />,
+  ],
   [
     "DeleteSong",
     <Popup
@@ -163,7 +193,7 @@ var POPUP_MAP = new Map<string, any>([
               platform.
             </div>
             <div style={{ display: "flex", flexDirection: "row" }}>
-              <button onClick={() => DeleteSongs_Exported(songContextTarg)}>
+              <button onClick={() => DeleteSong_Exported(songContextTarg)}>
                 Yes
               </button>
               <button onClick={() => ClosePopup()}>No</button>
@@ -219,20 +249,10 @@ var POPUP_MAP = new Map<string, any>([
 
 export default function PopupControl() {
   const popup = useSelector((state: RootState) => state.popup);
-  const dispatch = useDispatch();
-
-  // May break occassionaly??? Just comment and uncomment the line?
-  dispatchRef = dispatch;
-
-  //console.log(dispatchRef);
-  // dispatchRef = () => {
-  //   dispatch;
-  // };
-
   const location = useLocation();
 
   useEffect(() => {
-    dispatch(setPopup(""));
+    ClosePopup();
   }, [location]);
 
   return (

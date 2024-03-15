@@ -74,8 +74,8 @@ export default function PlaylistCreation(props: any) {
       // Update Cover
       await supabase.storage
         .from("music-files")
-        .upload("/pictures/covers/" + playlistID, uploaded_cover, {
-          cacheControl: "1",
+        .upload("pictures/covers/" + playlistID, uploaded_cover, {
+          cacheControl: "3600",
           upsert: true,
         })
         .then((result) => {
@@ -96,7 +96,7 @@ export default function PlaylistCreation(props: any) {
       await supabase.storage
         .from("music-files")
         .upload("pictures/backgrounds/" + playlistID, uploaded_bg, {
-          cacheControl: "1",
+          cacheControl: "3600",
           upsert: true,
         })
         .then((result) => {

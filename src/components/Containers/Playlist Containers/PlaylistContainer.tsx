@@ -48,7 +48,7 @@ export default function PlaylistContainer(props: any) {
             e.preventDefault();
 
             // Don't even have to do this. Just send the song_id to state
-            ViewPlaylistContextMenu("Playlist_ContextMenu", e);
+            ViewPlaylistContextMenu("PlaylistContext_" + props.playlist_id, e);
           }}
         >
           <div className="pl-container-content">
@@ -68,7 +68,7 @@ export default function PlaylistContainer(props: any) {
         </div>
       </NavLink>
 
-      <PlaylistContextMenu />
+      <PlaylistContextMenu playlistID={props.playlist_id} />
     </>
   );
 }

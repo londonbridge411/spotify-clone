@@ -9,14 +9,14 @@ import { setListRef } from "../../../Middle/Playlist";
 var isPlaylistOwner: boolean = false;
 var playlistType: string = "undefined";
 
-export var DeleteSongs_Exported: any;
+export var DeleteSong_Exported: any;
 
 export default function ContextOption_RemoveDeleteSong(props: any) {
   const { playlistID } = useParams();
 
   if (playlistID == null) return;
 
-  DeleteSongs_Exported = DeleteSong;
+  DeleteSong_Exported = DeleteSong;
 
   var removeBtnID = "RemoveSong_Button_" + props.target;
   var deleteBtnID = "DeleteSong_Button_" + props.target;
@@ -89,7 +89,7 @@ export default function ContextOption_RemoveDeleteSong(props: any) {
   function DeleteSong(song_id: string) {
     if (isPlaylistOwner && playlistType == "Album") {
       // Remove from each playlist that has it.
-
+      SwitchToPopup("uploadingWait");
       supabase
         .from("Playlists")
         .select("id, song_ids")

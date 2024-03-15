@@ -125,7 +125,7 @@ export default function Playlist() {
           user_id: userID_JSON,
         })
         .then((result) => {
-          console.log(result.data);
+          //console.log(result);
 
           setLoading(false);
 
@@ -141,57 +141,10 @@ export default function Playlist() {
             setList(arr as any);
           }
         });
-
-      /*
-      await supabase
-        .from("Playlists")
-        .select("song_ids")
-        .eq("id", playlistID)
-        .then(async (result) => {
-          var myData = result.data?.at(0)?.song_ids;
-
-          var songs: string[] = [];
-
-          for (let i = 0; i < myData.length; i++) {
-            await supabase
-              .from("Songs")
-              .select("owner_id, artist_data, Playlists(privacy_setting)")
-              .eq("id", myData.at(i))
-              .then((result2) => {
-                let myData2 = result2.data?.at(0);
-                let setting = (myData2?.Playlists as any).privacy_setting;
-
-                let anArtist = JSON.stringify(myData2?.artist_data).includes(
-                  authUserID as string
-                );
-
-                if (
-                  setting != "Private" ||
-                  myData2?.owner_id == authUserID ||
-                  anArtist
-                ) {
-                  songs.push(myData[i]);
-                }
-              });
-          }
-
-          setLoading(false);
-
-          if (songs.length == 0) {
-            setHideTable(true);
-          } else {
-            setHideTable(false);
-            setList(songs as any);
-          }
-        });*/
     };
 
     update();
   }, [playlistID]);
-
-  /*const coverUrl = supabase.storage
-    .from("music-files")
-    .getPublicUrl("pictures/covers/" + playlistID);*/
 
   function FollowPlaylist() {
     if (isFollowing == false && isOwner == false) {

@@ -29,6 +29,7 @@ export default function SongRow(props: any) {
   // Set the states for the row
   useEffect(() => {
     if (props.song_id != null) {
+      //console.log("Loading: " + props.song_id);
       supabase
         .from("Songs")
         .select(
@@ -213,12 +214,7 @@ export default function SongRow(props: any) {
         <div className="song-row-date, song-row-item ">{dateCreated}</div>
         <div className="song-row-duration, song-row-item">{duration}</div>
       </div>
-      <SongContextMenu
-        //id={"SongContext_" + props.song_id}
-        songID={props.song_id}
-        // About to leave but a thought is to store the selected song in a state
-        //requiresVerification={() => playlistType != "Playlist"}
-      />
+      <SongContextMenu songID={props.song_id} />
     </>
   );
 }
