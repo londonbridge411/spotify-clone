@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import supabase from "./config/supabaseClient";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { SetLoginStatus, getInfo, isLoggedIn } from "./main";
+import CustomInputField from "./components/CustomInputField";
+import "./LoginSignup.css";
 
 function Login() {
   const navigate = useNavigate();
@@ -11,17 +13,36 @@ function Login() {
   });
   //console.log("Logged In: " + isLoggedIn);
 
+  onkeydown = (e) => {
+    if (e.key == "Enter") {
+      LoginUser(navigate);
+    }
+  };
+
   return (
     <>
-      <label>
-        Enter Email: <input id="email"></input>
-      </label>
-      <label>
-        Enter Password: <input id="password"></input>
-      </label>
+      <div id="login-page">
+        <main id="login-area">
+          <CustomInputField
+            inputType={"url"}
+            placeholder={"Some name"}
+            label={"Email:"}
+            inputID={"email"}
+            setType={"none"}
+          />
 
-      <button onClick={() => LoginUser(navigate)}>Login</button>
-      <button onClick={() => RegisterUser(navigate)}>SignUp</button>
+          <CustomInputField
+            inputType={"password"}
+            placeholder={"Some name"}
+            label={"Password:"}
+            inputID={"password"}
+            setType={"none"}
+          />
+
+          <button onClick={() => LoginUser(navigate)}>Login</button>
+          <button onClick={() => RegisterUser(navigate)}>Signup</button>
+        </main>
+      </div>
     </>
   );
 }

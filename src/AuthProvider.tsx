@@ -11,7 +11,7 @@ function Authentication() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    navigate(isLoggedIn ? "/app" : "/login");
+    navigate(isLoggedIn ? "/app/home" : "/login");
   });
 
   //checkLoginStatus()

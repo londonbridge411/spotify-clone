@@ -120,7 +120,7 @@
 }
 
 #progress-bar-container-touch:hover #progress-bar-handle {
-  visibility: visible;
+  visibility: visible !important;
 }
 
 #volume-control {

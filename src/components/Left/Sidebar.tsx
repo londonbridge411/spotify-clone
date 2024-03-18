@@ -11,14 +11,18 @@ import search from "../../assets/magnifying-glass-solid.svg";
 import music from "../../assets/music-solid.svg";
 import user from "../../assets/user-solid.svg";
 import exit from "../../assets/right-from-bracket-solid.svg";
-import { useEffect, useState } from "react";
+import { ClearPlayer } from "../../PlayerSlice";
+import { store } from "../../store";
+import { ResetPlayer } from "../Music Control";
 
 export default function Sidebar() {
   const navigate = useNavigate();
 
   function Logout() {
+    ResetPlayer();
     supabase.auth.signOut();
     SetLoginStatus(false);
+
     navigate("/");
   }
 

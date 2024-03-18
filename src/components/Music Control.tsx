@@ -17,8 +17,9 @@ import {
   useState,
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../store";
+import { RootState, store } from "../store";
 import {
+  ClearPlayer,
   LoadPlayer,
   nextSong,
   prevSong,
@@ -29,6 +30,20 @@ import {
 import supabase from "../config/supabaseClient";
 import { NavLink } from "react-router-dom";
 import { Artist } from "./Containers/Popups/UploadSongPopup";
+import { isLoggedIn } from "../main";
+
+var changingTime = false;
+var prevPlayState = false;
+var changeTimeInterval = null;
+var changeTimeIntervalResize = null;
+
+export function ResetPlayer() {
+  changingTime = false;
+  prevPlayState = false;
+  clearInterval(changeTimeInterval!);
+  clearInterval(changeTimeIntervalResize!);
+  store.dispatch(ClearPlayer());
+}
 
 export default function MusicControl() {
   const player = useSelector((state: RootState) => state.player);
@@ -73,7 +88,7 @@ export default function MusicControl() {
 
   function ClickProgressBar(event: any) {
     var a = document.getElementById("audioControl") as HTMLAudioElement;
-    var clickPercent = event.nativeEvent.offsetX / window.innerWidth;
+    var clickPercent = event.clientX / window.innerWidth;
     a.currentTime = clickPercent * a.duration;
 
     ChangeProgress(clickPercent);
@@ -146,7 +161,7 @@ export default function MusicControl() {
               setCurrentTime("0:00"); // Maybe delete this? It's meant to fix a bug
               MarqueeCheck();
 
-              setInterval(() => {
+              changeTimeInterval = setInterval(() => {
                 if (player.isPlaying) {
                   ChangeProgress((audio.currentTime / audio.duration) * 100);
                   setCurrentTime(CalculateTime(audio.currentTime));
@@ -154,7 +169,7 @@ export default function MusicControl() {
               }, 0);
 
               window.onresize = () => {
-                setInterval(() => {
+                changeTimeIntervalResize = setInterval(() => {
                   if (player.isPlaying) {
                     ChangeProgress((audio.currentTime / audio.duration) * 100);
                     setCurrentTime(CalculateTime(audio.currentTime));
@@ -236,6 +251,27 @@ export default function MusicControl() {
     }
   }
 
+  onpointerup = () => {
+    //console.log(changingTime);
+    if (changingTime && player.hasLoaded) {
+      changingTime = false;
+      let a = document.getElementById("audioControl") as HTMLAudioElement;
+
+      if (prevPlayState == true) a.play();
+    }
+  };
+
+  onpointermove = (event) => {
+    if (player.hasLoaded && isLoggedIn) {
+      let handle: any = document.getElementById("progress-bar-handle");
+      if (changingTime) {
+        handle.style.visibility = "visible";
+        ClickProgressBar(event);
+      } else {
+        handle!.style.visibility = "hidden";
+      }
+    }
+  };
   return (
     <>
       <audio id="audioControl" preload="metadata" autoPlay>
@@ -244,7 +280,15 @@ export default function MusicControl() {
 
       <div
         id="progress-bar-container-touch"
-        onClick={(event) => ClickProgressBar(event)}
+        draggable="false"
+        onPointerDown={(event) => {
+          prevPlayState = player.isPlaying;
+          changingTime = true;
+          let a = document.getElementById("audioControl") as HTMLAudioElement;
+          a.pause();
+          //setPlayIcon(play);
+          ClickProgressBar(event);
+        }}
       >
         <div id="progress-bar-container">
           <div id="progress-bar"></div>

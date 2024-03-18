@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { useDispatch } from "react-redux";
 
 // Store
 interface PlayerState {
@@ -81,6 +80,19 @@ const playerSlice = createSlice({
     LoadPlayer(state) {
       state.hasLoaded = true;
     },
+
+    ClearPlayer(state) {
+      let a = document.getElementById("audioControl") as HTMLAudioElement;
+      a.pause();
+      a.currentTime = 0;
+      a.src = "";
+      state.song_id = "";
+      state.isPlaying = false;
+      state.isShuffled = false;
+      state.songList = [];
+      state.listPosition = -1;
+      state.hasLoaded = false;
+    },
   },
 });
 
@@ -90,6 +102,7 @@ export const {
   setIsPlaying,
   setSongList,
   LoadPlayer,
+  ClearPlayer,
   prevSong,
   nextSong,
   shufflePlay,

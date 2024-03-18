@@ -7,7 +7,12 @@ import "./Playlist.css";
 import Popup from "../Containers/Popup";
 import { authUserID, email, username } from "../../main";
 import * as uuid from "uuid";
-import { setSongID, setSongList, shufflePlay } from "../../PlayerSlice";
+import {
+  setIsPlaying,
+  setSongID,
+  setSongList,
+  shufflePlay,
+} from "../../PlayerSlice";
 import { useDispatch } from "react-redux";
 import SongRow from "../Containers/SongRow";
 import { SwitchToPopup } from "../../PopupControl";
@@ -238,6 +243,7 @@ export default function Playlist() {
               onClick={() => {
                 dispatch(setSongList(list as string[]));
                 dispatch(setSongID(list[0]));
+                dispatch(setIsPlaying(true));
               }}
             />
 
