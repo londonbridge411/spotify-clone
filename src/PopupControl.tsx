@@ -15,6 +15,9 @@ import { DeleteSong_Exported } from "./components/Containers/ContextMenus/Song C
 import PlaylistList from "./components/Containers/Playlist Containers/PlaylistList";
 import SongOrderList from "./components/Containers/Popups/SongOrderList";
 import { DeletePlaylist_Exported } from "./components/Containers/ContextMenus/Playlist Context Features/DeletePlaylist";
+import { RenameSongPopup } from "./components/Containers/Popups/RenameSongPopup";
+import CustomInputField from "./components/CustomInputField";
+import { RenamePlaylist_Exported } from "./components/Containers/ContextMenus/Playlist Context Features/RenamePlaylist";
 
 // Used for things in-line here.
 
@@ -240,6 +243,83 @@ var POPUP_MAP = new Map<string, any>([
               <SongOrderList />
             </div>
             <div style={{ display: "flex", flexDirection: "row" }}></div>
+          </div>
+        </>
+      }
+    />,
+  ],
+  [
+    "RenameSong",
+    <Popup
+      id="RenameSong"
+      canClose={true}
+      html={
+        <>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              justifySelf: "center",
+            }}
+          >
+            <RenameSongPopup />
+            <div style={{ display: "flex", flexDirection: "row" }}></div>
+          </div>
+        </>
+      }
+    />,
+  ],
+  [
+    "RenamePlaylist",
+    <Popup
+      id="RenamePlaylist"
+      canClose={true}
+      html={
+        <>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              justifySelf: "center",
+            }}
+          >
+            <div style={{ display: "flex", flexDirection: "row" }}>
+              {" "}
+              <div
+                id="rename-playlist-menu"
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <h2
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  Rename Playlist
+                </h2>
+                <CustomInputField
+                  inputType={"url"}
+                  placeholder={"Some name"}
+                  label={"Name:"}
+                  inputID={"rename-playlist-name"}
+                />
+
+                <button
+                  style={{ marginBottom: "17.5px" }}
+                  onClick={() => RenamePlaylist_Exported()}
+                >
+                  Rename
+                </button>
+              </div>
+            </div>
           </div>
         </>
       }

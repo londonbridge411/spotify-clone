@@ -10,7 +10,7 @@ import * as uuid from "uuid";
 import {
   setIsPlaying,
   setSongID,
-  setSongList,
+  setQueue,
   shufflePlay,
 } from "../../PlayerSlice";
 import { useDispatch } from "react-redux";
@@ -241,7 +241,7 @@ export default function Playlist() {
             <img
               src="../../../src/assets/play_button.png"
               onClick={() => {
-                dispatch(setSongList(list as string[]));
+                dispatch(setQueue(list as string[]));
                 dispatch(setSongID(list[0]));
                 dispatch(setIsPlaying(true));
               }}
@@ -250,7 +250,7 @@ export default function Playlist() {
             <img
               src="../../../src/assets/shuffle_button.png"
               onClick={() => {
-                dispatch(setSongList(list as string[]));
+                dispatch(setQueue(list as string[]));
                 dispatch(shufflePlay());
               }}
             />

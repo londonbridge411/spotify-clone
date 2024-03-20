@@ -8,7 +8,7 @@ interface PlayerState {
   isPlaying: boolean;
   isShuffled: boolean;
   hasLoaded: boolean;
-  songList: string[];
+  queue: string[];
   listPosition: number;
 }
 
@@ -18,7 +18,7 @@ const initialState: PlayerState = {
   isPlaying: false,
   isShuffled: false,
   hasLoaded: false,
-  songList: [],
+  queue: [],
   listPosition: -1,
 };
 
@@ -31,10 +31,8 @@ const playerSlice = createSlice({
 
       state.isShuffled = false;
 
-      if (state.songList.length > 0) {
-        state.listPosition = state.songList.findIndex(
-          (x) => x == state.song_id
-        );
+      if (state.queue.length > 0) {
+        state.listPosition = state.queue.findIndex((x) => x == state.song_id);
       }
     },
 
@@ -47,34 +45,38 @@ const playerSlice = createSlice({
       state.isPlaying = action.payload;
     },
 
-    setSongList(state, action: PayloadAction<string[]>) {
-      state.songList = action.payload;
+    setQueue(state, action: PayloadAction<string[]>) {
+      state.queue = action.payload;
+    },
+
+    addToQueue(state, action: PayloadAction<string>) {
+      state.queue.push(action.payload);
     },
 
     shufflePlay(state) {
-      if (state.songList.length == 0) return;
+      if (state.queue.length == 0) return;
       state.isShuffled = true;
-      state.songList.sort(() => Math.random() - 0.5);
+      state.queue.sort(() => Math.random() - 0.5);
 
-      state.song_id = state.songList[0];
+      state.song_id = state.queue[0];
       state.listPosition = 0;
     },
 
     prevSong(state) {
       // Guard Statements
-      if (state.songList.length == 0) return;
-      if (state.songList.length == 1) state.song_id = state.songList[0];
+      if (state.queue.length == 0) return;
+      if (state.queue.length == 1) state.song_id = state.queue[0];
       if (state.listPosition - 1 < 0) return;
 
-      state.song_id = state.songList[--state.listPosition];
+      state.song_id = state.queue[--state.listPosition];
     },
 
     nextSong(state) {
       // Guard Statements
-      if (state.songList.length == 0) return;
-      if (state.listPosition + 1 == state.songList.length) return;
+      if (state.queue.length == 0) return;
+      if (state.listPosition + 1 == state.queue.length) return;
 
-      state.song_id = state.songList[++state.listPosition];
+      state.song_id = state.queue[++state.listPosition];
     },
 
     LoadPlayer(state) {
@@ -89,7 +91,7 @@ const playerSlice = createSlice({
       state.song_id = "";
       state.isPlaying = false;
       state.isShuffled = false;
-      state.songList = [];
+      state.queue = [];
       state.listPosition = -1;
       state.hasLoaded = false;
     },
@@ -100,7 +102,8 @@ export const {
   setSongID,
   setVolume,
   setIsPlaying,
-  setSongList,
+  setQueue,
+  addToQueue,
   LoadPlayer,
   ClearPlayer,
   prevSong,

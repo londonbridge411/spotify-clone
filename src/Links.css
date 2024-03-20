@@ -1,7 +1,9 @@
 .customLink {
   color: rgb(197, 197, 197);
+  user-select: none;
 }
 
 .customLink:hover {
   color: #8dffff;
+  cursor: pointer;
 }

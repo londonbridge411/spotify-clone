@@ -27,16 +27,11 @@ function Signup() {
     var pw_element = document.getElementById("password") as HTMLInputElement;
     var pw_text = pw_element?.value;
 
-    var pw_element = document.getElementById(
-      "verify-password"
-    ) as HTMLInputElement;
-    var pw_text = pw_element?.value;
-
     var email_element = document.getElementById("email") as HTMLInputElement;
     var email_text = email_element?.value;
 
     var verifypw_element = document.getElementById(
-      "password"
+      "verify-password"
     ) as HTMLInputElement;
     var verifypw_text = verifypw_element?.value;
 

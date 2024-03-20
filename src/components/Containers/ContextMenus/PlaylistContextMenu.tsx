@@ -7,6 +7,7 @@ import ContextOption_DeletePlaylist from "./Playlist Context Features/DeletePlay
 import ContextOption_FollowPlaylist from "./Playlist Context Features/FollowPlaylist";
 import { useEffect, useState } from "react";
 import supabase from "../../../config/supabaseClient";
+import ContextOption_RenamePlaylist from "./Playlist Context Features/RenamePlaylist";
 
 var ID: string;
 var runExported: any;
@@ -75,6 +76,12 @@ export default function PlaylistContextMenu(props: any) {
             isOwner={isOwner}
             isFollowing={isFollowing}
           />
+
+          <ContextOption_RenamePlaylist
+            target={props.playlistID}
+            isOwner={isOwner}
+          />
+
           <ContextOption_DeletePlaylist
             target={props.playlistID}
             isOwner={isOwner}

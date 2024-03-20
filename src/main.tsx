@@ -22,6 +22,8 @@ import playerSlice from "./PlayerSlice.ts";
 import { store } from "./store.ts";
 import MyPlaylistPage from "./components/Middle/MyPlaylistPage.tsx";
 import Artists from "./components/Middle/Artists.tsx";
+import PasswordUpdatePage from "./PasswordUpdatePage.tsx";
+import PasswordResetPage from "./PasswordResetPage.tsx";
 
 export var isLoggedIn: boolean =
   (await supabase.auth.getSession()).data.session != null;
@@ -51,6 +53,8 @@ const router = createBrowserRouter(
       <Route index element={<AuthProvider />}></Route>
       <Route path="login" element={<Login />}></Route>
       <Route path="signup" element={<Signup />}></Route>
+      <Route path="reset-password" element={<PasswordResetPage />}></Route>
+      <Route path="update-password" element={<PasswordUpdatePage />}></Route>
 
       <Route path="app" element={<App />}>
         <Route path="home" element={<Home />} />

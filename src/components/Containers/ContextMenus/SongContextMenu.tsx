@@ -3,6 +3,8 @@ import "./SongContextMenu.css";
 import "./ContextButton.css";
 import ContextOption_RemoveDeleteSong from "./Song Context Features/RemoveDeleteSong";
 import ContextOption_AddToPlaylist from "./Song Context Features/AddToPlaylist";
+import ContextOption_AddToQueue from "./Song Context Features/AddToQueue";
+import ContextOption_RenameSong from "./Song Context Features/RenameSong";
 
 export var targ: string = "";
 var ID: string;
@@ -41,7 +43,14 @@ export default function SongContextMenu(props: any) {
         className="song-context-box"
       >
         <div className="song-context-content">
+          <ContextOption_AddToQueue target={props.songID} />
           <ContextOption_AddToPlaylist
+            onClick={() => {
+              targ = props.songID;
+            }}
+          />
+          <ContextOption_RenameSong
+            target={props.songID}
             onClick={() => {
               targ = props.songID;
             }}
