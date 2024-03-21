@@ -18,6 +18,9 @@ export default function ContextOption_RenamePlaylist(props: any) {
         document.getElementById("rename-playlist-name") as HTMLInputElement
       )?.value;
 
+      if (new_name == "")
+        return;
+        
       await supabase
         .from("Playlists")
         .update({ name: new_name })

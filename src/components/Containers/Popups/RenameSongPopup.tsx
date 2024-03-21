@@ -19,6 +19,9 @@ export function RenameSongPopup() {
         document.getElementById("rename-song-name") as HTMLInputElement
       )?.value;
 
+      if (new_name == "")
+        return;
+
       await supabase
         .from("Songs")
         .update({ title: new_name })
