@@ -25,7 +25,7 @@
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  width: 25%;
+  width: 40%;
 }
 
 #player-name-area > .name-area-content {
@@ -42,24 +42,35 @@
   border-radius: 10%;
 }
 
-#player-name-area > .name-area-content-text {
+#player-name-area .name-area-content-text {
   display: flex;
   flex-direction: column;
 }
-
 /* Buttons*/
 .volume-control-container {
   display: flex;
   justify-content: flex-end;
+  width: 40%;
+}
 
-  width: 25%;
+#control-like-btn {
+  max-height: 35px;
+  max-width: 35px;
+  display: flex;
+  align-self: center;
+  margin-left: 25px;
+}
+
+#control-like-btn:hover {
+  content: url("../../../src/assets/star-solid.svg");
+  filter: sepia(79%) saturate(1000%) hue-rotate(86deg);
 }
 
 .controls {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 50%;
+  width: 20%;
 }
 
 #Soundbar .control-btn {

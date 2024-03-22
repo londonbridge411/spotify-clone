@@ -15,11 +15,7 @@ export default function ContextOption_FollowPlaylist(props: any) {
         .then(async (result) => {
           let list: string[] = result.data?.at(0)?.subscribed_playlists;
 
-          if (!props.isFollowing) {
-            list.push(props.target as string);
-          } else {
-            list.splice(list.indexOf(props.target as string), 1);
-          }
+          list.push(props.target as string);
 
           await supabase
             .from("Users")
@@ -34,27 +30,6 @@ export default function ContextOption_FollowPlaylist(props: any) {
   }
 
   function UnfollowPlaylist() {
-    if (!props.isFollowing) {
-      supabase
-        .from("Users")
-        .select("subscribed_playlists")
-        .eq("id", authUserID)
-        .then(async (result) => {
-          let list: string[] = result.data?.at(0)?.subscribed_playlists;
-
-          if (!props.isFollowing) {
-            list.push(props.target as string);
-
-            await supabase
-              .from("Users")
-              .update({ subscribed_playlists: list })
-              .eq("id", authUserID);
-
-            //setprops.isFollowing(true);
-          }
-        });
-    }
-
     if (props.isFollowing == true && props.isOwner == false) {
       // Remove user as a sub
       supabase

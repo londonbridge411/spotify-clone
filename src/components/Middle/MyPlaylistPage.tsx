@@ -5,8 +5,10 @@ import PlaylistContainer from "../Containers/Playlist Containers/PlaylistContain
 import "./Account/AccountPage.css";
 import "./MyPlaylistPage.css";
 import { SwitchToPopup } from "../../PopupControl";
+import { useNavigate } from "react-router-dom";
 
 export default function MyPlaylistPage() {
+  const navigate = useNavigate();
   const [list, setList] = useState([null]);
   useEffect(() => {
     supabase
@@ -84,6 +86,20 @@ export default function MyPlaylistPage() {
                       SwitchToPopup("Popup_UploadPlaylist");
                     }}
                   />
+                </li>
+                <li className="addPlaylist">
+                  <img
+                    src="../../../src/assets/star-solid.svg"
+                    style={{
+                      width: "150px",
+                      height: "100px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      navigate("liked-songs/");
+                    }}
+                  />
+                  <h3></h3>
                 </li>
                 {list.map((item) => (
                   <li key={item}>

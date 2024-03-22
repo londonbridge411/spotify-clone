@@ -24,6 +24,7 @@ import MyPlaylistPage from "./components/Middle/MyPlaylistPage.tsx";
 import Artists from "./components/Middle/Artists.tsx";
 import PasswordUpdatePage from "./PasswordUpdatePage.tsx";
 import PasswordResetPage from "./PasswordResetPage.tsx";
+import LikedSongsPlaylist from "./components/Middle/LikedSongsPlaylist.tsx";
 
 export var isLoggedIn: boolean =
   (await supabase.auth.getSession()).data.session != null;
@@ -63,6 +64,7 @@ const router = createBrowserRouter(
         <Route path="artists" element={<Artists />} />
         <Route path="playlists" element={<MyPlaylistPage />} />
         <Route path="playlist/:playlistID" element={<Playlist />} />
+        <Route path="playlists/liked-songs" element={<LikedSongsPlaylist />} />
       </Route>
     </Route>
   )

@@ -11,7 +11,7 @@ export default function ContextOption_AddToQueue(props: any) {
 
   return (
     <>
-      <div className="contextButton" hidden={player.queue.length == 0}>
+      <div className="contextButton">
         <div
           onClick={() => {
             store.dispatch(addToQueue(props.target));

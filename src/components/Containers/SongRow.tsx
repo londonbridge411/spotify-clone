@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setQueue, setSongID, setIsPlaying } from "../../PlayerSlice";
+import { setSongID, setIsPlaying, setPlaylistSongs } from "../../PlayerSlice";
 import supabase from "../../config/supabaseClient";
 import { RootState } from "../../store";
 import SongContextMenu, {
@@ -127,7 +127,8 @@ export default function SongRow(props: any) {
         onDoubleClick={() => {
           let nameArea = document.getElementById(props.song_id);
           if (player.song_id != nameArea?.id) {
-            if (props.song_list != null) dispatch(setQueue(props.song_list));
+            if (props.song_list != null)
+              dispatch(setPlaylistSongs(props.song_list));
             dispatch(setSongID(props.song_id));
           } else {
             let a = document.getElementById("audioControl") as HTMLAudioElement;
@@ -168,7 +169,11 @@ export default function SongRow(props: any) {
               //setPlayIcon(play);
             } else {
               a.play();
-              if (props.song_list != null) dispatch(setQueue(props.song_list));
+              if (props.song_list != null) {
+                console.log(props.song_list);
+                dispatch(setPlaylistSongs(props.song_list));
+              }
+
               dispatch(setSongID(props.song_id));
               dispatch(setIsPlaying(!player.isPlaying));
             }

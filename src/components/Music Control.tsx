@@ -30,7 +30,7 @@ import {
 import supabase from "../config/supabaseClient";
 import { NavLink } from "react-router-dom";
 import { Artist } from "./Containers/Popups/UploadSongPopup";
-import { isLoggedIn } from "../main";
+import { authUserID, isLoggedIn } from "../main";
 
 var changingTime = false;
 var prevPlayState = false;
@@ -56,6 +56,9 @@ export default function MusicControl() {
   const [playIcon, setPlayIcon] = useState(play);
   const [imgURL, setImgURL] = useState("../../../src/assets/small_record.svg");
   const [artists, setArtists] = useState([] as Artist[]);
+  const [likeState, setLikeState] = useState(
+    "../../../src/assets/star-regular.svg"
+  );
 
   // Use to track the time the song has been listened to uninterrupted. Not 100% accurate, but not too inaccurate.
   const [timeListened, setTimeListened] = useState(0);
@@ -139,7 +142,15 @@ export default function MusicControl() {
               myList.push(art);
             }
             setArtists(myList);
-
+            supabase
+              .from("Users")
+              .select("liked_songs")
+              .eq("id", authUserID)
+              .then((result) => {
+                if (result.data?.at(0)?.liked_songs.includes(player.song_id))
+                  setLikeState("../../../src/assets/star-solid.svg");
+                else setLikeState("../../../src/assets/star-regular.svg");
+              });
             // Cover URL
             let albumID = result.data?.at(0)?.album_id;
             supabase
@@ -250,6 +261,39 @@ export default function MusicControl() {
       name_text_element.classList.remove("marquee");
     }
   }
+  function LikeSong() {
+    const insertIntoTable = async () => {
+      // Now we need to append ID to array in playlist
+
+      await supabase
+        .from("Users")
+        .select("liked_songs")
+        .eq("id", authUserID)
+        .then(async (result) => {
+          var array: string[] = result.data?.at(0)?.liked_songs;
+
+          let icon = "";
+          // Guard Statement
+          if (array.includes(player.song_id)) {
+            // Unlike
+            array.splice(array.indexOf(player.song_id as string), 1);
+            icon = "../../../src/assets/star-regular.svg";
+          } else {
+            // Like
+            array.push(player.song_id as string);
+            icon = "../../../src/assets/star-solid.svg";
+          }
+
+          await supabase
+            .from("Users")
+            .update({ liked_songs: array })
+            .eq("id", authUserID)
+            .then(() => setLikeState(icon));
+        });
+    };
+
+    insertIntoTable();
+  }
 
   onpointerup = () => {
     //console.log(changingTime);
@@ -328,9 +372,13 @@ export default function MusicControl() {
                 </div>
               </div>
             </div>
+            <img
+              id="control-like-btn"
+              onClick={() => LikeSong()}
+              src={likeState}
+            />
           </div>
         </div>
-
         <div className="controls">
           <span id="current-time" className="time">
             {currentTime}
