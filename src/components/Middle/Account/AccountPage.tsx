@@ -330,7 +330,7 @@ export default function AccountPage() {
             </section>
 
             {/*Albums Songs*/}
-            <section hidden={albumList.length == 0 && !isOwner}>
+            <section hidden={albumList.length == 0}>
               <h2>Albums</h2>
               <div className="myAlbums">
                 {albumList.map((item) => (
