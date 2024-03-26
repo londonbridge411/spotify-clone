@@ -5,58 +5,54 @@ import { useEffect, useState } from "react";
 import { CloseSongContextMenu } from "../SongContextMenu";
 import { SwitchToPopup } from "../../../../PopupControl";
 import { setListRef } from "../../../Middle/Playlist";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../store";
 
 var isPlaylistOwner: boolean = false;
 var playlistType: string = "undefined";
 
 export var DeleteSong_Exported: any;
 
-export default function ContextOption_RemoveDeleteSong(props: any) {
+export default function ContextOption_RemoveDeleteSong() {
   const { playlistID } = useParams();
-
-  if (playlistID == null) return;
+  const songContext = useSelector((state: RootState) => state.songContext);
 
   DeleteSong_Exported = DeleteSong;
 
-  var removeBtnID = "RemoveSong_Button_" + props.target;
-  var deleteBtnID = "DeleteSong_Button_" + props.target;
+  const [deleteHidden, hideDelete] = useState(true);
+  const [removeHidden, hideRemove] = useState(true);
 
-  var removeBtn = document.getElementById(removeBtnID) as HTMLElement;
-  var deleteBtn = document.getElementById(deleteBtnID) as HTMLElement;
-
-  removeBtn?.style.setProperty("display", "none");
-  deleteBtn?.style.setProperty("display", "none");
-
-  let run = async () => {
-    removeBtn = document.getElementById(removeBtnID) as HTMLElement;
-    deleteBtn = document.getElementById(deleteBtnID) as HTMLElement;
-
-    //console.log("\nupdating");
-    await supabase
+  console.log(songContext.currentSongID);
+  let run = () => {
+    // Why is songContext.currentSongID breaking everything????????????????
+    supabase
       .from("Playlists")
       .select("owner_id, type")
       .eq("id", playlistID)
       .then((result) => {
         isPlaylistOwner = result.data?.at(0)?.owner_id == authUserID;
         playlistType = result.data?.at(0)?.type;
+
+        if (isPlaylistOwner) {
+          if (playlistType == "Album") {
+            hideRemove(true);
+            hideDelete(false);
+          } else if (playlistType == "Playlist") {
+            hideRemove(false);
+            hideDelete(true);
+          }
+        }
       });
 
-    if (isPlaylistOwner) {
-      if (playlistType == "Album") {
-        removeBtn?.style.setProperty("display", "none");
-        deleteBtn?.style.setProperty("display", "block");
-      } else if (playlistType == "Playlist") {
-        removeBtn?.style.setProperty("display", "block");
-        deleteBtn?.style.setProperty("display", "none");
-      }
-    }
+    //console.log("\nupdating: " + songContext.currentSongID);
   };
 
   run();
 
-  useEffect(() => {
-    run();
-  }, [playlistID]);
+  // Use effect is causing the crash
+  // useEffect(() => {
+  //   //run();
+  // }, [songContext.currentSongID]);
 
   // Removes the song from the playlist
   function RemoveSong(song_id: string) {
@@ -133,11 +129,16 @@ export default function ContextOption_RemoveDeleteSong(props: any) {
         hidden={playlistType == "undefined" || !isPlaylistOwner}
       >
         <div>
-          <div id={removeBtnID} onClick={() => RemoveSong(props.target)}>
+          <div
+            id="RemoveSong_Button"
+            hidden={removeHidden}
+            onClick={() => RemoveSong(songContext.currentSongID)}
+          >
             Remove Song
           </div>
           <div
-            id={deleteBtnID}
+            id="DeleteSong_Button"
+            hidden={deleteHidden}
             onClick={() => {
               CloseSongContextMenu();
               SwitchToPopup("DeleteSong");

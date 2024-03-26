@@ -1,73 +1,78 @@
-import { isVerified } from "../../../main";
+import { authUserID, isVerified } from "../../../main";
 import "./SongContextMenu.css";
 import "./ContextButton.css";
 import ContextOption_RemoveDeleteSong from "./Song Context Features/RemoveDeleteSong";
 import ContextOption_AddToPlaylist from "./Song Context Features/AddToPlaylist";
 import ContextOption_AddToQueue from "./Song Context Features/AddToQueue";
 import ContextOption_RenameSong from "./Song Context Features/RenameSong";
+import { useSelector } from "react-redux";
+import { RootState, store } from "../../../store";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { OpenSongContextMenu } from "../../../SongContextSlice";
+import supabase from "../../../config/supabaseClient";
 
-export var targ: string = "";
-var ID: string;
 export function CloseSongContextMenu() {
-  var menu = document.getElementById(ID) as HTMLElement;
+  store.dispatch(OpenSongContextMenu(""));
+  var menu = document.getElementById("song-context-control") as HTMLElement;
   menu?.style.setProperty("display", "none");
 }
 
-export default function SongContextMenu(props: any) {
-  // This is to avoid people from accessing states and popups they shouldn't be able to see
-  if (props.active && props.requiresVerification && !isVerified) {
-    return;
-  }
+export function ViewSongContextMenu(id: string, event: any) {
+  store.dispatch(OpenSongContextMenu(id));
 
-  //setIsPlaylist(document.location.href.includes("playlist"))
-  // Clicking outside the context container sets it inactive
+  var menu = document.getElementById("song-context-control") as HTMLElement;
+  //console.log(menu);
+  menu.style.setProperty("display", "block");
+  menu.style.setProperty("--mouse-x", event.clientX + "px");
+  menu.style.setProperty("--mouse-y", event.clientY + "px");
+}
+
+export default function SongContextControl() {
+  const songContext = useSelector((state: RootState) => state.songContext);
+  const location = useLocation();
+
+  const [isOwner, setIsOwner] = useState(false);
+
+  useEffect(() => {
+    CloseSongContextMenu();
+  }, [location]);
+
+  useEffect(() => {
+    let run = async () => {
+      if (songContext.currentSongID != "") {
+        await supabase
+          .from("Songs")
+          .select("owner_id")
+          .eq("id", songContext.currentSongID)
+          .then((result) => {
+            setIsOwner(result.data?.at(0)?.owner_id == authUserID);
+          });
+      }
+    };
+
+    run();
+  }, [songContext.currentSongID]);
+
   document.onmouseup = function (e) {
-    var container = document.getElementById(ID);
+    var container = document.getElementById("song-context-control");
     var clickedHTML = e.target as HTMLElement;
 
     if (!container?.contains(clickedHTML)) {
       CloseSongContextMenu();
-      // Calls every subscriber this is closed.
-      //ContextCloseSubs.forEach((value: boolean) => (value as any)());
     }
   };
 
-  ID = "SongContext_" + props.songID;
-  targ = props.songID;
-  // If you save and then press the button it will not work because the page gets screwed up.
   return (
     <>
-      <div
-        //alert={() => run()}
-        id={ID}
-        className="song-context-box"
-      >
+      <div id="song-context-control" className="song-context-box">
         <div className="song-context-content">
-          <ContextOption_AddToQueue target={props.songID} />
-          <ContextOption_AddToPlaylist
-            onClick={() => {
-              targ = props.songID;
-            }}
-          />
-          <ContextOption_RenameSong
-            target={props.songID}
-            onClick={() => {
-              targ = props.songID;
-            }}
-          />
-          <ContextOption_RemoveDeleteSong target={props.songID} />
+          <ContextOption_AddToQueue />
+          <ContextOption_AddToPlaylist />
+          <ContextOption_RenameSong isOwner={isOwner} />
+          <ContextOption_RemoveDeleteSong />
         </div>
       </div>
     </>
   );
-}
-
-// Moves the
-export function ViewSongContextMenu(id: string, event: any) {
-  var menu = document.getElementById(id) as HTMLElement;
-
-  ID = id;
-  menu.style.setProperty("display", "block");
-  menu.style.setProperty("--mouse-x", event.clientX + "px");
-  menu.style.setProperty("--mouse-y", event.clientY + "px");
 }

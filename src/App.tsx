@@ -7,6 +7,7 @@ import "./App.css";
 import { useSelector } from "react-redux";
 import { RootState } from "./store";
 import PopupControl from "./PopupControl";
+import SongContextControl from "./components/Containers/ContextMenus/SongContextMenu";
 
 export default function App() {
   const navigate = useNavigate();
@@ -47,6 +48,7 @@ export default function App() {
         </footer>
       </section>
       <PopupControl />
+      <SongContextControl />
     </div>
   );
 }

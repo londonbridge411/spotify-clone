@@ -7,15 +7,7 @@ import prev from "../assets/backward-step-solid.svg";
 import next from "../assets/forward-step-solid.svg";
 import shuffle from "../assets/shuffle-solid.svg";
 import repeat from "../assets/repeat-solid.svg";
-import {
-  Component,
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, store } from "../store";
 import {
@@ -58,6 +50,10 @@ export default function MusicControl() {
   const [artists, setArtists] = useState([] as Artist[]);
   const [likeState, setLikeState] = useState(
     "../../../src/assets/star-regular.svg"
+  );
+
+  const [volIconState, SetVolIconState] = useState(
+    "../../../src/assets/vol-none.png"
   );
 
   // Use to track the time the song has been listened to uninterrupted. Not 100% accurate, but not too inaccurate.
@@ -108,6 +104,28 @@ export default function MusicControl() {
       a.play();
       setPlayIcon(pause);
     }
+  }
+
+  function UpdateVolume() {
+    let audio = document.getElementById("audioControl") as HTMLAudioElement;
+    let num = audio.volume * 100;
+    dispatch(setVolume(num.toString()));
+    let icon_path: string = "";
+
+    if (num == 0) {
+      icon_path = "../../../src/assets/vol-muted.png";
+    } else if (num > 0 && num <= 32) {
+      // Vol Low
+      icon_path = "../../../src/assets/vol-low.png";
+    } else if (num >= 32 && num <= 66) {
+      // Vol Med
+      icon_path = "../../../src/assets/vol-mid.png";
+    } else if (num >= 63 && num <= 100) {
+      // Vol High
+      icon_path = "../../../src/assets/vol-high.png";
+    }
+
+    SetVolIconState(icon_path);
   }
 
   // Storage and Effects
@@ -201,8 +219,7 @@ export default function MusicControl() {
               };
 
               audio.onvolumechange = () => {
-                let num = audio.volume * 100;
-                dispatch(setVolume(num.toString()));
+                UpdateVolume();
               };
 
               audio.onended = () => {
@@ -210,11 +227,15 @@ export default function MusicControl() {
               };
 
               let cookie_volume = document.cookie.split("volume=").at(1);
+              //let volNum = parseInt(cookie_volume);
 
-              if (cookie_volume != undefined) {
-                //console.log("AAA " + cookie_volume);
-                audio.volume = parseInt(cookie_volume) / 100; //Causes error????
+              //console.log(cookie_volume);
+              if (cookie_volume != undefined && !Number.isNaN(cookie_volume)) {
+                //console.log(cookie_volume);
+                audio.volume = parseInt(cookie_volume!) / 100; //Causes error????
+                UpdateVolume();
               }
+
               setMaxTime(CalculateTime(audio.duration));
 
               dispatch(setIsPlaying(true));
@@ -261,6 +282,7 @@ export default function MusicControl() {
       name_text_element.classList.remove("marquee");
     }
   }
+
   function LikeSong() {
     const insertIntoTable = async () => {
       // Now we need to append ID to array in playlist
@@ -295,6 +317,11 @@ export default function MusicControl() {
     insertIntoTable();
   }
 
+  function ToggleMute() {
+    let audio = document.getElementById("audioControl") as HTMLAudioElement;
+    audio.volume = audio.volume > 0 ? 0 : 0.5;
+    UpdateVolume();
+  }
   onpointerup = () => {
     //console.log(changingTime);
     if (changingTime && player.hasLoaded) {
@@ -426,6 +453,11 @@ export default function MusicControl() {
         </div>
 
         <div className="volume-control-container">
+          <img
+            className="volume-button"
+            onClick={ToggleMute}
+            src={volIconState}
+          />
           <input
             id="volume-control"
             type="range"

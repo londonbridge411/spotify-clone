@@ -10,7 +10,6 @@ import PlaylistEdit from "./components/Containers/Popups/PlaylistEdit";
 import { useLocation } from "react-router-dom";
 import { useEffect, useRef } from "react";
 import { UnfollowUser_Exported } from "./components/Middle/Account/AccountPage";
-import { targ as songContextTarg } from "./components/Containers/ContextMenus/SongContextMenu";
 import { DeleteSong_Exported } from "./components/Containers/ContextMenus/Song Context Features/RemoveDeleteSong";
 import PlaylistList from "./components/Containers/Playlist Containers/PlaylistList";
 import SongOrderList from "./components/Containers/Popups/SongOrderList";
@@ -196,7 +195,14 @@ var POPUP_MAP = new Map<string, any>([
               platform.
             </div>
             <div style={{ display: "flex", flexDirection: "row" }}>
-              <button onClick={() => DeleteSong_Exported(songContextTarg)}>
+              <button
+                onClick={() => {
+                  const songContext = useSelector(
+                    (state: RootState) => state.songContext
+                  );
+                  DeleteSong_Exported(songContext.currentSongID);
+                }}
+              >
                 Yes
               </button>
               <button onClick={() => ClosePopup()}>No</button>

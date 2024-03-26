@@ -2,13 +2,14 @@ import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setSongID, setIsPlaying, setPlaylistSongs } from "../../PlayerSlice";
 import supabase from "../../config/supabaseClient";
-import { RootState } from "../../store";
-import SongContextMenu, {
-  ViewSongContextMenu,
-} from "./ContextMenus/SongContextMenu";
+import { RootState, store } from "../../store";
 import { NavLink } from "react-router-dom";
 import { Artist } from "./Popups/UploadSongPopup";
 import "../../Links.css";
+import { OpenSongContextMenu } from "../../SongContextSlice";
+import SongContextControl, {
+  ViewSongContextMenu,
+} from "./ContextMenus/SongContextMenu";
 // Song Row
 export default function SongRow(props: any) {
   const [songName, setSongName] = useState("");
@@ -121,7 +122,7 @@ export default function SongRow(props: any) {
           e.preventDefault();
 
           // Don't even have to do this. Just send the song_id to state
-          ViewSongContextMenu("SongContext_" + props.song_id, e);
+          ViewSongContextMenu(props.song_id, e);
         }}
         // On left click
         onDoubleClick={() => {
@@ -218,7 +219,6 @@ export default function SongRow(props: any) {
         <div className="song-row-date, song-row-item ">{dateCreated}</div>
         <div className="song-row-duration, song-row-item">{duration}</div>
       </div>
-      <SongContextMenu songID={props.song_id} />
     </>
   );
 }

@@ -8,10 +8,13 @@ import { PostgrestSingleResponse } from "@supabase/supabase-js";
 import { authUserID, username } from "../../../main";
 import CustomInputField from "../../CustomInputField";
 import { SwitchToPopup } from "../../../PopupControl";
-import { targ } from "../ContextMenus/SongContextMenu";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store";
 
 export function RenameSongPopup() {
   // Get Playlist ID
+  const songContext = useSelector((state: RootState) => state.songContext);
+  //if (songContext.currentSongID == "") return;
 
   function RenameSong() {
     let a = async () => {
@@ -19,13 +22,12 @@ export function RenameSongPopup() {
         document.getElementById("rename-song-name") as HTMLInputElement
       )?.value;
 
-      if (new_name == "")
-        return;
+      if (new_name == "") return;
 
       await supabase
         .from("Songs")
         .update({ title: new_name })
-        .eq("id", targ)
+        .eq("id", songContext.currentSongID)
         .then(() => window.location.reload());
     };
 

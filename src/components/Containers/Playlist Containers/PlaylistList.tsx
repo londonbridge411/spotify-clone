@@ -3,12 +3,14 @@ import supabase from "../../../config/supabaseClient";
 import { authUserID, email } from "../../../main";
 import PlaylistContainerHorizontal from "./PlaylistContainerHorizontal";
 import "./PlaylistList.css";
-import { CloseSongContextMenu, targ } from "../ContextMenus/SongContextMenu";
-import { useDispatch } from "react-redux";
+import { CloseSongContextMenu } from "../ContextMenus/SongContextMenu";
+import { useDispatch, useSelector } from "react-redux";
 import { ClosePopup } from "../../../PopupControl";
+import { RootState } from "../../../store";
 
 export default function PlaylistList(props: any) {
   const [list, setList] = useState([]);
+  const songContext = useSelector((state: RootState) => state.songContext);
 
   useEffect(() => {
     supabase
@@ -63,7 +65,7 @@ export default function PlaylistList(props: any) {
         {list.map((item) => (
           <li key={item}>
             <PlaylistContainerHorizontal
-              onClick={() => AddToPlaylist(item!, targ)}
+              onClick={() => AddToPlaylist(item!, songContext.currentSongID)}
               playlist_id={item}
             />
           </li>

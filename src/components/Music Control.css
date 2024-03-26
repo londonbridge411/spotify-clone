@@ -139,6 +139,16 @@
   margin-right: 5px;
 }
 
+.volume-button {
+  height: 25px;
+  width: 25px;
+  margin-right: 5px;
+}
+
+.volume-button:hover {
+  filter: sepia(79%) saturate(1000%) hue-rotate(86deg);
+}
+
 .time {
   display: flex;
   width: 50px;
