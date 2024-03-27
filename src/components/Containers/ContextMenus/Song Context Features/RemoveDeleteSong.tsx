@@ -22,7 +22,8 @@ export default function ContextOption_RemoveDeleteSong() {
   const [deleteHidden, hideDelete] = useState(true);
   const [removeHidden, hideRemove] = useState(true);
 
-  console.log(songContext.currentSongID);
+  //console.log(songContext.currentSongID);
+
   let run = () => {
     // Why is songContext.currentSongID breaking everything????????????????
     supabase
@@ -47,7 +48,9 @@ export default function ContextOption_RemoveDeleteSong() {
     //console.log("\nupdating: " + songContext.currentSongID);
   };
 
-  run();
+  if (playlistID != "" && playlistID != null) {
+    run();
+  }
 
   // Use effect is causing the crash
   // useEffect(() => {
