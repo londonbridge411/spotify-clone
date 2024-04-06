@@ -4,6 +4,7 @@
   border-radius: 5%;
   align-items: center;
   padding-left: 10px;
+  color: white;
 }
 
 .contextButton:hover {
