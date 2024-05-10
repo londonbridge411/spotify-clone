@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setSongID, setIsPlaying, setPlaylistSongs } from "../../PlayerSlice";
+import {
+  setSongID,
+  setIsPlaying,
+  addToQueue,
+  clearQueue,
+} from "../../PlayerSlice";
 import supabase from "../../config/supabaseClient";
 import { RootState, store } from "../../store";
 import { NavLink } from "react-router-dom";
@@ -128,8 +133,12 @@ export default function SongRow(props: any) {
         onDoubleClick={() => {
           let nameArea = document.getElementById(props.song_id);
           if (player.song_id != nameArea?.id) {
-            if (props.song_list != null)
-              dispatch(setPlaylistSongs(props.song_list));
+            if (props.song_list != null) dispatch(clearQueue());
+
+            for (let i = 0; i < props.song_list.length; i++) {
+              dispatch(addToQueue(props.song_list[i]));
+            }
+            //dispatch(setPlaylistSongs(props.song_list));
             dispatch(setSongID(props.song_id));
           } else {
             let a = document.getElementById("audioControl") as HTMLAudioElement;
@@ -171,8 +180,12 @@ export default function SongRow(props: any) {
             } else {
               a.play();
               if (props.song_list != null) {
-                console.log(props.song_list);
-                dispatch(setPlaylistSongs(props.song_list));
+                dispatch(clearQueue());
+
+                for (let i = 0; i < props.song_list.length; i++) {
+                  dispatch(addToQueue(props.song_list[i]));
+                }
+                //dispatch(setPlaylistSongs(props.song_list));
               }
 
               dispatch(setSongID(props.song_id));

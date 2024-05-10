@@ -1,37 +1,41 @@
 import { useState, useEffect } from "react";
 import supabase from "../../../config/supabaseClient";
 import { authUserID } from "../../../main";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ClosePopup, SwitchToPopup } from "../../../PopupControl";
+import { addToQueue, clearQueue } from "../../../PlayerSlice";
 import { useLocation, useParams } from "react-router-dom";
 import "./SongOrderList.css";
 import { setListRef } from "../../Middle/Playlist";
+import { RootState } from "../../../store";
 
-export default function SongOrderList() {
-  const [list, setList] = useState([]);
-
+export default function QueueOrderList() {
   const { playlistID } = useParams();
-
+  const [list, setList] = useState([]);
+  const [viewableList, setViewableList] = useState([]);
   const [selectedItem, selectItem] = useState("");
-  const location = useLocation();
   const [hasLoaded, setLoaded] = useState(false);
+  const [currentSong, setCurrentSong] = useState(null);
 
+  const location = useLocation();
+  const player = useSelector((state: RootState) => state.player);
   const dispatch = useDispatch();
 
-  //console.log(playlistID);
   useEffect(() => {
-    supabase
-      .rpc("get_playlist_songs_edit", { uid: playlistID })
-      .then((result) => {
-        //console.log(result.data);
-        setLoaded(true);
-        setList(result.data as any);
-      });
-  }, [location]);
+    supabase.rpc("getqueueinfo", { queue: player.queue }).then((result) => {
+      setLoaded(true);
+
+      setList(result.data as any);
+
+      setCurrentSong(result.data[player.listPosition]);
+      let tempList = result.data.slice(player.listPosition + 1);
+      setViewableList(tempList as any);
+    });
+  }, [location, player.song_id]);
 
   function SelectItem(item_id: string, event: any) {
+    //console.log(item_id);
     selectItem(item_id);
-    //console.log(event.target.parentElement);
 
     let element = event.target as HTMLDivElement;
 
@@ -40,12 +44,9 @@ export default function SongOrderList() {
       element = element.parentElement as HTMLDivElement;
     }
     element.classList.add("songOrderItem-Follow");
-    //event.target.style.setProperty("background-color", "red");
   }
 
   function DeselectItem(event: any) {
-    //console.log(event.target); //where it is at
-
     let element = document.getElementsByClassName(
       "songOrderItem-Follow"
     )[0] as HTMLDivElement;
@@ -64,13 +65,15 @@ export default function SongOrderList() {
     )[0] as HTMLDivElement;
 
     if (element == null) return;
-
+    // console.log("Holding: " + element.children[1].textContent);
+    // console.log("Hovered Over: " + event.target.children[1].textContent);
     element.classList.remove("songOrderItem-Follow");
     event.target.classList.add("songOrderItem-Follow");
 
-    let item: any = list.find((i: any) => i?.id == selectedItem);
+    let item: any = viewableList.find((i: any) => i?.song_id == selectedItem);
 
-    let arr: any[] = [...list];
+    //console.log(item);
+    let arr: any[] = [...viewableList];
 
     let oldIndex = arr.indexOf(item);
 
@@ -81,15 +84,11 @@ export default function SongOrderList() {
 
     let boundary = elem.getBoundingClientRect();
 
-    //console.log("Top: " + boundary.top);
-    //console.log("mosuer: " +  event.clientY * 0.85);
     if (
       event.clientY > boundary.bottom * 0.9 ||
       event.clientY * 0.85 < boundary.top
     ) {
       if (selectedItem != "") {
-        //console.log("SCROLL");
-        //elem?.scrollTo(0,event.clientY + 1)
         (event.target as HTMLElement).scrollIntoView({
           behavior: "smooth",
           block: "center",
@@ -97,36 +96,24 @@ export default function SongOrderList() {
         });
       }
     }
-    setList(arr as any);
-  }
 
-  function UpdateSongList() {
-    let update = async () => {
-      let uploadList: string[] = [];
-      for (let i = 0; i < list.length; i++) {
-        uploadList.push((list[i] as any).id);
-      }
+    let alreadyplayed: any = list.slice(0, player.listPosition);
+    let newArray = alreadyplayed.concat(currentSong, arr); // Appends previous songs, currentSong, and the viewable list (songs that haven't been played yet)
 
-      SwitchToPopup("uploadingWait");
-      //console.log(uploadList);
-      await supabase
-        .from("Playlists")
-        .update({ song_ids: uploadList })
-        .eq("id", playlistID)
-        .then(() => {
-          setListRef(uploadList as any);
-          // Works, but think about a case where you are listening to one song, edit another playlist and then it updates. This would cause issues.
-          //dispatch(setSongList(uploadList));
-          ClosePopup();
-        });
-    };
+    setList(newArray as any);
+    dispatch(clearQueue());
 
-    update();
+    for (let i = 0; i < newArray.length; i++) {
+      dispatch(addToQueue(newArray[i].song_id));
+    }
+
+    setViewableList(arr as any);
   }
 
   document.onmouseup = (e) => {
     DeselectItem(e);
   };
+
   return (
     <>
       <div
@@ -141,16 +128,22 @@ export default function SongOrderList() {
           height: "500px",
         }}
       >
-        <h2>Order</h2>
+        <h2>Up Next</h2>
+
+        <li className="currentSong">
+          <div>{(currentSong as any)?.title}</div>
+        </li>
+
         <div id="songOrderContainer">
-          {list.map((item: any, index) => (
+          {viewableList.map((item: any, index) => (
             <li
               key={index}
               className="songOrderItem"
               onMouseDown={(e) => {
-                SelectItem(item.id, e);
+                //console.log(item.song_id);
+                SelectItem(item.song_id, e);
 
-                //console.log("holding: " + item.id);
+                //console.log("Selecting: " + item.title);
               }}
               onMouseEnter={(e) => {
                 if (selectedItem != "") {
@@ -163,13 +156,6 @@ export default function SongOrderList() {
             </li>
           ))}
         </div>
-
-        <button
-          style={{ marginTop: "25px", marginBottom: "25px" }}
-          onClick={UpdateSongList}
-        >
-          Save
-        </button>
       </div>
 
       <img

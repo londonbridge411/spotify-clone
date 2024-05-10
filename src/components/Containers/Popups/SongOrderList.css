@@ -24,7 +24,25 @@
   border-radius: 50px;
 }
 
-.songOrderItem:hover{
+.currentSong {
+  display: flex;
+  font-weight: bold;
+  font-size: 145%;
+  flex-shrink: none;
+  column-gap: 10px;
+  align-content: center;
+  align-items: center;
+  user-select: none;
+  background-color: rgb(141, 255, 255);
+  height: 50px;
+  min-height: 50px;
+  padding-inline: 10px;
+  border-radius: 50px;
+  margin-bottom: 15px;
+  color: black;
+}
+
+.songOrderItem:hover {
   cursor: pointer;
 
   transition: all 0.2s ease-in;

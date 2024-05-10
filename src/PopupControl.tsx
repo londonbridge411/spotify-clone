@@ -17,6 +17,7 @@ import { DeletePlaylist_Exported } from "./components/Containers/ContextMenus/Pl
 import { RenameSongPopup } from "./components/Containers/Popups/RenameSongPopup";
 import CustomInputField from "./components/CustomInputField";
 import { RenamePlaylist_Exported } from "./components/Containers/ContextMenus/Playlist Context Features/RenamePlaylist";
+import QueueOrderList from "./components/Containers/Popups/QueueOrderList";
 
 // Used for things in-line here.
 
@@ -326,6 +327,28 @@ var POPUP_MAP = new Map<string, any>([
                 </button>
               </div>
             </div>
+          </div>
+        </>
+      }
+    />,
+  ],
+  [
+    "queue",
+    <Popup
+      canClose={true}
+      html={
+        <>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              justifySelf: "center",
+            }}
+          >
+            <QueueOrderList />
+            <div style={{ display: "flex", flexDirection: "row" }}></div>
           </div>
         </>
       }

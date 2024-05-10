@@ -5,6 +5,7 @@ import play from "../assets/circle-play-solid.svg";
 import pause from "../assets/circle-pause-solid.svg";
 import prev from "../assets/backward-step-solid.svg";
 import next from "../assets/forward-step-solid.svg";
+import bars from "../assets/bars-solid.svg";
 import shuffle from "../assets/shuffle-solid.svg";
 import repeat from "../assets/repeat-solid.svg";
 import { useEffect, useRef, useState } from "react";
@@ -23,6 +24,7 @@ import supabase from "../config/supabaseClient";
 import { NavLink } from "react-router-dom";
 import { Artist } from "./Containers/Popups/UploadSongPopup";
 import { authUserID, isLoggedIn } from "../main";
+import { SwitchToPopup } from "../PopupControl";
 
 var changingTime = false;
 var prevPlayState = false;
@@ -453,6 +455,11 @@ export default function MusicControl() {
         </div>
 
         <div className="volume-control-container">
+          <img
+            className="queue-button"
+            onClick={() => SwitchToPopup("queue")}
+            src={bars}
+          />
           <img
             className="volume-button"
             onClick={ToggleMute}

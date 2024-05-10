@@ -9,7 +9,7 @@ import { authUserID, email, username } from "../../main";
 import * as uuid from "uuid";
 import {
   setIsPlaying,
-  setPlaylistSongs,
+  addToQueue,
   setSongID,
   shufflePlay,
 } from "../../PlayerSlice";
@@ -98,7 +98,10 @@ export default function Playlist() {
             <img
               src="../../../src/assets/play_button.png"
               onClick={() => {
-                dispatch(setPlaylistSongs(list as string[]));
+                //dispatch(setPlaylistSongs(list as string[]));
+                for (let i = 0; i < list.length; i++) {
+                  dispatch(addToQueue(list[i]));
+                }
                 dispatch(setSongID(list[0]));
                 dispatch(setIsPlaying(true));
               }}
@@ -107,7 +110,10 @@ export default function Playlist() {
             <img
               src="../../../src/assets/shuffle_button.png"
               onClick={() => {
-                dispatch(setPlaylistSongs(list as string[]));
+                //dispatch(setPlaylistSongs(list as string[]));
+                for (let i = 0; i < list.length; i++) {
+                  dispatch(addToQueue(list[i]));
+                }
                 dispatch(shufflePlay());
               }}
             />

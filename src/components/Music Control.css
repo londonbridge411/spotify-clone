@@ -155,3 +155,10 @@
   justify-content: center;
   align-content: center;
 }
+
+.queue-button {
+  filter: invert(100%);
+  height: 25px;
+  width: 25px;
+  margin-right: 15px;
+}
