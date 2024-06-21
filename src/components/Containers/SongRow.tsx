@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   setSongID,
   setIsPlaying,
-  addToQueue,
+  addToEndOfQueue,
   clearQueue,
 } from "../../PlayerSlice";
 import supabase from "../../config/supabaseClient";
@@ -136,7 +136,7 @@ export default function SongRow(props: any) {
             if (props.song_list != null) dispatch(clearQueue());
 
             for (let i = 0; i < props.song_list.length; i++) {
-              dispatch(addToQueue(props.song_list[i]));
+              dispatch(addToEndOfQueue(props.song_list[i]));
             }
             //dispatch(setPlaylistSongs(props.song_list));
             dispatch(setSongID(props.song_id));
@@ -183,7 +183,7 @@ export default function SongRow(props: any) {
                 dispatch(clearQueue());
 
                 for (let i = 0; i < props.song_list.length; i++) {
-                  dispatch(addToQueue(props.song_list[i]));
+                  dispatch(addToEndOfQueue(props.song_list[i]));
                 }
                 //dispatch(setPlaylistSongs(props.song_list));
               }

@@ -10,6 +10,7 @@ interface PlayerState {
   hasLoaded: boolean;
   holdPrev: boolean;
   queue: string[];
+  queueDisplacement: number; // This is a way for me to queue up FIFO, instead of FILO. It is used to displace the position of a queued song.
   //playlistSongs: string[];
   listPosition: number;
 }
@@ -22,6 +23,7 @@ const initialState: PlayerState = {
   hasLoaded: false,
   holdPrev: false,
   queue: [],
+  queueDisplacement: 0,
   //playlistSongs: [],
   listPosition: -1,
 };
@@ -57,8 +59,28 @@ const playerSlice = createSlice({
       state.queue = [];
     },
 
-    addToQueue(state, action: PayloadAction<string>) {
+    addToEndOfQueue(state, action: PayloadAction<string>) {
       state.queue.push(action.payload);
+    },
+
+    enqueue(state, action: PayloadAction<string>) {
+      if (
+        state.queue.length == 0 ||
+        state.queue.length + 1 == state.listPosition
+      ) {
+        // We push because if we insert at the index 1, it should throw an out of bounds error.
+        state.queue.push(action.payload);
+      } else {
+        // Queues song at the next spot
+        state.queueDisplacement++;
+        state.queue.splice(
+          state.listPosition + state.queueDisplacement,
+          0,
+          action.payload
+        );
+      }
+
+      //state.queue.unshift(action.payload);
     },
 
     shufflePlay(state) {
@@ -68,12 +90,6 @@ const playerSlice = createSlice({
 
       state.song_id = state.queue[0];
       state.listPosition = 0;
-      /*if (state.playlistSongs.length == 0) return;
-      state.isShuffled = true;
-      state.playlistSongs.sort(() => Math.random() - 0.5);
-
-      state.song_id = state.playlistSongs[0];
-      state.listPosition = 0;*/
     },
 
     prevSong(state) {
@@ -85,6 +101,7 @@ const playerSlice = createSlice({
       state.song_id =
         state.queue[state.holdPrev ? state.listPosition : --state.listPosition];
       state.holdPrev = false;
+      if (state.queueDisplacement > 0) state.queueDisplacement++; //Insures that if we go backwards before hitting queued song, we adjust the displacement;
     },
 
     nextSong(state) {
@@ -101,6 +118,7 @@ const playerSlice = createSlice({
       } else {
         if (state.listPosition + 1 == state.queue.length) return;
         state.song_id = state.queue[++state.listPosition];
+        if (state.queueDisplacement > 0) state.queueDisplacement--; //Doesn't lower it if it is already at 0
       }
     },
 
@@ -129,7 +147,8 @@ export const {
   setVolume,
   setIsPlaying,
   clearQueue,
-  addToQueue,
+  addToEndOfQueue,
+  enqueue,
   LoadPlayer,
   ClearPlayer,
   prevSong,

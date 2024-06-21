@@ -3,7 +3,7 @@ import supabase from "../../../config/supabaseClient";
 import { authUserID } from "../../../main";
 import { useDispatch, useSelector } from "react-redux";
 import { ClosePopup, SwitchToPopup } from "../../../PopupControl";
-import { addToQueue, clearQueue } from "../../../PlayerSlice";
+import { addToEndOfQueue, clearQueue } from "../../../PlayerSlice";
 import { useLocation, useParams } from "react-router-dom";
 import "./SongOrderList.css";
 import { setListRef } from "../../Middle/Playlist";
@@ -104,10 +104,14 @@ export default function QueueOrderList() {
     dispatch(clearQueue());
 
     for (let i = 0; i < newArray.length; i++) {
-      dispatch(addToQueue(newArray[i].song_id));
+      dispatch(addToEndOfQueue(newArray[i].song_id));
     }
 
     setViewableList(arr as any);
+  }
+
+  function RemoveSong(item_id: string) {
+    //const index = .indexOf(item_id, 0);
   }
 
   document.onmouseup = (e) => {
@@ -136,24 +140,26 @@ export default function QueueOrderList() {
 
         <div id="songOrderContainer">
           {viewableList.map((item: any, index) => (
-            <li
-              key={index}
-              className="songOrderItem"
-              onMouseDown={(e) => {
-                //console.log(item.song_id);
-                SelectItem(item.song_id, e);
-
-                //console.log("Selecting: " + item.title);
-              }}
-              onMouseEnter={(e) => {
-                if (selectedItem != "") {
-                  SwapPosition(e, index);
-                }
-              }}
-            >
-              <div>{index + 1 + "."}</div>
-              <div>{item.title}</div>
-            </li>
+            <div>
+              <li
+                key={index}
+                className="songOrderItem"
+                onMouseDown={(e) => {
+                  SelectItem(item.song_id, e);
+                }}
+                onMouseEnter={(e) => {
+                  if (selectedItem != "") {
+                    SwapPosition(e, index);
+                  }
+                }}
+              >
+                <div className="number">{index + 1 + "."}</div>
+                <div className="title">{item.title}</div>
+                <div className="x" onClick={() => RemoveSong(item.song_id)}>
+                  x
+                </div>
+              </li>
+            </div>
           ))}
         </div>
       </div>

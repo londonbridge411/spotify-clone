@@ -1,6 +1,6 @@
 import { CloseSongContextMenu } from "../SongContextMenu";
 import { SwitchToPopup } from "../../../../PopupControl";
-import { addToQueue } from "../../../../PlayerSlice";
+import { enqueue } from "../../../../PlayerSlice";
 import { RootState, store } from "../../../../store";
 import { useSelector } from "react-redux";
 
@@ -12,10 +12,10 @@ export default function ContextOption_AddToQueue() {
 
   return (
     <>
-      <div className="contextButton">
+      <div className="contextButton" hidden={player.queue.length == 0}>
         <div
           onClick={() => {
-            store.dispatch(addToQueue(songContext.currentSongID));
+            store.dispatch(enqueue(songContext.currentSongID));
             CloseSongContextMenu();
           }}
         >

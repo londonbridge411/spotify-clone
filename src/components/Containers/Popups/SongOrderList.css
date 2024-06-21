@@ -11,7 +11,7 @@
 }
 
 .songOrderItem {
-  display: flex;
+  /* display: flex;
   flex-shrink: none;
   column-gap: 10px;
   align-content: center;
@@ -21,7 +21,49 @@
   height: 50px;
   min-height: 50px;
   padding-inline: 10px;
+  border-radius: 50px; */
+
+  display: grid;
+  grid-template-columns: auto auto auto;
+
+  background-color: rgb(35, 35, 35);
+  align-content: center;
+  align-items: center;
+  user-select: none;
+  height: 50px;
+  min-height: 50px;
+  padding-inline: 10px;
   border-radius: 50px;
+}
+
+.songOrderItem .number {
+  display: flex;
+  justify-self: flex-start;
+}
+
+.songOrderItem .title {
+  display: flex;
+  justify-self: center;
+}
+
+.songOrderItem .x {
+  display: flex;
+  justify-self: flex-end;
+  color: rgb(52, 52, 52);
+  font-weight: bold;
+  font-size: large;
+  width: 30px;
+  height: 30px;
+  justify-content: center;
+}
+
+.songOrderItem:hover .x {
+  transition: all 0.2s ease-in;
+  color: white;
+}
+
+.songOrderItem .x:hover {
+  color: red;
 }
 
 .currentSong {

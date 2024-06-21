@@ -158,8 +158,8 @@ export default function SongOrderList() {
                 }
               }}
             >
-              <div>{index + 1 + "."}</div>
-              <div>{item.title}</div>
+              <div className="number">{index + 1 + "."}</div>
+              <div className="title">{item.title}</div>
             </li>
           ))}
         </div>

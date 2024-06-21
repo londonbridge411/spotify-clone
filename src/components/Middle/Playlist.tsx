@@ -9,7 +9,8 @@ import { authUserID, email, username } from "../../main";
 import * as uuid from "uuid";
 import {
   setIsPlaying,
-  addToQueue,
+  addToEndOfQueue,
+  enqueue,
   setSongID,
   shufflePlay,
   clearQueue,
@@ -245,7 +246,7 @@ export default function Playlist() {
                 //dispatch(setPlaylistSongs(list as string[]));
                 dispatch(clearQueue());
                 for (let i = 0; i < list.length; i++) {
-                  dispatch(addToQueue(list[i]));
+                  dispatch(addToEndOfQueue(list[i]));
                 }
                 dispatch(setSongID(list[0]));
                 dispatch(setIsPlaying(true));
@@ -258,7 +259,7 @@ export default function Playlist() {
                 //dispatch(setPlaylistSongs(list as string[]));
                 dispatch(clearQueue());
                 for (let i = 0; i < list.length; i++) {
-                  dispatch(addToQueue(list[i]));
+                  dispatch(addToEndOfQueue(list[i]));
                 }
                 dispatch(shufflePlay());
               }}
