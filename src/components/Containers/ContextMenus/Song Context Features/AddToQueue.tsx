@@ -12,7 +12,7 @@ export default function ContextOption_AddToQueue() {
 
   return (
     <>
-      <div className="contextButton" hidden={player.queue.length == 0}>
+      <div className="contextButton" hidden={player.properQueue.length == 0}>
         <div
           onClick={() => {
             store.dispatch(enqueue(songContext.currentSongID));

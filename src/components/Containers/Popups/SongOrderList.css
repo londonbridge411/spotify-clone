@@ -34,6 +34,8 @@
   min-height: 50px;
   padding-inline: 10px;
   border-radius: 50px;
+  margin-top: 7.5px;
+  margin-bottom: 7.5px;
 }
 
 .songOrderItem .number {

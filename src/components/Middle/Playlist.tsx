@@ -9,11 +9,11 @@ import { authUserID, email, username } from "../../main";
 import * as uuid from "uuid";
 import {
   setIsPlaying,
-  addToEndOfQueue,
   enqueue,
+  setProperQueue,
   setSongID,
   shufflePlay,
-  clearQueue,
+  clearFullQueue,
 } from "../../PlayerSlice";
 import { useDispatch } from "react-redux";
 import SongRow from "../Containers/SongRow";
@@ -243,12 +243,11 @@ export default function Playlist() {
             <img
               src="../../../src/assets/play_button.png"
               onClick={() => {
-                //dispatch(setPlaylistSongs(list as string[]));
-                dispatch(clearQueue());
-                for (let i = 0; i < list.length; i++) {
-                  dispatch(addToEndOfQueue(list[i]));
-                }
+                if (list != null) dispatch(clearFullQueue());
+
+                dispatch(setProperQueue(list));
                 dispatch(setSongID(list[0]));
+
                 dispatch(setIsPlaying(true));
               }}
             />
@@ -257,10 +256,11 @@ export default function Playlist() {
               src="../../../src/assets/shuffle_button.png"
               onClick={() => {
                 //dispatch(setPlaylistSongs(list as string[]));
-                dispatch(clearQueue());
-                for (let i = 0; i < list.length; i++) {
-                  dispatch(addToEndOfQueue(list[i]));
-                }
+                dispatch(clearFullQueue());
+                //for (let i = 0; i < list.length; i++) {
+                //  dispatch(addToEndOfQueue(list[i]));
+                //}
+                dispatch(setProperQueue(list as string[]));
                 dispatch(shufflePlay());
               }}
             />

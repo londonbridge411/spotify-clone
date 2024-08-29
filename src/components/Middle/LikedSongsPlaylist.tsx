@@ -9,7 +9,8 @@ import { authUserID, email, username } from "../../main";
 import * as uuid from "uuid";
 import {
   setIsPlaying,
-  addToEndOfQueue,
+  enqueue,
+  setProperQueue,
   setSongID,
   shufflePlay,
 } from "../../PlayerSlice";
@@ -99,9 +100,10 @@ export default function Playlist() {
               src="../../../src/assets/play_button.png"
               onClick={() => {
                 //dispatch(setPlaylistSongs(list as string[]));
-                for (let i = 0; i < list.length; i++) {
-                  dispatch(addToEndOfQueue(list[i]));
-                }
+                dispatch(setProperQueue(list as string[]));
+                //for (let i = 0; i < list.length; i++) {
+                //  dispatch(addToEndOfQueue(list[i]));
+                //}
                 dispatch(setSongID(list[0]));
                 dispatch(setIsPlaying(true));
               }}
@@ -111,9 +113,10 @@ export default function Playlist() {
               src="../../../src/assets/shuffle_button.png"
               onClick={() => {
                 //dispatch(setPlaylistSongs(list as string[]));
-                for (let i = 0; i < list.length; i++) {
-                  dispatch(addToEndOfQueue(list[i]));
-                }
+                dispatch(setProperQueue(list as string[]));
+                //for (let i = 0; i < list.length; i++) {
+                //  dispatch(addToEndOfQueue(list[i]));
+                //}
                 dispatch(shufflePlay());
               }}
             />

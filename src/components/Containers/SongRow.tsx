@@ -3,8 +3,9 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   setSongID,
   setIsPlaying,
-  addToEndOfQueue,
-  clearQueue,
+  enqueue,
+  setProperQueue,
+  clearFullQueue,
 } from "../../PlayerSlice";
 import supabase from "../../config/supabaseClient";
 import { RootState, store } from "../../store";
@@ -133,12 +134,9 @@ export default function SongRow(props: any) {
         onDoubleClick={() => {
           let nameArea = document.getElementById(props.song_id);
           if (player.song_id != nameArea?.id) {
-            if (props.song_list != null) dispatch(clearQueue());
+            if (props.song_list != null) dispatch(clearFullQueue());
 
-            for (let i = 0; i < props.song_list.length; i++) {
-              dispatch(addToEndOfQueue(props.song_list[i]));
-            }
-            //dispatch(setPlaylistSongs(props.song_list));
+            dispatch(setProperQueue(props.song_list));
             dispatch(setSongID(props.song_id));
           } else {
             let a = document.getElementById("audioControl") as HTMLAudioElement;
@@ -180,11 +178,13 @@ export default function SongRow(props: any) {
             } else {
               a.play();
               if (props.song_list != null) {
-                dispatch(clearQueue());
+                dispatch(clearFullQueue());
 
-                for (let i = 0; i < props.song_list.length; i++) {
-                  dispatch(addToEndOfQueue(props.song_list[i]));
-                }
+                //for (let i = 0; i < props.song_list.length; i++) {
+                //  dispatch(addToEndOfQueue(props.song_list[i]));
+                //}
+
+                dispatch(setProperQueue(props.song_list));
                 //dispatch(setPlaylistSongs(props.song_list));
               }
 
