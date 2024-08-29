@@ -1,5 +1,5 @@
 import { Outlet, useNavigate } from "react-router-dom";
-import { createContext, useEffect } from "react";
+import { createContext, useEffect, useState } from "react";
 import { isLoggedIn } from "./main";
 import Sidebar from "./components/Left/Sidebar";
 import MusicControl from "./components/Music Control";
@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "./store";
 import PopupControl from "./PopupControl";
 import SongContextControl from "./components/Containers/ContextMenus/SongContextMenu";
+import supabase from "./config/supabaseClient";
 
 export default function App() {
   const navigate = useNavigate();
@@ -34,14 +35,32 @@ export default function App() {
       e.preventDefault();
     }
   };
+
+  //window.document.getElementById("page")!.style.backgroundImage = "";
+  //window.document.exitFullscreen();
+
+  // window.document.onfullscreenchange = () =>
+  //   {
+  //     if (e.code == "F11" && e.target == document.body) {
+
+  //       /*if (document.fullscreenElement) {
+  //         console.log("ASdjhushdfuiasdfoiajfiausdhfaouisdfhj");
+  //         document.getElementById("page")!.style.backgroundImage = "";
+  //         document.exitFullscreen();
+  //       }*/
+
+  //   }
   return (
     <div className="App root-layout">
       <section id="page">
         <nav>
           <Sidebar />
         </nav>
-        <main>
+        <main id="main-reg">
           <Outlet />
+        </main>
+        <main id="main-fullscreen">
+          <div></div>
         </main>
         <footer>
           <MusicControl />

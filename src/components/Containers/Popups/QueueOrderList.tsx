@@ -16,6 +16,7 @@ export default function QueueOrderList() {
   const [selectedItem, selectItem] = useState("");
   const [hasLoaded, setLoaded] = useState(false);
   const [currentSong, setCurrentSong] = useState(null);
+  const [hideNext, setHideNext] = useState(true);
 
   enum QueueType {
     NONE,
@@ -30,21 +31,9 @@ export default function QueueOrderList() {
   const player = useSelector((state: RootState) => state.player);
   const dispatch = useDispatch();
 
-  /*
   useEffect(() => {
-    supabase.rpc("getqueueinfo", { queue: player.fullQueue }).then((result) => {
-      setLoaded(true);
-
-      setList(result.data as any);
-
-      setCurrentSong(
-        result.data[player.fullQueue.findIndex((x) => x == player.song_id)]
-      );
-      let tempList = result.data.slice(player.listPosition + 1);
-      setViewableList(tempList as any);
-    });
-  }, [location, player.song_id, player.fullQueue]);
-  */
+    setHideNext(player.nextQueue.length == 0);
+  }, [player.nextQueue]);
 
   // Current Song
   useEffect(() => {
@@ -215,12 +204,15 @@ export default function QueueOrderList() {
           justifySelf: "center",
         }}
       >
-        <h3>Playing:</h3>
+        <h3>Playing</h3>
         <div className="currentSong">{(currentSong as any)?.title}</div>
 
         <div id="songOrderContainer" style={{ width: "500px", height: "" }}>
-          <h3>Next:</h3>
+          <h3 hidden={hideNext} style={{ marginBottom: "0px" }}>
+            Next from Queue
+          </h3>
           <span
+            hidden={hideNext}
             id="nextQueueBox"
             onMouseEnter={(e) => {
               setHoveredQueue(QueueType.NEXT);
@@ -251,9 +243,9 @@ export default function QueueOrderList() {
             ))}
           </span>
 
-          <h3 style={{ marginBottom: "0px" }}>Proper:</h3>
+          <h3 style={{ marginBottom: "0px" }}>Next from Playlist</h3>
           <p style={{ margin: "0px", color: "rgb(197, 197, 197)" }}>
-            Double-click to queue
+            Double-click to enqueue
           </p>
           <span
             id="properQueueBox"

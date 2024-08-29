@@ -8,6 +8,8 @@ import next from "../assets/forward-step-solid.svg";
 import bars from "../assets/bars-solid.svg";
 import shuffle from "../assets/shuffle-solid.svg";
 import repeat from "../assets/repeat-solid.svg";
+import exitFS from "../assets/exit_fullscreen.svg";
+import enterFS from "../assets/enter_fullscreen.svg";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, store } from "../store";
@@ -57,6 +59,36 @@ export default function MusicControl() {
   const [volIconState, SetVolIconState] = useState(
     "../../../src/assets/vol-none.png"
   );
+
+  const [backgroundUrl, setBG_URL] = useState("");
+
+  useEffect(() => {
+    if (player.song_id != "" && document.fullscreenElement) {
+      supabase
+        .from("Songs")
+        .select("album_id")
+        .eq("id", player.song_id)
+        .then((result) => {
+          let albumID = result.data?.at(0)?.album_id;
+
+          supabase
+            .from("Playlists")
+            .select("bg_url")
+            .eq("id", albumID)
+            .then((result2) => {
+              setBG_URL(result2.data?.at(0)?.bg_url);
+
+              document.getElementById("page")!.style.transition =
+                "all 0.25s ease-in; opacity: 100%";
+              document.getElementById("page")!.style.backgroundImage =
+                "url(" + result2.data?.at(0)?.bg_url + ")";
+            });
+        });
+    } else {
+      window.document.getElementById("page")!.style.backgroundImage = "";
+      window.document.exitFullscreen();
+    }
+  }, [player.song_id, document.fullscreenElement]);
 
   // Use to track the time the song has been listened to uninterrupted. Not 100% accurate, but not too inaccurate.
   const [timeListened, setTimeListened] = useState(0);
@@ -346,7 +378,7 @@ export default function MusicControl() {
     }
   };
   return (
-    <>
+    <div id="soundbar-conatiner">
       <audio id="audioControl" preload="metadata" autoPlay>
         <source src={audioUrl.data.publicUrl} />
       </audio>
@@ -456,6 +488,20 @@ export default function MusicControl() {
 
         <div className="volume-control-container">
           <img
+            className="fullscreen-button"
+            onClick={() => {
+              if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+                document.getElementById("page")!.style.backgroundImage =
+                  "url(" + backgroundUrl + ")";
+              } else if (document.exitFullscreen) {
+                document.getElementById("page")!.style.backgroundImage = "";
+                document.exitFullscreen();
+              }
+            }}
+            src={document.fullscreenElement ? exitFS : enterFS} // This is backwards for some reason but it works
+          />
+          <img
             className="queue-button"
             onClick={() => SwitchToPopup("queue")}
             src={bars}
@@ -480,7 +526,7 @@ export default function MusicControl() {
           />
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
