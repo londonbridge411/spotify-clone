@@ -128,7 +128,8 @@ export default function SongRow(props: any) {
           e.preventDefault();
 
           // Don't even have to do this. Just send the song_id to state
-          ViewSongContextMenu(props.song_id, e);
+          ViewSongContextMenu(props.song_id, e); // Opens song context menu
+          //OpenSongContextMenu(props.song_id);
         }}
         // On left click
         onDoubleClick={() => {

@@ -43,9 +43,12 @@ export default function PlaylistList(props: any) {
         .then(async (result) => {
           var array: string[] = result.data?.at(0)?.song_ids;
 
+          console.log(array);
+          console.log("ID: " + song_id);
           // Guard Statement
           if (array.includes(song_id)) return;
 
+          console.log("Can add");
           array.push(song_id as string);
 
           await supabase

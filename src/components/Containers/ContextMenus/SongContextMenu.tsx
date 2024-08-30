@@ -13,7 +13,7 @@ import { OpenSongContextMenu } from "../../../SongContextSlice";
 import supabase from "../../../config/supabaseClient";
 
 export function CloseSongContextMenu() {
-  store.dispatch(OpenSongContextMenu(""));
+  store.dispatch(OpenSongContextMenu("")); // This is being called and getting rid of the id.
   var menu = document.getElementById("song-context-control") as HTMLElement;
   menu?.style.setProperty("display", "none");
 }
@@ -58,8 +58,9 @@ export default function SongContextControl() {
     var container = document.getElementById("song-context-control");
     var clickedHTML = e.target as HTMLElement;
 
+    // HERE'S THE ISSUE WITH SONG ID GOING AWAY!!!!!
     if (!container?.contains(clickedHTML)) {
-      CloseSongContextMenu();
+      //CloseSongContextMenu();
     }
   };
 
@@ -67,6 +68,7 @@ export default function SongContextControl() {
     <>
       <div id="song-context-control" className="song-context-box">
         <div className="song-context-content">
+          {songContext.currentSongID}
           <ContextOption_AddToQueue />
           <ContextOption_AddToPlaylist />
           <ContextOption_RenameSong isOwner={isOwner} />

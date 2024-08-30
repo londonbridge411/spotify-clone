@@ -37,49 +37,54 @@ export default function App() {
       e.preventDefault();
       setIdleTime(0);
       clearInterval(idleTimer!);
-      document.getElementById("soundbar-container")?.classList.remove("slidedown");
+      document
+        .getElementById("soundbar-container")
+        ?.classList.remove("slidedown");
       document.getElementById("soundbar-container")?.classList.add("slideup");
       document.getElementById("root")!.style.cursor = "auto";
     }
   };
 
-  document.onmousemove = function (e)
-  {
-    if (document.fullscreenElement)
-    {
+  document.onmousemove = function (e) {
+    if (document.fullscreenElement) {
       setIdleTime(0);
       clearInterval(idleTimer!);
-      document.getElementById("soundbar-container")?.classList.remove("slidedown");
+      document
+        .getElementById("soundbar-container")
+        ?.classList.remove("slidedown");
       document.getElementById("soundbar-container")?.classList.add("slideup");
       document.getElementById("root")!.style.cursor = "auto";
     }
-  } 
+  };
 
   const [idleTime, setIdleTime] = useState(0);
   useInterval(() => {
     setIdleTime(idleTime + 1);
-    console.log("Time: " + idleTime);
-    console.log("Playing: " + player.isPlaying);
 
-    if (idleTime >= 5 && document.fullscreenElement && player.isPlaying == true)
-    {
-      document.getElementById("soundbar-container")?.classList.remove("slideup");
+    if (
+      idleTime >= 5 &&
+      document.fullscreenElement &&
+      player.isPlaying == true
+    ) {
+      document
+        .getElementById("soundbar-container")
+        ?.classList.remove("slideup");
       document.getElementById("soundbar-container")?.classList.add("slidedown");
       document.getElementById("root")!.style.cursor = "none";
     }
   }, 1000);
 
-  document.onload = () =>
-  {
+  document.onload = () => {
     idleTimer = setInterval(() => {}, 0);
-  }
+  };
 
-  document.onfullscreenchange = () =>
-  {
-    document.getElementById("soundbar-container")?.classList.remove("slidedown");
+  document.onfullscreenchange = () => {
+    document
+      .getElementById("soundbar-container")
+      ?.classList.remove("slidedown");
     document.getElementById("soundbar-container")?.classList.remove("slideup");
     document.getElementById("root")!.style.cursor = "auto";
-  }
+  };
 
   return (
     <div className="App root-layout">
@@ -102,9 +107,6 @@ export default function App() {
     </div>
   );
 }
-
-
-
 
 function useInterval(callback: any, delay: number) {
   const savedCallback = useRef();

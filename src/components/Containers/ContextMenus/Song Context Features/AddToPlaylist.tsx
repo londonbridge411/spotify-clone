@@ -10,7 +10,7 @@ export default function ContextOption_AddToPlaylist() {
       <div className="contextButton">
         <div
           onClick={() => {
-            CloseSongContextMenu();
+            //CloseSongContextMenu();
             SwitchToPopup("AddToPlaylist");
           }}
         >

@@ -21,6 +21,7 @@ const songContextSlice = createSlice({
   initialState,
   reducers: {
     OpenSongContextMenu(state, action: PayloadAction<string>) {
+      console.log("Payload: " + action.payload);
       state.currentSongID = action.payload;
       state.active = action.payload != "";
     },
