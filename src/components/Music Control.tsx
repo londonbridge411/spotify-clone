@@ -378,7 +378,7 @@ export default function MusicControl() {
     }
   };
   return (
-    <div id="soundbar-conatiner">
+    <div>
       <audio id="audioControl" preload="metadata" autoPlay>
         <source src={audioUrl.data.publicUrl} />
       </audio>

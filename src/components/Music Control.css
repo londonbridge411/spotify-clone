@@ -15,6 +15,7 @@
   justify-content: center;
   align-items: center;
   margin-top: -4px;
+  
 }
 
 #player-name-area {
@@ -150,6 +151,7 @@
 }
 
 .time {
+
   display: flex;
   width: 50px;
   justify-content: center;
