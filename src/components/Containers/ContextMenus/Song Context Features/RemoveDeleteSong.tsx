@@ -67,6 +67,7 @@ export default function ContextOption_RemoveDeleteSong() {
         .then(async (result) => {
           let songs: string[] = result.data?.at(0)?.song_ids;
 
+          console.log(songs);
           songs.splice(songs.indexOf(song_id), 1); // Remove the song from the index
 
           await supabase

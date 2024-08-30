@@ -13,7 +13,7 @@ import { OpenSongContextMenu } from "../../../SongContextSlice";
 import supabase from "../../../config/supabaseClient";
 
 export function CloseSongContextMenu() {
-  store.dispatch(OpenSongContextMenu("")); // This is being called and getting rid of the id.
+  //store.dispatch(OpenSongContextMenu("")); // This is being called and getting rid of the id.
   var menu = document.getElementById("song-context-control") as HTMLElement;
   menu?.style.setProperty("display", "none");
 }
@@ -54,13 +54,26 @@ export default function SongContextControl() {
     run();
   }, [songContext.currentSongID]);
 
-  document.onmouseup = function (e) {
-    var container = document.getElementById("song-context-control");
-    var clickedHTML = e.target as HTMLElement;
+  const popupContext = useSelector((state: RootState) => state.popup);
 
-    // HERE'S THE ISSUE WITH SONG ID GOING AWAY!!!!!
-    if (!container?.contains(clickedHTML)) {
-      //CloseSongContextMenu();
+  document.onmouseup = function (e) {
+    if (songContext.active) {
+      var container = document.getElementById("song-context-control");
+      var addToPlaylistContainer = document.getElementById("AddToPlaylist");
+      var clickedHTML = e.target as HTMLElement;
+
+      if (!container?.contains(clickedHTML)) {
+        // Guard statement to keep cert
+        if (
+          popupContext.currentPopup == "AddToPlaylist" ||
+          addToPlaylistContainer?.contains(clickedHTML)
+        ) {
+          console.log("Should add");
+          return;
+        }
+
+        CloseSongContextMenu();
+      }
     }
   };
 
@@ -69,8 +82,9 @@ export default function SongContextControl() {
       <div id="song-context-control" className="song-context-box">
         <div className="song-context-content">
           {songContext.currentSongID}
-          <ContextOption_AddToQueue />
+          {songContext.active}
           <ContextOption_AddToPlaylist />
+          <ContextOption_AddToQueue />
           <ContextOption_RenameSong isOwner={isOwner} />
           <ContextOption_RemoveDeleteSong />
         </div>

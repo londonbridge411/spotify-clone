@@ -12,6 +12,9 @@ export default function PlaylistList(props: any) {
   const [list, setList] = useState([]);
   const songContext = useSelector((state: RootState) => state.songContext);
 
+  let song_id = songContext.currentSongID;
+  CloseSongContextMenu();
+
   useEffect(() => {
     supabase
       .from("Playlists")
@@ -68,7 +71,7 @@ export default function PlaylistList(props: any) {
         {list.map((item) => (
           <li key={item}>
             <PlaylistContainerHorizontal
-              onClick={() => AddToPlaylist(item!, songContext.currentSongID)}
+              onClick={() => AddToPlaylist(item!, song_id)}
               playlist_id={item}
             />
           </li>
