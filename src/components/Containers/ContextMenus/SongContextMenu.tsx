@@ -81,8 +81,6 @@ export default function SongContextControl() {
     <>
       <div id="song-context-control" className="song-context-box">
         <div className="song-context-content">
-          {songContext.currentSongID}
-          {songContext.active}
           <ContextOption_AddToPlaylist />
           <ContextOption_AddToQueue />
           <ContextOption_RenameSong isOwner={isOwner} />
