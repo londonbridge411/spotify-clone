@@ -88,10 +88,8 @@ export default function MusicControl() {
             });
         });
     } else {
-      if (document.fullscreenElement) {
-        window.document.getElementById("page")!.style.backgroundImage = "";
-        window.document.exitFullscreen();
-      }
+      window.document.getElementById("page")!.style.backgroundImage = "none";
+      if (document.fullscreenElement) window.document.exitFullscreen();
     }
   }, [player.song_id, document.fullscreenElement]);
 
