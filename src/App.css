@@ -43,9 +43,7 @@
   visibility: var(--playback);
 }
 
-
-:fullscreen
-{
+:fullscreen {
   #page {
     grid-template-areas:
       "main"
@@ -80,7 +78,6 @@
     overflow: hidden;
   }
 
-
   #page > footer {
     grid-area: foot;
     width: 100vw;
@@ -89,18 +86,14 @@
     filter: drop-shadow(0 0 0.75rem black);
     text-shadow: 2px 1px 2.5px rgb(0 0 0 / 80%);
   }
-
-
 }
 
-  .slidedown
-  {
-    transition: all 2s ease-out;
-    margin-top: 70px;
-  }
+.slidedown {
+  transition: all 2s ease-out;
+  margin-top: 70px;
+}
 
-  .slideup
-  {
-    transition: all 1s;
-    margin-top: 0;
-  }
+.slideup {
+  transition: all 1s;
+  margin-top: 0;
+}

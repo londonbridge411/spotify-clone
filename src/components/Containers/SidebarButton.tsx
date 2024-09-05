@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import "./SidebarButton.css";
+import "../../tooltip.css";
 
 /*<button onClick={props.onClick}>{props.label}</button>*/
 export default function SidebarButton(props: any) {

@@ -1,6 +1,7 @@
 import "./Music Control.css";
 import "./Marquee.css";
 import "./../Links.css";
+import "./../tooltip.css";
 import play from "../assets/circle-play-solid.svg";
 import pause from "../assets/circle-pause-solid.svg";
 import prev from "../assets/backward-step-solid.svg";
@@ -19,6 +20,7 @@ import {
   nextSong,
   prevSong,
   setIsPlaying,
+  setLooping,
   setSongID,
   setVolume,
 } from "../PlayerSlice";
@@ -52,6 +54,7 @@ export default function MusicControl() {
   const [playIcon, setPlayIcon] = useState(play);
   const [imgURL, setImgURL] = useState("../../../src/assets/small_record.svg");
   const [artists, setArtists] = useState([] as Artist[]);
+  const [albumID, setAlbumID] = useState("");
   const [likeState, setLikeState] = useState(
     "../../../src/assets/star-regular.svg"
   );
@@ -85,8 +88,10 @@ export default function MusicControl() {
             });
         });
     } else {
-      window.document.getElementById("page")!.style.backgroundImage = "";
-      window.document.exitFullscreen();
+      if (document.fullscreenElement) {
+        window.document.getElementById("page")!.style.backgroundImage = "";
+        window.document.exitFullscreen();
+      }
     }
   }, [player.song_id, document.fullscreenElement]);
 
@@ -205,6 +210,8 @@ export default function MusicControl() {
               });
             // Cover URL
             let albumID = result.data?.at(0)?.album_id;
+            setAlbumID(albumID);
+
             supabase
               .from("Playlists")
               .select("cover_url")
@@ -406,111 +413,177 @@ export default function MusicControl() {
           <source src={audioUrl.data.publicUrl} />
         </audio>
 
-        <div id="player-name-area" style={{ overflow: "auto" }}>
-          <div className="name-area-content">
-            <img src={imgURL} />
-            <div className="name-area-content-text">
-              <div
-                id="name-area-text"
-                className="overflow-ellipsis text-bigger text-bold"
-              >
-                <span>{name}</span>
-              </div>
+        <div id="name-area-parent">
+          <div id="player-name-area" style={{ overflow: "auto" }}>
+            <div className="name-area-content">
               <div>
-                <div className="song-row-artists">
-                  {artists.map((item: any) => {
-                    return (
-                      <li key={item.id}>
-                        <NavLink
-                          className="customLink"
-                          to={"/app/account/" + item.id}
-                        >
-                          {item.username}
-                        </NavLink>
-                      </li>
-                    );
-                  })}
+                <NavLink className="customLink" to={"/app/playlist/" + albumID}>
+                  <img src={imgURL} />
+                </NavLink>
+              </div>
+
+              <div className="name-area-content-text">
+                <div
+                  id="name-area-text"
+                  className="overflow-ellipsis text-bigger text-bold"
+                >
+                  <span>{name}</span>
+                </div>
+                <div>
+                  <div className="song-row-artists">
+                    {artists.map((item: any) => {
+                      return (
+                        <li key={item.id}>
+                          <NavLink
+                            className="customLink"
+                            to={"/app/account/" + item.id}
+                          >
+                            {item.username}
+                          </NavLink>
+                        </li>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             </div>
+          </div>
+          <div className="tooltip">
             <img
               id="control-like-btn"
               onClick={() => LikeSong()}
               src={likeState}
             />
+            <span
+              className="tooltiptext tt-top"
+              style={{ marginLeft: "20%", bottom: "65px" }}
+            >
+              {likeState == "../../../src/assets/star-solid.svg"
+                ? "Unlike"
+                : "Like"}
+            </span>
           </div>
         </div>
         <div className="controls">
           <span id="current-time" className="time">
             {currentTime}
           </span>
-          <img
-            id="prev-btn"
-            className="control-btn"
-            onClick={() => {
-              if (
-                parseInt(
-                  document.documentElement.style.getPropertyValue(`--progress`)
-                ) < 3 &&
-                player.listPosition > 0
-              ) {
-                dispatch(prevSong());
-              } else {
-                let a = document.getElementById(
-                  "audioControl"
-                ) as HTMLAudioElement;
-                a.currentTime = 0;
-                a.play();
+          <div className="tooltip">
+            <img
+              id="prev-btn"
+              className="control-btn"
+              onClick={() => {
+                if (
+                  parseInt(
+                    document.documentElement.style.getPropertyValue(
+                      `--progress`
+                    )
+                  ) < 3 &&
+                  player.listPosition > 0
+                ) {
+                  dispatch(prevSong());
+                } else {
+                  let a = document.getElementById(
+                    "audioControl"
+                  ) as HTMLAudioElement;
+                  a.currentTime = 0;
+                  a.play();
 
-                // start time
-              }
-            }}
-            src={prev}
-          />
-          <img
-            id="play-btn"
-            className="control-btn"
-            onClick={() => TogglePlay()}
-            src={playIcon}
-          />
-          <img
-            id="next-btn"
-            className="control-btn"
-            onClick={() => {
-              dispatch(nextSong());
-            }}
-            src={next}
-          />
+                  // start time
+                }
+              }}
+              src={prev}
+            />
+            <span className="tooltiptext tt-top" style={{ marginLeft: "-50%" }}>
+              Previous
+            </span>
+          </div>
+
+          <div className="tooltip">
+            <img
+              id="play-btn"
+              className="control-btn"
+              onClick={() => TogglePlay()}
+              src={playIcon}
+            />
+            <span className="tooltiptext tt-top" style={{ marginLeft: "0%" }}>
+              {player.isPlaying ? "Pause" : "Play"}
+            </span>
+          </div>
+
+          <div className="tooltip">
+            <img
+              id="next-btn"
+              className="control-btn"
+              onClick={() => {
+                dispatch(nextSong());
+              }}
+              src={next}
+            />
+            <span className="tooltiptext tt-top" style={{ marginLeft: "0%" }}>
+              Next
+            </span>
+          </div>
+
           <span id="max-time" className="time">
             {maxTime}
           </span>
         </div>
 
         <div className="volume-control-container">
-          <img
-            className="fullscreen-button"
-            onClick={() => {
-              if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-                document.getElementById("page")!.style.backgroundImage =
-                  "url(" + backgroundUrl + ")";
-              } else if (document.exitFullscreen) {
-                document.getElementById("page")!.style.backgroundImage = "";
-                document.exitFullscreen();
-              }
-            }}
-            src={document.fullscreenElement ? exitFS : enterFS} // This is backwards for some reason but it works
-          />
-          <img
-            className="queue-button"
-            onClick={() => SwitchToPopup("queue")}
-            src={bars}
-          />
-          <img
-            className="volume-button"
-            onClick={ToggleMute}
-            src={volIconState}
-          />
+          <div className="tooltip">
+            <img
+              id="loop-button"
+              onClick={() => {
+                dispatch(setLooping(!player.isLooping));
+              }}
+              src={repeat}
+            />
+            <span className="tooltiptext tt-top">
+              {player.isLooping ? "Stop Repeat" : "Repeat"}
+            </span>
+          </div>
+
+          <div className="tooltip">
+            <img
+              className="fullscreen-button"
+              onClick={() => {
+                if (!document.fullscreenElement) {
+                  document.documentElement.requestFullscreen();
+                  document.getElementById("page")!.style.backgroundImage =
+                    "url(" + backgroundUrl + ")";
+                } else if (document.exitFullscreen) {
+                  document.getElementById("page")!.style.backgroundImage = "";
+                  document.exitFullscreen();
+                }
+              }}
+              src={document.fullscreenElement ? exitFS : enterFS} // This is backwards for some reason but it works
+            />
+            <span className="tooltiptext tt-top">
+              {document.fullscreenElement ? "Exit Fullscreen" : "Fullscreen"}
+            </span>
+          </div>
+
+          <div className="tooltip">
+            <img
+              className="queue-button"
+              onClick={() => SwitchToPopup("queue")}
+              src={bars}
+            />
+            <span className="tooltiptext tt-top">View Queue</span>
+          </div>
+
+          <div className="tooltip">
+            <img
+              className="volume-button"
+              onClick={ToggleMute}
+              src={volIconState}
+            />
+            <span className="tooltiptext tt-top">
+              {parseInt(player.volume) == 0 ? "Unmute" : "Mute"}
+            </span>
+          </div>
+
           <input
             id="volume-control"
             type="range"

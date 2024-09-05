@@ -1,0 +1,54 @@
+.tooltip {
+  position: relative;
+  display: flex;
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  opacity: 0%;
+  width: 120px;
+  background-color: rgb(19, 19, 19);
+  color: #fff;
+  text-align: center;
+  padding: 5px 10px;
+  border-radius: 6px;
+
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+  outline: thin solid rgb(42, 42, 42);
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  transition: all 1s;
+  opacity: 100%;
+  visibility: visible;
+}
+
+.tooltip .tooltiptext .tt-right {
+  width: max-content;
+  top: -5px;
+  left: 105%;
+}
+
+.tooltip .tooltiptext .tt-left {
+  width: max-content;
+  top: -5px;
+  right: 105%;
+}
+
+.tooltip .tt-top {
+  width: max-content;
+  bottom: 140%;
+  margin-left: -50%;
+}
+
+.tooltip .tt-bottom {
+  width: 120px;
+
+  top: 100%;
+  left: 50%;
+  margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
+}

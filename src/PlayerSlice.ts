@@ -8,6 +8,7 @@ interface PlayerState {
   isPlaying: boolean;
   isShuffled: boolean;
   hasLoaded: boolean;
+  isLooping: boolean;
   inQueue: boolean;
   nextQueue: string[]; // This is what we want to play next on command.
   properQueue: string[]; // This is the songs that are meant to play after the nextQueue is over.
@@ -24,6 +25,7 @@ const initialState: PlayerState = {
   isPlaying: false,
   isShuffled: false,
   hasLoaded: false,
+  isLooping: false,
   nextQueue: [],
   properQueue: [],
   //fullQueue: [],
@@ -44,6 +46,16 @@ const playerSlice = createSlice({
 
       if (state.properQueue.length > 0) {
         state.listPosition = state.properQueue.indexOf(state.song_id);
+      }
+    },
+
+    setLooping(state, action: PayloadAction<boolean>) {
+      state.isLooping = action.payload;
+      if (action.payload) {
+        document.getElementById("loop-button")!.style.filter =
+          "sepia(79%) saturate(1000%) hue-rotate(86deg)";
+      } else {
+        document.getElementById("loop-button")!.style.filter = "";
       }
     },
 
@@ -108,6 +120,19 @@ const playerSlice = createSlice({
       // Guard Statements
       if (state.properQueue.length == 0) return;
 
+      // Check if we are at the last song of the proper queue
+      if (
+        state.listPosition == state.properQueue.length - 1 &&
+        state.nextQueue.length == 0
+      ) {
+        //console.log("End of the road");
+        if (state.isLooping) {
+          state.listPosition = 0;
+          state.song_id = state.properQueue[0];
+        }
+        return;
+      }
+
       // If Song In Queue
       if (state.nextQueue.length > 0) {
         // pop next queue
@@ -154,6 +179,7 @@ export const {
   setSongID,
   setVolume,
   setIsPlaying,
+  setLooping,
   clearFullQueue,
   enqueue,
   LoadPlayer,
