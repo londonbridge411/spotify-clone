@@ -48,6 +48,15 @@ export function SetLoginStatus(b: boolean) {
   isLoggedIn = b;
 }
 
+export const getCookies = () =>
+  document.cookie
+    .split(";")
+    .map((str) => str.trim().split(/=(.+)/))
+    .reduce((acc: any, curr) => {
+      acc[curr[0]] = curr[1];
+      return acc;
+    }, {});
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/">

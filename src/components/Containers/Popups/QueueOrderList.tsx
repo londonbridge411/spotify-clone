@@ -10,12 +10,12 @@ import { setListRef } from "../../Middle/Playlist";
 import { RootState } from "../../../store";
 
 export default function QueueOrderList() {
-  const { playlistID } = useParams();
   const [properList, setProperList] = useState([]);
   const [nextList, setNextList] = useState([]);
   const [selectedItem, selectItem] = useState("");
   const [hasLoaded, setLoaded] = useState(false);
   const [currentSong, setCurrentSong] = useState(null);
+  const [playlistCover, setPlaylistCover] = useState("");
   const [hideNext, setHideNext] = useState(true);
 
   enum QueueType {
@@ -39,9 +39,17 @@ export default function QueueOrderList() {
   useEffect(() => {
     supabase
       .from("Songs")
-      .select("title")
+      .select("title, album_id")
       .eq("id", player.song_id)
-      .then((result) => setCurrentSong(result.data?.at(0) as any));
+      .then((result) => {
+        setCurrentSong(result.data?.at(0) as any);
+
+        supabase
+          .from("Playlists")
+          .select("cover_url")
+          .eq("id", result.data?.at(0)?.album_id)
+          .then((result2) => setPlaylistCover(result2.data?.at(0)?.cover_url));
+      });
   }, [player.song_id]);
 
   // Next Queue
@@ -202,12 +210,26 @@ export default function QueueOrderList() {
           alignItems: "center",
           justifyContent: "center",
           justifySelf: "center",
+          marginBottom: "30px",
         }}
       >
-        <h3>Playing</h3>
+        <h3>Now Playing</h3>
+        <img
+          src={playlistCover}
+          style={{
+            display: "flex",
+            maxWidth: "7.5vw",
+            height: "auto",
+            width: "auto/9",
+            filter: "drop-shadow(0 0 0.75rem black)",
+            outline: "thin solid rgb(42, 42, 42)",
+
+            marginBottom: "30px",
+          }}
+        />
         <div className="currentSong">{(currentSong as any)?.title}</div>
 
-        <div id="songOrderContainer" style={{ width: "500px", height: "" }}>
+        <div id="songOrderContainer" style={{ width: "500px", height: "35vh" }}>
           <h3 hidden={hideNext} style={{ marginBottom: "0px" }}>
             Next from Queue
           </h3>

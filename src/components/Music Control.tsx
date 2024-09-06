@@ -27,7 +27,7 @@ import {
 import supabase from "../config/supabaseClient";
 import { NavLink } from "react-router-dom";
 import { Artist } from "./Containers/Popups/UploadSongPopup";
-import { authUserID, isLoggedIn } from "../main";
+import { authUserID, getCookies, isLoggedIn } from "../main";
 import { SwitchToPopup } from "../PopupControl";
 
 var changingTime = false;
@@ -265,14 +265,26 @@ export default function MusicControl() {
                 dispatch(nextSong());
               };
 
-              let cookie_volume = document.cookie.split("volume=").at(1);
-              //let volNum = parseInt(cookie_volume);
+              let cookies = getCookies();
 
-              //console.log(cookie_volume);
+              // Volume Cookie
+              let cookie_volume = cookies["volume"];
+
               if (cookie_volume != undefined && !Number.isNaN(cookie_volume)) {
-                //console.log(cookie_volume);
                 audio.volume = parseInt(cookie_volume!) / 100; //Causes error????
                 UpdateVolume();
+              }
+
+              // Loop Cookie
+
+              let cookie_loop = cookies["loop"];
+
+              console.log(cookie_loop);
+              if (cookie_loop != undefined) {
+                let cookie_value: boolean = cookie_loop === "true";
+                dispatch(setLooping(cookie_value));
+                // audio.volume = parse(cookie_volume!) / 100; //Causes error????
+                //UpdateVolume();
               }
 
               setMaxTime(CalculateTime(audio.duration));
@@ -296,6 +308,20 @@ export default function MusicControl() {
       e.target == document.body
     ) {
       TogglePlay();
+    }
+  };
+
+  // Allows play/pause on mouse click whenever full screen as long as it's not on the control bar.
+  document.onpointerdown = (e) => {
+    if (document.fullscreenElement) {
+      var container = document.getElementById("main-fullscreen");
+      var clickedHTML = e.target as HTMLElement;
+
+      console.log(clickedHTML);
+
+      if (container?.contains(clickedHTML)) {
+        TogglePlay();
+      }
     }
   };
 

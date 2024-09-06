@@ -221,6 +221,14 @@ var POPUP_MAP = new Map<string, any>([
       requiresVerification={false}
       html={
         <>
+          <h2
+            style={{
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            Add to Playlist
+          </h2>
           <div className="AddToPlaylist-content">
             <PlaylistList />
           </div>
@@ -295,7 +303,6 @@ var POPUP_MAP = new Map<string, any>([
             }}
           >
             <div style={{ display: "flex", flexDirection: "row" }}>
-              {" "}
               <div
                 id="rename-playlist-menu"
                 style={{

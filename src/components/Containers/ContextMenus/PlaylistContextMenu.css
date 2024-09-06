@@ -22,24 +22,3 @@
   flex-direction: column;
   overflow: hidden;
 }
-
-/*Add to Playlist Content*/
-#AddToPlaylist .popup-content {
-  display: block;
-  width: 350px;
-  height: fit-content;
-  max-height: 50vh;
-  background-color: black;
-  align-items: center;
-  overflow-y: scroll;
-}
-
-#AddToPlaylist .popup-content .AddToPlaylist-content ul {
-  margin-top: 10px;
-  margin-bottom: 10px;
-  list-style: none;
-}
-
-#AddToPlaylist .popup-content .AddToPlaylist-content {
-  background-color: black;
-}

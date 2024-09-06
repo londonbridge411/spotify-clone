@@ -51,6 +51,8 @@ const playerSlice = createSlice({
 
     setLooping(state, action: PayloadAction<boolean>) {
       state.isLooping = action.payload;
+      document.cookie = "loop=" + action.payload;
+
       if (action.payload) {
         document.getElementById("loop-button")!.style.filter =
           "sepia(79%) saturate(1000%) hue-rotate(86deg)";
@@ -61,7 +63,7 @@ const playerSlice = createSlice({
 
     setVolume(state, action: PayloadAction<string>) {
       state.volume = action.payload;
-      document.cookie = "volume=" + state.volume;
+      document.cookie = "volume=" + action.payload;
     },
 
     setIsPlaying(state, action: PayloadAction<boolean>) {

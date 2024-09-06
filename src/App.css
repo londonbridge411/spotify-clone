@@ -76,6 +76,7 @@
     transition: all 0.12s ease-in;
     display: block;
     overflow: hidden;
+    width: 100vw;
   }
 
   #page > footer {

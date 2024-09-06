@@ -1,0 +1,21 @@
+/*Add to Playlist Content*/
+#AddToPlaylist .popup-content {
+  display: block;
+  width: 350px;
+  height: fit-content;
+  max-height: 50vh;
+  align-items: center;
+  overflow-y: scroll;
+}
+
+#AddToPlaylist .popup-content .AddToPlaylist-content {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  list-style: none;
+}
+
+#AddToPlaylist .popup-content .AddToPlaylist-content div {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  background-color: rgb(35, 35, 35);
+}
