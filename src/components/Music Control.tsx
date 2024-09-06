@@ -279,7 +279,6 @@ export default function MusicControl() {
 
               let cookie_loop = cookies["loop"];
 
-              console.log(cookie_loop);
               if (cookie_loop != undefined) {
                 let cookie_value: boolean = cookie_loop === "true";
                 dispatch(setLooping(cookie_value));
@@ -316,8 +315,6 @@ export default function MusicControl() {
     if (document.fullscreenElement) {
       var container = document.getElementById("main-fullscreen");
       var clickedHTML = e.target as HTMLElement;
-
-      console.log(clickedHTML);
 
       if (container?.contains(clickedHTML)) {
         TogglePlay();

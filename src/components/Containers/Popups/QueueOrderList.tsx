@@ -39,16 +39,13 @@ export default function QueueOrderList() {
   useEffect(() => {
     supabase
       .from("Songs")
-      .select("title, album_id")
+      .select("title, album_id, Playlists(cover_url)")
       .eq("id", player.song_id)
       .then((result) => {
         setCurrentSong(result.data?.at(0) as any);
+        var playlistData: any = result.data?.at(0)?.Playlists;
 
-        supabase
-          .from("Playlists")
-          .select("cover_url")
-          .eq("id", result.data?.at(0)?.album_id)
-          .then((result2) => setPlaylistCover(result2.data?.at(0)?.cover_url));
+        setPlaylistCover(playlistData.cover_url);
       });
   }, [player.song_id]);
 
