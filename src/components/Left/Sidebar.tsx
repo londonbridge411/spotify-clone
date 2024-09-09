@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import supabase from "../../config/supabaseClient";
 import { SetLoginStatus, authUserID, email, username } from "../../main";
 import SidebarButton from "../Containers/SidebarButton";
@@ -29,7 +29,15 @@ export default function Sidebar() {
   return (
     <>
       <div className="Sidebar">
-        <img className="SidebarLogo" src={logo} />
+        <NavLink to="home">
+          <div className="SidebarLogo">
+            <img src={logo} />
+            <h2>uMuse</h2>
+          </div>
+        </NavLink>
+
+        <hr></hr>
+
         <SidebarButton label="Home" to="home" icon={house} />
         <SidebarButton label="Discover" to="discover" icon={search} />
         <SidebarButton label="Artists" to="artists" icon={music} />

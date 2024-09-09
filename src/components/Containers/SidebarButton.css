@@ -45,12 +45,6 @@
   filter: invert(100%) sepia(79%) saturate(1000%) hue-rotate(86deg);
 }
 
-.SidebarLogo {
-  margin-left: 20px;
-  margin-bottom: 15px;
-  margin-top: 20px;
-}
-
 /*
 @media screen and (min-width: 468px) {
   .SidebarButton {

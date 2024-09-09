@@ -24,3 +24,30 @@ div::-webkit-scrollbar-thumb {
   border-radius: 10px;
   background-color: #818181;
 }
+
+.SidebarLogo a {
+  color: red;
+}
+
+.SidebarLogo {
+  display: flex;
+  flex: row;
+  column-gap: 10px;
+  padding-top: 30px;
+  padding-bottom: 15px;
+  justify-self: center;
+  align-self: center;
+  margin-inline-start: 0;
+  user-select: none;
+  margin-left: 20px;
+}
+
+.SidebarLogo h2 {
+  padding: 0px;
+  margin: 0px;
+  color: #8dffff;
+}
+
+.Sidebar hr {
+  width: 90%;
+}
