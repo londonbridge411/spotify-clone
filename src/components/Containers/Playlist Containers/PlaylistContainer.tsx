@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import supabase from "../../../config/supabaseClient";
 import "./PlaylistContainer.css";
 import "../../../Links.css";
+import "../../../mobile.css";
 import { NavLink, useNavigate } from "react-router-dom";
 import PlaylistContextMenu, {
   ViewPlaylistContextMenu,
@@ -40,7 +41,10 @@ export default function PlaylistContainer(props: any) {
   //
   return (
     <>
-      <NavLink to={"/app/playlist/" + props.playlist_id}>
+      <NavLink
+        className="PlaylistContainerParent"
+        to={"/app/playlist/" + props.playlist_id}
+      >
         <div
           className="PlaylistContainer"
           id={props.playlist_id}

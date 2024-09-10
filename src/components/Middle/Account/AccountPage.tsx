@@ -9,6 +9,7 @@ import { authUserID } from "../../../main";
 import SongRow from "../../Containers/SongRow";
 import { SwitchToPopup } from "../../../PopupControl";
 import "../../../mobile.css";
+import MobileSongRow from "../../Containers/MobileSongRow";
 
 /*
 Want to display icon, username, bio, followers, isVerified, upload song.
@@ -286,7 +287,7 @@ export default function AccountPage() {
               <h2>Popular Songs</h2>
               <div className="playlist-content">
                 <div
-                  className="song-table"
+                  className="song-table mobile-hidden"
                   style={{
                     gridTemplateColumns: "20px 62px 30% 20% 20% 150px 5%",
                   }}
@@ -328,32 +329,50 @@ export default function AccountPage() {
                   })}
                 </div>
               </div>
+              <div className="mobile-view mobile-song-view">
+                {popularSongsList.map((item) => {
+                  // item broke somehow
+                  return (
+                    <MobileSongRow
+                      key={item}
+                      song_id={item}
+                      song_list={popularSongsList}
+                    />
+                  );
+                })}
+              </div>
             </section>
 
             {/*Albums Songs*/}
             <section hidden={albumList.length == 0}>
-              <h2>Albums</h2>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <h2> Albums</h2>
+                <img
+                  className="addPlaylist"
+                  src="../../../src/assets/circle-plus-solid.svg"
+                  style={{
+                    width: "78px",
+                    height: "28px",
+                    cursor: "pointer",
+                    marginTop: "4px",
+                  }}
+                  hidden={!userVerified || !isOwner}
+                  onClick={() => {
+                    SwitchToPopup("Popup_UploadAlbum");
+                  }}
+                />
+              </div>
               <div className="myAlbums">
                 {albumList.map((item) => (
                   <li key={item}>
                     <PlaylistContainer playlist_id={item} />
                   </li>
                 ))}
-
-                <li className="addPlaylist">
-                  <img
-                    src="../../../src/assets/circle-plus-solid.svg"
-                    style={{
-                      width: "150px",
-                      height: "100px",
-                      cursor: "pointer",
-                    }}
-                    hidden={!userVerified || !isOwner}
-                    onClick={() => {
-                      SwitchToPopup("Popup_UploadAlbum");
-                    }}
-                  />
-                </li>
               </div>
             </section>
             {/*Public Playlists*/}

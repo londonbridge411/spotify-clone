@@ -18,6 +18,7 @@ import {
 import { useDispatch } from "react-redux";
 import SongRow from "../Containers/SongRow";
 import { SwitchToPopup } from "../../PopupControl";
+import MobileSongRow from "../Containers/MobileSongRow";
 
 export var setListRef: any;
 
@@ -325,19 +326,18 @@ export default function Playlist() {
               </div>
             </div>
 
-            <div className="mobile-song-view">
-              
-            {list.map((item) => {
-                  // item broke somehow
-                  return (
-                    <SongRow
-                      key={item}
-                      song_id={item}
-                      song_list={list}
-                      forceUpdate={[coverUrl, playlistName, playlistPrivacy]}
-                    />
-                  );
-                })}
+            <div className="mobile-view mobile-song-view">
+              {list.map((item) => {
+                // item broke somehow
+                return (
+                  <MobileSongRow
+                    key={item}
+                    song_id={item}
+                    song_list={list}
+                    forceUpdate={[coverUrl, playlistName, playlistPrivacy]}
+                  />
+                );
+              })}
             </div>
             <div
               hidden={!hideTable}

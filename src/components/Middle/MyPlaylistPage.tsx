@@ -72,21 +72,30 @@ export default function MyPlaylistPage() {
 
           <main>
             <section>
-              <h2> My Playlists</h2>
+              <div
+                style={{
+                  display: "flex",
+                  alignContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <h2> My Playlists</h2>
+                <img
+                  className="addPlaylist"
+                  src="../../../src/assets/circle-plus-solid.svg"
+                  style={{
+                    width: "78px",
+                    height: "28px",
+                    cursor: "pointer",
+                    marginTop: "4px",
+                  }}
+                  onClick={() => {
+                    SwitchToPopup("Popup_UploadPlaylist");
+                  }}
+                />
+              </div>
+
               <div className="myAlbums">
-                <li className="addPlaylist">
-                  <img
-                    src="../../../src/assets/circle-plus-solid.svg"
-                    style={{
-                      width: "150px",
-                      height: "100px",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => {
-                      SwitchToPopup("Popup_UploadPlaylist");
-                    }}
-                  />
-                </li>
                 <li className="addPlaylist">
                   <img
                     src="../../../src/assets/star-solid.svg"
