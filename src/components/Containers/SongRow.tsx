@@ -12,6 +12,7 @@ import { RootState, store } from "../../store";
 import { NavLink } from "react-router-dom";
 import { Artist } from "./Popups/UploadSongPopup";
 import "../../Links.css";
+import "../../mobile.css";
 import { OpenSongContextMenu } from "../../SongContextSlice";
 import SongContextControl, {
   ViewSongContextMenu,
@@ -223,14 +224,14 @@ export default function SongRow(props: any) {
             </div>
           </div>
         </div>
-        <div className="song-row-views, song-row-item">{views}</div>
-        <div className="song-row-album, song-row-item">
+        <div className="song-row-views, song-row-item mobile-hidden">{views}</div>
+        <div className="song-row-album, song-row-item mobile-hidden">
           <NavLink className="customLink" to={"../playlist/" + albumID}>
             {albumName}
           </NavLink>
         </div>
-        <div className="song-row-date, song-row-item ">{dateCreated}</div>
-        <div className="song-row-duration, song-row-item">{duration}</div>
+        <div className="song-row-date, song-row-item mobile-hidden">{dateCreated}</div>
+        <div className="song-row-duration, song-row-item mobile-hidden">{duration}</div>
       </div>
     </>
   );

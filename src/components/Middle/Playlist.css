@@ -13,6 +13,8 @@
   overflow-y: auto;
   user-select: none;
   scrollbar-gutter: stable; /*Keeps the page from shifting*/
+  overflow-x: hidden !important;
+
 }
 
 div::-webkit-scrollbar-track {

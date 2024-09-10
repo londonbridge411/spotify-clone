@@ -15,6 +15,7 @@
   grid-template-columns: 300px 1fr;
   overflow-y: hidden;
 }
+
 .page-fullscreen {
   display: none;
 }
@@ -98,3 +99,4 @@
   transition: all 1s;
   margin-top: 0;
 }
+

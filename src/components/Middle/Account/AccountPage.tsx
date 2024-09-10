@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import { authUserID } from "../../../main";
 import SongRow from "../../Containers/SongRow";
 import { SwitchToPopup } from "../../../PopupControl";
+import "../../../mobile.css";
 
 /*
 Want to display icon, username, bio, followers, isVerified, upload song.
@@ -296,19 +297,19 @@ export default function AccountPage() {
                   <div style={{ color: "rgba(0, 0, 0, 0)" }}>
                     ?<hr></hr>
                   </div>
-                  <div className="text-bold">
+                  <div className="text-bold ">
                     Name <hr></hr>
                   </div>
-                  <div className="text-bold">
+                  <div className="text-bold mobile-hidden">
                     Views <hr></hr>
                   </div>
-                  <div className="text-bold">
+                  <div className="text-bold mobile-hidden">
                     Album <hr></hr>
                   </div>
-                  <div className="text-bold">
+                  <div className="text-bold mobile-hidden">
                     Created <hr></hr>
                   </div>
-                  <div className="text-bold">
+                  <div className="text-bold mobile-hidden">
                     Duration <hr></hr>
                   </div>
 

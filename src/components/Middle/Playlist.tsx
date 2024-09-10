@@ -225,6 +225,7 @@ export default function Playlist() {
 
           <div className="playlist-button-bar">
             <img
+              className="mobile-hidden"
               src="../../../src/assets/edit_button.png"
               hidden={!isOwner}
               onClick={() => {
@@ -233,6 +234,7 @@ export default function Playlist() {
             />
 
             <img
+              className="mobile-hidden"
               src="../../../src/assets/add_button.png"
               hidden={!isOwner || playlistType == "Playlist"}
               onClick={() => {
@@ -288,7 +290,7 @@ export default function Playlist() {
             />
           </div>
           <main>
-            <div hidden={hideTable} className="playlist-content">
+            <div hidden={hideTable} className="playlist-content mobile-hidden">
               <div className="song-table">
                 <div style={{ color: "rgba(0, 0, 0, 0)" }}>
                   ?<hr></hr>
@@ -296,16 +298,16 @@ export default function Playlist() {
                 <div className="text-bold">
                   Name <hr></hr>
                 </div>
-                <div className="text-bold">
+                <div className="text-bold mobile-hidden">
                   Views <hr></hr>
                 </div>
-                <div className="text-bold">
+                <div className="text-bold mobile-hidden">
                   Album <hr></hr>
                 </div>
-                <div className="text-bold">
+                <div className="text-bold mobile-hidden">
                   Created <hr></hr>
                 </div>
-                <div className="text-bold">
+                <div className="text-bold mobile-hidden">
                   Duration <hr></hr>
                 </div>
 
@@ -321,6 +323,21 @@ export default function Playlist() {
                   );
                 })}
               </div>
+            </div>
+
+            <div className="mobile-song-view">
+              
+            {list.map((item) => {
+                  // item broke somehow
+                  return (
+                    <SongRow
+                      key={item}
+                      song_id={item}
+                      song_list={list}
+                      forceUpdate={[coverUrl, playlistName, playlistPrivacy]}
+                    />
+                  );
+                })}
             </div>
             <div
               hidden={!hideTable}

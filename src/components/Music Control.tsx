@@ -2,6 +2,7 @@ import "./Music Control.css";
 import "./Marquee.css";
 import "./../Links.css";
 import "./../tooltip.css";
+import "./../mobile.css";
 import play from "../assets/circle-play-solid.svg";
 import pause from "../assets/circle-pause-solid.svg";
 import prev from "../assets/backward-step-solid.svg";
@@ -486,7 +487,7 @@ export default function MusicControl() {
           </div>
         </div>
         <div className="controls">
-          <span id="current-time" className="time">
+          <span id="current-time" className="time mobile-hidden">
             {currentTime}
           </span>
           <div className="tooltip">
@@ -546,13 +547,13 @@ export default function MusicControl() {
             </span>
           </div>
 
-          <span id="max-time" className="time">
+          <span id="max-time" className="time mobile-hidden">
             {maxTime}
           </span>
         </div>
 
-        <div className="volume-control-container">
-          <div className="tooltip">
+        <div className="volume-control-container mobile-hidden">
+          <div className="tooltip mobile-hidden">
             <img
               id="loop-button"
               onClick={() => {
