@@ -16,3 +16,13 @@
   background-color: black;
   margin-bottom: 5px;
 }
+
+.ArtistContainer:hover img {
+  transition: all 0.2s ease-in;
+  filter: drop-shadow(0 0 0.5rem #8dffff);
+}
+
+.ArtistContainer:hover .pl-container-name_holder {
+  transition: all 0.2s ease-in;
+  color: #8dffff;
+}

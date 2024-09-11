@@ -36,4 +36,6 @@
   row-gap: 15px;
   list-style-type: none;
   overflow: auto;
+  padding-top: 15px;
+  padding-bottom: 15px;
 }

@@ -1,1 +1,11 @@
+.addPlaylist {
+  width: 78px;
+  height: 28px;
+  cursor: pointer;
+  margin-top: 4px;
+  margin-left: -10px;
+}
 
+.addPlaylist:hover {
+  filter: sepia(79%) saturate(1000%) hue-rotate(86deg);
+}

@@ -4,6 +4,7 @@ import { authUserID } from "../../main";
 import PlaylistContainer from "../Containers/Playlist Containers/PlaylistContainer";
 import "./Account/AccountPage.css";
 import "./MyPlaylistPage.css";
+import "../AddPlaylistButton.css";
 import { SwitchToPopup } from "../../PopupControl";
 import { useNavigate } from "react-router-dom";
 
@@ -83,12 +84,6 @@ export default function MyPlaylistPage() {
                 <img
                   className="addPlaylist"
                   src="../../../src/assets/circle-plus-solid.svg"
-                  style={{
-                    width: "78px",
-                    height: "28px",
-                    cursor: "pointer",
-                    marginTop: "4px",
-                  }}
                   onClick={() => {
                     SwitchToPopup("Popup_UploadPlaylist");
                   }}

@@ -1,5 +1,6 @@
 import { useEffect, useState, useTransition } from "react";
 import "./AccountPage.css";
+import "../../AddPlaylistButton.css";
 import Popup from "../../Containers/Popup";
 import PlaylistCreation from "../../Containers/Popups/PlaylistCreation";
 import supabase from "../../../config/supabaseClient";
@@ -353,14 +354,8 @@ export default function AccountPage() {
               >
                 <h2> Albums</h2>
                 <img
-                  className="addPlaylist"
+                  className="addPlaylist mobile-hidden"
                   src="../../../src/assets/circle-plus-solid.svg"
-                  style={{
-                    width: "78px",
-                    height: "28px",
-                    cursor: "pointer",
-                    marginTop: "4px",
-                  }}
                   hidden={!userVerified || !isOwner}
                   onClick={() => {
                     SwitchToPopup("Popup_UploadAlbum");
