@@ -49,6 +49,7 @@ export default function Sidebar() {
           icon={user}
         />
         <SidebarButton label="Settings" icon={gear} />
+        <SidebarButton label="Support" to="support" icon={music} />
         <SidebarButton label="Logout" icon={exit} onClick={Logout} />
       </div>
     </>
