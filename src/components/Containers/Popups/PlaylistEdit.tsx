@@ -203,7 +203,9 @@ export default function PlaylistEdit() {
               marginBottom: "20px",
             }}
           >
-            <label>Set Visibility:</label>
+            <label style={{ color: "rgb(197, 197, 197)", fontWeight: "500" }}>
+              Set Visibility:
+            </label>
 
             <select
               defaultValue={""}
@@ -231,7 +233,9 @@ export default function PlaylistEdit() {
           />
 
           <div style={{ paddingLeft: "150px" }}>
-            <label>Use local file</label>
+            <label style={{ color: "rgb(197, 197, 197)", fontWeight: "500" }}>
+              Use local file
+            </label>
             <input
               type="checkbox"
               checked={useLocalCover}
@@ -260,7 +264,9 @@ export default function PlaylistEdit() {
           />
 
           <div style={{ paddingLeft: "150px" }}>
-            <label>Use local file</label>
+            <label style={{ color: "rgb(197, 197, 197)", fontWeight: "500" }}>
+              Use local file
+            </label>
             <input
               type="checkbox"
               checked={useLocalBG}
@@ -271,6 +277,7 @@ export default function PlaylistEdit() {
           <CustomInputField
             hidden={useLocalBG}
             label={"Background URL:"}
+            inputType={"url"}
             inputID={"url-playlist-background"}
             placeholder={"www.somesite.com/img.png"}
             setType={"none"}

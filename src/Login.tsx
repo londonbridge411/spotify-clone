@@ -25,7 +25,7 @@ function Login() {
         <main id="login-area">
           <CustomInputField
             inputType={"url"}
-            placeholder={"Some name"}
+            placeholder={"Enter email"}
             label={"Email:"}
             inputID={"email"}
             setType={"none"}
@@ -33,7 +33,7 @@ function Login() {
 
           <CustomInputField
             inputType={"password"}
-            placeholder={"Some name"}
+            placeholder={"Enter password"}
             label={"Password:"}
             inputID={"password"}
             setType={"none"}

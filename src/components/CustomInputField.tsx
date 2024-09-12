@@ -1,28 +1,29 @@
+import "./CustomInputField.css";
+
 export default function CustomInputField(props: any) {
   return (
     <>
-      <div hidden={props.hidden}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "center",
-            gap: "12px",
-            marginBottom: "20px",
-          }}
-        >
+      <div className="customInput" hidden={props.hidden}>
+        <div className="customInputText">
           <label>{props.label}</label>
+        </div>
+        <div className="customInputBox">
           <input
-          onChange={props.onChange}
-            id={props.inputID}
+            onChange={props.onChange}
+            id={props.inputType != "textarea" ? props.inputID : ""}
             type={props.inputType}
             placeholder={props.placeholder}
-            style={{
-              padding: "7.5px",
-              borderRadius: "10px",
-              border: "none",
-            }}
+            hidden={props.inputType == "textarea"}
             accept={props.accept} // Happens only if type is set to file
+          />
+
+          <textarea
+            id={props.inputType == "textarea" ? props.inputID : ""}
+            placeholder={props.placeholder}
+            hidden={props.inputType != "textarea"}
+            onClick={props.OnSet}
+            rows={20}
+            cols={150}
           />
 
           <button hidden={props.setType != "button"} onClick={props.OnSet}>

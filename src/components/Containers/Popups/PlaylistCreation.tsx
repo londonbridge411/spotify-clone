@@ -164,7 +164,11 @@ export default function PlaylistCreation(props: any) {
       <div>
         <div
           id="upload-playlist-menu"
-          style={{ display: "flex", flexDirection: "column", width: "400px" }}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            width: "400px",
+          }}
         >
           <h2
             style={{
@@ -183,7 +187,9 @@ export default function PlaylistCreation(props: any) {
               marginBottom: "20px",
             }}
           >
-            <label>Set Visibility:</label>
+            <label style={{ color: "rgb(197, 197, 197)", fontWeight: "500" }}>
+              Set Visibility:
+            </label>
 
             <select
               defaultValue={"Public"}
@@ -201,69 +207,65 @@ export default function PlaylistCreation(props: any) {
             </select>
           </div>
 
-          <CustomInputField
-            inputType={"url"}
-            placeholder={"Some name"}
-            label={"Name:"}
-            inputID={"upload-playlist-name"}
-            setType={"none"}
-          />
-
-          <div style={{ paddingLeft: "150px" }}>
-            <label>Use local file</label>
-            <input
-              type="checkbox"
-              checked={useLocalCover}
-              onChange={handleLocalCover}
+          <div style={{ alignItems: "flex-end" }}>
+            <CustomInputField
+              inputType={"url"}
+              placeholder={"Some name"}
+              label={"Name:"}
+              inputID={"upload-playlist-name"}
+              setType={"none"}
+            />
+            <div style={{ paddingLeft: "150px" }}>
+              <label>Use local file</label>
+              <input
+                type="checkbox"
+                checked={useLocalCover}
+                onChange={handleLocalCover}
+              />
+            </div>
+            <CustomInputField
+              hidden={useLocalCover}
+              label={"Cover URL:"}
+              inputType={"url"}
+              placeholder={"www.somesite.com/img.png"}
+              inputID={"url-playlist-cover"}
+              accept=".jpg, .jpeg, .png"
+              setType={"none"}
+              onChange={handleCoverURL}
+            />
+            <CustomInputField
+              hidden={!useLocalCover}
+              inputType={"file"}
+              inputID={"upload-playlist-cover"}
+              setType={"none"}
+              onChange={handleCoverFile}
+              accept=".jpg, .jpeg, .png"
+            />
+            <div style={{ paddingLeft: "150px" }}>
+              <label>Use local file</label>
+              <input
+                type="checkbox"
+                checked={useLocalBG}
+                onChange={handleLocalBG}
+              />
+            </div>
+            <CustomInputField
+              hidden={useLocalBG}
+              label={"Background URL:"}
+              inputID={"url-playlist-background"}
+              placeholder={"www.somesite.com/img.png"}
+              setType={"none"}
+              onChange={handleBGURL}
+            />
+            <CustomInputField
+              hidden={!useLocalBG}
+              inputType={"file"}
+              inputID={"upload-playlist-background"}
+              setType={"none"}
+              onChange={handleBGFile}
+              accept=".jpg, .jpeg, .png"
             />
           </div>
-
-          <CustomInputField
-            hidden={useLocalCover}
-            label={"Cover URL:"}
-            inputType={"url"}
-            placeholder={"www.somesite.com/img.png"}
-            inputID={"url-playlist-cover"}
-            accept=".jpg, .jpeg, .png"
-            setType={"none"}
-            onChange={handleCoverURL}
-          />
-
-          <CustomInputField
-            hidden={!useLocalCover}
-            inputType={"file"}
-            inputID={"upload-playlist-cover"}
-            setType={"none"}
-            onChange={handleCoverFile}
-            accept=".jpg, .jpeg, .png"
-          />
-
-          <div style={{ paddingLeft: "150px" }}>
-            <label>Use local file</label>
-            <input
-              type="checkbox"
-              checked={useLocalBG}
-              onChange={handleLocalBG}
-            />
-          </div>
-
-          <CustomInputField
-            hidden={useLocalBG}
-            label={"Background URL:"}
-            inputID={"url-playlist-background"}
-            placeholder={"www.somesite.com/img.png"}
-            setType={"none"}
-            onChange={handleBGURL}
-          />
-
-          <CustomInputField
-            hidden={!useLocalBG}
-            inputType={"file"}
-            inputID={"upload-playlist-background"}
-            setType={"none"}
-            onChange={handleBGFile}
-            accept=".jpg, .jpeg, .png"
-          />
 
           <div
             hidden={!useLocalCover && !useLocalBG}

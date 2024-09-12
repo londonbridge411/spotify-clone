@@ -1,0 +1,39 @@
+.SupportApp #page {
+  display: grid;
+
+  width: 100vw;
+  height: 100vh;
+  grid-template-areas:
+    "nav  main"
+    "nav" "main" !important;
+
+  background-color: black;
+  color: white !important;
+
+  gap: 0.75em;
+  grid-template-rows: 100% !important;
+  grid-template-columns: 300px 1fr !important;
+  overflow-y: hidden;
+}
+
+.page-fullscreen {
+  display: none;
+}
+
+.SupportApp #page > nav {
+  grid-area: nav;
+  overflow: hidden;
+}
+
+.SupportApp #page > #main-reg {
+  grid-area: main;
+  flex-direction: column;
+  background-color: rgb(19, 19, 19);
+  height: 100%;
+  border-radius: 25px;
+  overflow-y: hidden;
+}
+
+.SupportApp #page > #main-fullscreen {
+  display: none;
+}

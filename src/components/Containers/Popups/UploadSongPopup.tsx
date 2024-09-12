@@ -176,7 +176,9 @@ export function UploadSongPopup(props: any) {
         />
 
         <div style={{}}>
-          <label>{"Has Multiple/Different Artist(s)"}</label>
+          <label style={{ color: "rgb(197, 197, 197)", fontWeight: "500" }}>
+            {"Has Multiple/Different Artist(s)"}
+          </label>
           <input
             type="checkbox"
             checked={hasMultipleArtists}

@@ -15,8 +15,8 @@ export default function AccountEdit() {
 
   if (userID == null) return;
 
-var uploaded_cover: File;
-var cover_url: string = "";
+  var uploaded_cover: File;
+  var cover_url: string = "";
   async function UpdateName() {
     console.log("Updating Name");
 
@@ -27,34 +27,27 @@ var cover_url: string = "";
     var account_name_text = account_name?.value;
 
     if (account_name_text != "") {
-
       // Update the username in the users table
       await supabase
         .from("Users")
         .update({ username: account_name_text })
         .eq("id", userID);
 
-
-
       await supabase
         .from("Songs")
         .select("id, artist_data")
         .contains("artist_data", JSON.stringify([{ id: userID }]))
         .then(async (result) => {
-
           // Store the results
           let songs: any[] = result.data as any[];
 
           for (let i = 0; i < songs.length; i++) {
-
             // Get current song's artist_data
             let artistData: any[] = songs[i].artist_data;
 
             for (let j = 0; j < artistData.length; j++) {
-
               // When we find the position of the id
               if (artistData[j].id == userID) {
-
                 // Update local objects username
                 artistData[j].username = account_name_text;
 
@@ -88,7 +81,6 @@ var cover_url: string = "";
           }
         });
     } else {
-
       if (cover_url == "") return;
 
       await supabase.storage
@@ -119,7 +111,6 @@ var cover_url: string = "";
     setLocalCover(!useLocalCover);
   };
 
-
   const handleCoverFile = () => {
     uploaded_cover = (
       document.getElementById("edit-account-cover") as HTMLInputElement
@@ -140,7 +131,13 @@ var cover_url: string = "";
     <>
       <div
         id="edit-account-menu"
-        style={{ display: "flex", flexDirection: "column", width: "400px" }}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          width: "400px",
+          alignContent: "center",
+          alignSelf: "center",
+        }}
       >
         <h2
           style={{
@@ -150,15 +147,6 @@ var cover_url: string = "";
         >
           Edit Account
         </h2>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: "12px",
-            marginBottom: "20px",
-          }}
-        ></div>
 
         <CustomInputField
           inputType={"url"}
@@ -169,8 +157,16 @@ var cover_url: string = "";
           OnSet={UpdateName}
         />
 
-        <div style={{ paddingLeft: "150px" }}>
-          <label>Use local file</label>
+        <div
+          style={{
+            paddingLeft: "150px",
+            marginBottom: "10px",
+            marginTop: "15px",
+          }}
+        >
+          <label style={{ color: "rgb(197, 197, 197)", fontWeight: "500" }}>
+            Use local file
+          </label>
           <input
             type="checkbox"
             checked={useLocalCover}

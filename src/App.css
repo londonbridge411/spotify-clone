@@ -100,3 +100,6 @@
   margin-top: 0;
 }
 
+button:hover {
+  border-color: #8dffff;
+}
