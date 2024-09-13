@@ -26,8 +26,8 @@ import PasswordUpdatePage from "./PasswordUpdatePage.tsx";
 import PasswordResetPage from "./PasswordResetPage.tsx";
 import LikedSongsPlaylist from "./components/Middle/LikedSongsPlaylist.tsx";
 import SupportApp from "./Support Application/SupportApp.tsx";
-import SupportHome from "./Support Application/SupportHome.tsx";
 import { CreateTicketPage } from "./Support Application/CreateTicketPage.tsx";
+import { SupportHome } from "./Support Application/SupportHome.tsx";
 
 export var isLoggedIn: boolean =
   (await supabase.auth.getSession()).data.session != null;

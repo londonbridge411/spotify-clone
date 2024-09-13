@@ -4,8 +4,6 @@ import supabase from "../config/supabaseClient";
 import { authUserID } from "../main";
 
 export function CreateTicketPage() {
-  const [subject, setSubject] = useState("");
-
   const [category, setCategory] = useState("");
   const [subcategory, setSubcategory] = useState("");
 
@@ -171,7 +169,6 @@ export function CreateTicketPage() {
               label={"Brief Description:"}
               inputID={"set-ticket-subject"}
               setType={"none"}
-              OnSet={setSubject}
             />
             <CustomInputField
               inputType={"textarea"}
@@ -179,7 +176,6 @@ export function CreateTicketPage() {
               label={"Description:"}
               inputID={"set-ticket-desc"}
               setType={"none"}
-              OnSet={setSubject}
             />
 
             <button

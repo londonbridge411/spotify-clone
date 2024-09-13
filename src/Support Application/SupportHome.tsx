@@ -1,61 +1,27 @@
-import { useEffect, useState } from "react";
-
-import "./SupportHome.css";
-import ArtistContainer from "../components/Containers/Artist Containers/ArtistsContainer";
+import { useState } from "react";
+import CustomInputField from "../components/CustomInputField";
 import supabase from "../config/supabaseClient";
+import { authUserID } from "../main";
 
-/*
-SHOULD CONTAIN:
-* Search bar
-* recently played playlists.
-* recently played songs.
-* what friends have listened too
-* new songs/albums by followed artists
-*/
-export default function Home() {
-  const [top10, setTop10] = useState([]);
-
-  useEffect(() => {
-    supabase.rpc("selecttop10artists").then((result) => {
-      let data = result.data;
-      let arr = [];
-
-      for (let i = 0; i < data.length; i++) {
-        arr.push(data[i]?.id);
-      }
-      setTop10(arr as any);
-    });
-  }, []);
-
+export function SupportHome() {
   return (
-    <div className="home-page">
-      <div className="home-layout">
-        <h1>Home</h1>
-        <section>
-          <h2>Top 10 Artists</h2>
-          <ul className="ArtistListContainer">
-            {top10?.map((item: any) => {
-              return (
-                <li key={item}>
-                  <ArtistContainer artist_id={item} />
-                </li>
-              );
-            })}
-          </ul>
-        </section>
+    <>
+      <div className="account-page">
+        <div className="account-layout">
+          <header>
+            <h1>Support Home</h1>
+          </header>
 
-        <section>
-          <h2>Keep Listening</h2>
-        </section>
-
-        <section>
-          <h2>New</h2>
-        </section>
-
-        <section>
-          <h2>Recommended Songs</h2>
-        </section>
+          <main>
+            <section>
+              <h2>My Tickets</h2>
+            </section>
+            <section>
+              <h2>Common Questions</h2>
+            </section>
+          </main>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

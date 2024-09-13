@@ -36,7 +36,7 @@ export default function SupportSidebar() {
         </NavLink>
 
         <hr></hr>
-        <SidebarButton label="Start Here" to="home" icon={house} />
+        <SidebarButton label="Home" to="home" icon={house} />
         <SidebarButton
           label="My Tickets"
           to={"tickets/" + authUserID}
