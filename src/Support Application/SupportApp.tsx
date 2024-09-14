@@ -17,6 +17,12 @@ export default function SupportApp() {
   const navigate = useNavigate();
   const player = useSelector((state: RootState) => state.player);
 
+  useEffect(() => {
+    if (isLoggedIn == false) {
+      navigate("/login");
+    }
+  });
+
   return (
     <div className="SupportApp root-layout">
       <section id="page">

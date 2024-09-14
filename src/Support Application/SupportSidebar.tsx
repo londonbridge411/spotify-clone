@@ -38,8 +38,8 @@ export default function SupportSidebar() {
         <hr></hr>
         <SidebarButton label="Home" to="home" icon={house} />
         <SidebarButton
-          label="My Tickets"
-          to={"tickets/" + authUserID}
+          label="All Tickets"
+          to={"tickets"}
           icon={user}
         />
         <SidebarButton

@@ -6,8 +6,7 @@ import "./SupportHome.css";
 import TicketRow from "./TicketRow";
 import "./TicketTable.css";
 
-
-export function SupportHome() {
+export default function AdminTickets() {
   const [list, setList] = useState([] as any[]);
 
   useEffect(() => {
@@ -15,7 +14,7 @@ export function SupportHome() {
       await supabase
         .from("Tickets")
         .select("*")
-        .eq("created_by", authUserID)
+        .eq("status", "Open")
         .then((response) => {
           let data = response.data as any[];
 
@@ -46,7 +45,6 @@ export function SupportHome() {
                   <th>Subcategory</th>
                   <th>Status</th>
                 </tr>
-                <hr style={{width:"100%"}}></hr>
                 {list.map((item) => {
                   return <TicketRow data={item} />;
                 })}

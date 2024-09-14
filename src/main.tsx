@@ -28,6 +28,7 @@ import LikedSongsPlaylist from "./components/Middle/LikedSongsPlaylist.tsx";
 import SupportApp from "./Support Application/SupportApp.tsx";
 import { CreateTicketPage } from "./Support Application/CreateTicketPage.tsx";
 import { SupportHome } from "./Support Application/SupportHome.tsx";
+import AdminTickets from "./Support Application/AdminTickets.tsx";
 
 export var isLoggedIn: boolean =
   (await supabase.auth.getSession()).data.session != null;
@@ -70,7 +71,7 @@ const router = createBrowserRouter(
       <Route path="update-password" element={<PasswordUpdatePage />}></Route>
       <Route path="support" element={<SupportApp />}>
         <Route path="home" element={<SupportHome />} />
-        <Route path="tickets/:userID" element={<AccountPage />} />
+        <Route path="tickets" element={<AdminTickets />} />
         <Route path="new-ticket" element={<CreateTicketPage />} />
         <Route path="artists" element={<Artists />} />
         <Route path="playlists" element={<MyPlaylistPage />} />
