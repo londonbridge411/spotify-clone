@@ -147,7 +147,11 @@ export default function MusicControl() {
   function UpdateVolume() {
     let audio = document.getElementById("audioControl") as HTMLAudioElement;
     let num = audio.volume * 100;
+
+    // Set in player
     dispatch(setVolume(num.toString()));
+
+    // Change Icon
     let icon_path: string = "";
 
     if (num == 0) {
@@ -226,6 +230,7 @@ export default function MusicControl() {
             audio = document.getElementById("audioControl") as HTMLAudioElement;
             audio.load();
 
+            let cookies = getCookies();
             audio.onloadedmetadata = () => {
               setCurrentTime("0:00"); // Maybe delete this? It's meant to fix a bug
               MarqueeCheck();
@@ -266,8 +271,6 @@ export default function MusicControl() {
                 dispatch(nextSong());
               };
 
-              let cookies = getCookies();
-
               // Volume Cookie
               let cookie_volume = cookies["volume"];
 
@@ -283,8 +286,6 @@ export default function MusicControl() {
               if (cookie_loop != undefined) {
                 let cookie_value: boolean = cookie_loop === "true";
                 dispatch(setLooping(cookie_value));
-                // audio.volume = parse(cookie_volume!) / 100; //Causes error????
-                //UpdateVolume();
               }
 
               setMaxTime(CalculateTime(audio.duration));
@@ -383,7 +384,7 @@ export default function MusicControl() {
   function ToggleMute() {
     let audio = document.getElementById("audioControl") as HTMLAudioElement;
     audio.volume = audio.volume > 0 ? 0 : 0.5;
-    UpdateVolume();
+    //UpdateVolume();
   }
   onpointerup = () => {
     //console.log(changingTime);

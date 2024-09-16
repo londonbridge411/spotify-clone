@@ -1,22 +1,20 @@
-
-
 .ticket-table {
-    border-collapse: collapse;
-    width: 100%;
-  }
-  
+  border-collapse: collapse;
+  width: 100%;
+}
+
 .ticket-table th,
 .ticket-table td {
-    padding: 5px;
-    border: solid 1px #777;
-  }
-  
+  padding: 5px;
+  border: solid 1px #777;
+}
+
 .ticket-table th {
-    background-color: lightblue;
-  }
-  
+  border: none;
+  border-bottom-style: solid;
+}
+
 .ticket-table-separate {
-    border-collapse: separate;
-    border-spacing: 5px;
-  }
-  
+  border-collapse: separate;
+  border-spacing: 5px;
+}

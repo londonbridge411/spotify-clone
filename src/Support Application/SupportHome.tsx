@@ -6,7 +6,6 @@ import "./SupportHome.css";
 import TicketRow from "./TicketRow";
 import "./TicketTable.css";
 
-
 export function SupportHome() {
   const [list, setList] = useState([] as any[]);
 
@@ -41,12 +40,11 @@ export function SupportHome() {
                 <tr>
                   <th>Ticket Number</th>
                   <th>Created</th>
-                  <th>Brief Description</th>
                   <th>Category</th>
                   <th>Subcategory</th>
                   <th>Status</th>
+                  <th>Brief Description</th>
                 </tr>
-                <hr style={{width:"100%"}}></hr>
                 {list.map((item) => {
                   return <TicketRow data={item} />;
                 })}

@@ -85,67 +85,6 @@ div::-webkit-scrollbar-thumb {
   font-weight: bold;
 }
 
-.song-table > hr {
-  min-width: 100%;
-  color: white;
-  background-color: white;
-  border-color: white;
-  border: 0;
-  border-top: 1px solid white;
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-/*Song row stuff*/
-
-.song-table {
-  display: grid;
-  grid-template-columns: 62px 30% 20% 20% 10% 5%;
-  row-gap: 10px;
-  /*width: calc(100% - 150px);*/
-  grid-auto-rows: 1fr;
-  justify-content: center;
-  /*margin-left: -45px;*/
-  margin-bottom: 0;
-  margin-top: 20px;
-}
-
-.song-table ul {
-  list-style-type: none;
-  list-style: none;
-}
-.song-row {
-  display: contents;
-  user-select: none;
-  background-color: rgba(136, 136, 136, 0.177);
-  cursor: pointer;
-}
-
-.song-row:hover > div {
-  background-color: rgba(136, 136, 136, 0.177);
-}
-
-.song-row > div > img {
-  border-radius: 10%;
-
-  height: 50px;
-  width: 50px;
-  margin-left: 5px;
-  margin-top: 5px;
-  margin-right: 5px;
-}
-
-.audioGIF {
-  filter: brightness(100) sepia(79%) saturate(1000%) hue-rotate(86deg);
-}
-
-.smallIcon {
-  display: block;
-  padding-left: 20%;
-  padding-top: 20%;
-  max-width: 25px;
-  max-height: 25px;
-}
-
 .song-row-name {
   overflow: hidden;
   white-space: nowrap;
@@ -158,44 +97,6 @@ div::-webkit-scrollbar-thumb {
         <img className="audioGIF"src={"https://open.spotifycdn.com/cdn/images/equaliser-animated-green.f5eb96f2.gif"} />
 
 */
-
-.song-row-views {
-  display: flex;
-  align-items: center;
-}
-
-.song-row-artists ul {
-  list-style: none;
-  margin: 0;
-  font-size: 0;
-}
-
-.song-row-artists li {
-  display: inline-block;
-  white-space: none;
-  color: rgb(197, 197, 197);
-  margin-right: 5.5px;
-}
-
-.song-row-artists li:after {
-  content: ",";
-}
-
-.song-row-artists li:last-child:after {
-  content: " ";
-}
-
-.song-row-album {
-  padding-right: 50px;
-}
-.song-row-album a {
-  color: white;
-}
-
-.song-row-item {
-  display: flex;
-  align-items: center;
-}
 
 .overflow-ellipsis {
   overflow: hidden;

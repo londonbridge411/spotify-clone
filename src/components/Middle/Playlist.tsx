@@ -3,7 +3,6 @@ import { NavLink, useNavigate, useParams } from "react-router-dom";
 import supabase from "../../config/supabaseClient";
 
 import "./Playlist.css";
-
 import Popup from "../Containers/Popup";
 import { authUserID, email, username } from "../../main";
 import * as uuid from "uuid";
@@ -17,6 +16,7 @@ import {
 } from "../../PlayerSlice";
 import { useDispatch } from "react-redux";
 import SongRow from "../Containers/SongRow";
+import "../Containers/SongTable.css";
 import { SwitchToPopup } from "../../PopupControl";
 import MobileSongRow from "../Containers/MobileSongRow";
 
@@ -291,40 +291,35 @@ export default function Playlist() {
             />
           </div>
           <main>
-            <div hidden={hideTable} className="playlist-content mobile-hidden">
-              <div className="song-table">
-                <div style={{ color: "rgba(0, 0, 0, 0)" }}>
-                  ?<hr></hr>
-                </div>
-                <div className="text-bold">
-                  Name <hr></hr>
-                </div>
-                <div className="text-bold mobile-hidden">
-                  Views <hr></hr>
-                </div>
-                <div className="text-bold mobile-hidden">
-                  Album <hr></hr>
-                </div>
-                <div className="text-bold mobile-hidden">
-                  Created <hr></hr>
-                </div>
-                <div className="text-bold mobile-hidden">
-                  Duration <hr></hr>
-                </div>
-
-                {list.map((item) => {
-                  // item broke somehow
-                  return (
-                    <SongRow
-                      key={item}
-                      song_id={item}
-                      song_list={list}
-                      forceUpdate={[coverUrl, playlistName, playlistPrivacy]}
-                    />
-                  );
-                })}
-              </div>
-            </div>
+            <table className="song-table playlist-content mobile-hidden">
+              <tr>
+                <th>
+                  <p style={{ color: "rgba(0, 0, 0, 0)", padding: "0" }}>p</p>
+                </th>
+                <th>Name</th>
+                <th>Views</th>
+                <th>Album</th>
+                <th>Created</th>
+                <th>Duration</th>
+              </tr>
+              <tr>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+              </tr>
+              {list.map((item) => {
+                // item broke somehow
+                return (
+                  <SongRow
+                    key={item}
+                    song_id={item}
+                    song_list={list}
+                    forceUpdate={[coverUrl, playlistName, playlistPrivacy]}
+                  />
+                );
+              })}
+            </table>
 
             <div className="mobile-view mobile-song-view">
               {list.map((item) => {

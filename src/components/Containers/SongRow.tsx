@@ -13,6 +13,7 @@ import { NavLink } from "react-router-dom";
 import { Artist } from "./Popups/UploadSongPopup";
 import "../../Links.css";
 import "../../mobile.css";
+import "./SongRow.css";
 import { OpenSongContextMenu } from "../../SongContextSlice";
 import SongContextControl, {
   ViewSongContextMenu,
@@ -121,7 +122,7 @@ export default function SongRow(props: any) {
 
   return (
     <>
-      <div
+      <tr
         id={props.song_id}
         className="song-row"
         // On right click
@@ -168,7 +169,7 @@ export default function SongRow(props: any) {
           }
         }}
       >
-        <div
+        <td
           onClick={() => {
             let nameArea = document.getElementById(props.song_id);
             let a = document.getElementById("audioControl") as HTMLAudioElement;
@@ -201,8 +202,8 @@ export default function SongRow(props: any) {
                 : "../../../src/assets/play-row.svg"
             }
           />
-        </div>
-        <div className="grid-item song-row-name">
+        </td>
+        <td className="song-row-name">
           <div className="overflow-ellipsis text-bigger text-bold">
             {songName}
           </div>
@@ -223,16 +224,20 @@ export default function SongRow(props: any) {
               })}
             </div>
           </div>
-        </div>
-        <div className="song-row-views, song-row-item mobile-hidden">{views}</div>
-        <div className="song-row-album, song-row-item mobile-hidden">
+        </td>
+        <td className="song-row-views song-row-item mobile-hidden">{views}</td>
+        <td className="song-row-album song-row-item mobile-hidden">
           <NavLink className="customLink" to={"../playlist/" + albumID}>
             {albumName}
           </NavLink>
-        </div>
-        <div className="song-row-date, song-row-item mobile-hidden">{dateCreated}</div>
-        <div className="song-row-duration, song-row-item mobile-hidden">{duration}</div>
-      </div>
+        </td>
+        <td className="song-row-date song-row-item mobile-hidden">
+          {dateCreated}
+        </td>
+        <td className="song-row-duration song-row-item mobile-hidden">
+          {duration}
+        </td>
+      </tr>
     </>
   );
 }

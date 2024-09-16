@@ -63,7 +63,7 @@ const playerSlice = createSlice({
 
     setVolume(state, action: PayloadAction<string>) {
       state.volume = action.payload;
-      document.cookie = "volume=" + action.payload;
+      document.cookie = "volume=" + action.payload; // If this ever gives issues, CLEAR COOKIES
     },
 
     setIsPlaying(state, action: PayloadAction<boolean>) {

@@ -1,0 +1,11 @@
+.ticket-table td:nth-child(5) {
+  width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ticket-table td:nth-child(6) {
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

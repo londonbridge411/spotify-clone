@@ -37,11 +37,7 @@ export default function SupportSidebar() {
 
         <hr></hr>
         <SidebarButton label="Home" to="home" icon={house} />
-        <SidebarButton
-          label="All Tickets"
-          to={"tickets"}
-          icon={user}
-        />
+        <SidebarButton label="All Tickets" to={"tickets"} icon={user} />
         <SidebarButton
           className="addButtonSidebar"
           label="Create Ticket"

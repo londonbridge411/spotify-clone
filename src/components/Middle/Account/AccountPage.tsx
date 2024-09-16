@@ -286,49 +286,50 @@ export default function AccountPage() {
             {/*Popular Songs*/}
             <section hidden={popularSongsList.length == 0}>
               <h2>Popular Songs</h2>
-              <div className="playlist-content">
-                <div
-                  className="song-table mobile-hidden"
-                  style={{
-                    gridTemplateColumns: "20px 62px 30% 20% 20% 150px 5%",
-                  }}
-                >
-                  <div style={{ color: "rgba(0, 0, 0, 0)" }}>
-                    ?<hr></hr>
-                  </div>
-                  <div style={{ color: "rgba(0, 0, 0, 0)" }}>
-                    ?<hr></hr>
-                  </div>
-                  <div className="text-bold ">
-                    Name <hr></hr>
-                  </div>
-                  <div className="text-bold mobile-hidden">
-                    Views <hr></hr>
-                  </div>
-                  <div className="text-bold mobile-hidden">
-                    Album <hr></hr>
-                  </div>
-                  <div className="text-bold mobile-hidden">
-                    Created <hr></hr>
-                  </div>
-                  <div className="text-bold mobile-hidden">
-                    Duration <hr></hr>
-                  </div>
-
+              <div className="playlist-content" style={{ display: "flex" }}>
+                <table>
+                  <th style={{ color: "rgba(0, 0, 0, 0)" }}>?</th>
+                  <tr>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                  </tr>
                   {popularSongsList.map((item, index) => {
-                    // item broke somehow
                     return (
-                      <div key={index} style={{ display: "contents" }}>
-                        <div style={{ alignSelf: "center" }}>{index + 1}.</div>
-                        <SongRow
-                          song_id={item}
-                          song_list={popularSongsList}
-                          //forceUpdate={[username]}
-                        />
-                      </div>
+                      <tr>
+                        <td>{index + 1}.</td>
+                      </tr>
                     );
                   })}
-                </div>
+                </table>
+                <table className="song-table playlist-content mobile-hidden">
+                  <tr>
+                    <th>
+                      <p style={{ color: "rgba(0, 0, 0, 0)", padding: "0" }}>
+                        p
+                      </p>
+                    </th>
+                    <th>Name</th>
+                    <th>Views</th>
+                    <th>Album</th>
+                    <th>Created</th>
+                    <th>Duration</th>
+                  </tr>
+                  <tr>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                  </tr>
+                  {popularSongsList.map((item, index) => {
+                    return (
+                      <>
+                        <SongRow song_id={item} song_list={popularSongsList} />
+                      </>
+                    );
+                  })}
+                </table>
               </div>
               <div className="mobile-view mobile-song-view">
                 {popularSongsList.map((item) => {

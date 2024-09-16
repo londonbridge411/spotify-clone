@@ -1,0 +1,60 @@
+/*Song row stuff*/
+
+.song-table {
+  border-collapse: collapse;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  text-align: left;
+}
+
+.song-table th,
+.song-table td {
+  padding: 5px;
+  border: none;
+}
+
+.song-table th {
+  border: none;
+  border-color: white;
+  border-bottom: 0.5px;
+  margin-bottom: 100px;
+  border-bottom-style: solid;
+  border-spacing: 30px;
+}
+
+.song-table td:nth-child(1) {
+  width: 50px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.song-table td:nth-child(2) {
+  width: 650px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.song-table td:nth-child(3) {
+  width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.song-table td:nth-child(4) {
+  width: 400px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.song-table td:nth-child(5) {
+  width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.song-table td:nth-child(6) {
+  width: 25px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
