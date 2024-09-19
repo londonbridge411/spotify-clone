@@ -34,33 +34,32 @@ export default function MyPlaylistPage() {
 
   const [sharedList, setSharedList] = useState([null]);
   useEffect(() => {
-    supabase
-      .from("Users")
-      .select("subscribed_playlists")
-      .eq("id", authUserID)
-      .then(async (result) => {
-        // Collection of Playlist IDs
-        let resultList = result.data?.at(0)?.subscribed_playlists;
+    let get = async () => {
+      await supabase
+        .from("Subscribed_Playlists")
+        .select(
+          "playlist_id, privacy:Playlists!Subscribed_Playlists_playlist_id_fkey(privacy_setting)"
+        )
+        .eq("subscriber", authUserID)
+        .then(async (result) => {
+          // Collection of Playlist IDs
+          var array: any[] = [];
 
-        var array: any[] = [];
+          if (result.data?.length! > 0) {
+            for (let i = 0; i < result.data!.length; i++) {
+              let row = result.data!.at(i) as any;
 
-        if (resultList != null || resultList?.length == 0) {
-          for (let i = 0; i < resultList.length; i++) {
-            await supabase
-              .from("Playlists")
-              .select("privacy_setting")
-              .eq("id", resultList.at(i))
-              .order("created_at")
-              .then((result2) => {
-                if (result2.data?.at(0)?.privacy_setting != "Private") {
-                  array.push(resultList.at(i));
-                }
-              });
+              if (row?.privacy.privacy_setting != "Private") {
+                array.push(row?.playlist_id);
+              }
+            }
+
+            setSharedList(array);
           }
+        });
+    };
 
-          setSharedList(array);
-        }
-      });
+    get();
   }, []);
 
   return (

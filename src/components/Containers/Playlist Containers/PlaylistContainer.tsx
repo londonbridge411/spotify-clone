@@ -22,9 +22,12 @@ export default function PlaylistContainer(props: any) {
   useEffect(() => {
     supabase
       .from("Playlists")
-      .select("name, owner_id, cover_url, Users(username)")
+      .select(
+        "name, owner_id, cover_url, Users!Playlists_owner_id_fkey(username)"
+      )
       .eq("id", props.playlist_id)
       .then((result) => {
+        //console.log(result);
         setPlaylistName(result.data?.at(0)?.name);
         setCover_URL(
           result.data?.at(0)?.cover_url == ""

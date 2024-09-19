@@ -72,6 +72,7 @@ const playerSlice = createSlice({
 
     setProperQueue(state, action: PayloadAction<string[]>) {
       state.properQueue = action.payload;
+      console.log("AAA" + state.song_id);
       state.listPosition = state.properQueue.indexOf(state.song_id);
     },
 

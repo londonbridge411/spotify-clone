@@ -22,16 +22,25 @@ export default function PlaylistContextMenu(props: any) {
   const [isOwner, setOwnership] = useState(true);
 
   let run = async () => {
-    //targetPlaylist = props.playlistID;
+    // There might be a possible join to do, but it ain't easy
     await supabase
-      .rpc("checkfollowingownership", {
-        userid: authUserID,
-        playlistid: props.playlistID,
-      })
+      .from("Playlists")
+      .select("id, owner_id")
+      .eq("owner_id", authUserID)
+      .eq("id", props.playlistID)
       .then((result) => {
-        let data = result.data.at(0);
-        setOwnership(data.isowner);
-        setIsFollowing(data.isfollowing);
+        //console.log(result);
+        setOwnership(result.data?.length! > 0);
+      });
+
+    await supabase
+      .from("Subscribed_Playlists")
+      .select("*")
+      .eq("subscriber", authUserID)
+      .eq("playlist_id", props.playlistID)
+      .then((result) => {
+        //console.log(result);
+        setIsFollowing(result.data?.length! > 0);
       });
   };
   run();

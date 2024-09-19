@@ -19,6 +19,7 @@ import SongRow from "../Containers/SongRow";
 import "../Containers/SongTable.css";
 import { SwitchToPopup } from "../../PopupControl";
 import MobileSongRow from "../Containers/MobileSongRow";
+import FastSongRow from "../Containers/FastSongRow";
 
 export var setListRef: any;
 
@@ -72,107 +73,105 @@ export default function Playlist() {
   const [coverUrl, setCover_URL] = useState(
     "../../../src/assets/small_record.svg"
   );
-
-  useEffect(() => {
-    //console.log("Updating");
-    supabase
-      .from("Playlists")
-      .select("name, type, bg_url, cover_url, owner_id, Users(username)")
-      .eq("id", playlistID)
-      .then((result) => {
-        var row = result.data?.at(0);
-        var user_data: any = result.data?.at(0)?.Users;
-
-        if (row != null) {
-          setPlaylistName(row.name);
-          setPlaylistType(row.type);
-          setBG_URL(row.bg_url);
-          setPlaylistAuthorID(row.owner_id);
-          setCover_URL(
-            row.cover_url == ""
-              ? "../../../src/assets/small_record.svg"
-              : row.cover_url
-          );
-
-          setPlaylistAuthor(user_data.username);
-        }
-      });
-  }, [playlistID]);
-
-  useEffect(() => {
-    supabase
-      .from("Users")
-      .select("subscribed_playlists")
-      .eq("id", authUserID)
-      .then((result) => {
-        setIsFollowing(
-          result.data?.at(0)?.subscribed_playlists.includes(playlistID)
-        );
-      });
-  }, [playlistID]);
-
-  // Song List
   const [list, setList] = useState([]);
 
-  setListRef = setList;
-  // Make it so songs in private (not unlisted playlists) are hidden
+  //----------------------------------------------------
+  const [fastList, setFastList] = useState([] as any[]);
+
+  // Inital Set
   useEffect(() => {
-    let update = async () => {
-      setHideTable(true);
-      setLoading(true);
-
-      /*
-      Get list of songs in playlist that are public.
-      If current user is owner, show even if priv
-      */
-
-      let userID_JSON = JSON.stringify(authUserID);
+    let fetch = async () => {
       await supabase
-        .rpc("getplaylistsongs", {
-          playlist_id: playlistID,
-          user_id: userID_JSON,
-        })
-        .then((result) => {
-          //console.log(result);
+        .from("Playlists")
+        .select(
+          "song_ids, owner_id, cover_url, name, type, bg_url, Users!Playlists_owner_id_fkey(username)"
+        )
+        .eq("id", playlistID)
+        .then(async (result) => {
+          var row = result.data?.at(0);
+          var user_data: any = result.data?.at(0)?.Users;
 
-          setLoading(false);
+          if (row != null) {
+            setPlaylistName(row.name);
+            setPlaylistType(row.type);
+            setBG_URL(row.bg_url);
+            setPlaylistAuthorID(row.owner_id);
+            setCover_URL(
+              row.cover_url == ""
+                ? "../../../src/assets/small_record.svg"
+                : row.cover_url
+            );
 
-          if (result.data.length == 0) {
-            setHideTable(true);
-          } else {
-            setHideTable(false);
+            setPlaylistAuthor(user_data.username);
+            setOwner(authUserID == row.owner_id);
+            setList(row.song_ids);
 
-            let arr = [];
-            for (let i = 0; i < result.data.length; i++) {
-              arr.push(result.data[i].id);
-            }
-            setList(arr as any);
+            await supabase
+              .rpc("getsongs", {
+                song_ids: result.data?.at(0)?.song_ids,
+              })
+              .then(async (result2) => {
+                //console.log(result2);
+                setFastList(result2.data);
+
+                setLoading(false);
+                if (result2.data.length == 0) {
+                  setHideTable(true);
+                } else {
+                  setHideTable(false);
+                }
+              });
           }
         });
     };
 
-    update();
+    fetch();
+  }, []);
+
+  // On song order change
+  useEffect(() => {
+    let fetch = async () => {
+      supabase
+        .rpc("getsongs", {
+          song_ids: list,
+        })
+        .then(async (result2) => {
+          setFastList(result2.data);
+        });
+    };
+
+    fetch();
+  }, [list]);
+
+  //----------------------------------------------------
+
+  useEffect(() => {
+    let fetch = async () => {
+      await supabase
+        .from("Subscribed_Playlists")
+        .select("*")
+        .eq("subscriber", authUserID)
+        .eq("playlist_id", playlistID)
+        .then((result) => {
+          setIsFollowing(result.data?.length! > 0);
+        });
+    };
+
+    fetch();
   }, [playlistID]);
+
+  // Song List
+  setListRef = setList;
 
   function FollowPlaylist() {
     if (isFollowing == false && isOwner == false) {
       // Add subscribed user into user row
       supabase
-        .from("Users")
-        .select("subscribed_playlists")
-        .eq("id", authUserID)
-        .then(async (result) => {
-          let list: string[] = result.data?.at(0)?.subscribed_playlists;
-
-          list.push(playlistID as string);
-
-          await supabase
-            .from("Users")
-            .update({ subscribed_playlists: list })
-            .eq("id", authUserID);
+        .from("Subscribed_Playlists")
+        .insert({ subscriber: authUserID, playlist_id: playlistID })
+        .then(() => {
+          setIsFollowing(true);
         });
-
-      setIsFollowing(true);
     }
   }
 
@@ -180,21 +179,13 @@ export default function Playlist() {
     if (isFollowing == true && isOwner == false) {
       // Remove user as a sub
       supabase
-        .from("Users")
-        .select("subscribed_playlists")
-        .eq("id", authUserID)
-        .then(async (result) => {
-          let list: string[] = result.data?.at(0)?.subscribed_playlists;
-
-          list.splice(list.indexOf(playlistID as string), 1);
-
-          await supabase
-            .from("Users")
-            .update({ subscribed_playlists: list })
-            .eq("id", authUserID);
+        .from("Subscribed_Playlists")
+        .delete()
+        .eq("subscriber", authUserID)
+        .eq("playlist_id", playlistID)
+        .then(() => {
+          setIsFollowing(false);
         });
-
-      setIsFollowing(false);
     }
   }
 
@@ -292,42 +283,54 @@ export default function Playlist() {
           </div>
           <main>
             <table className="song-table playlist-content mobile-hidden">
-              <tr>
-                <th>
-                  <p style={{ color: "rgba(0, 0, 0, 0)", padding: "0" }}>p</p>
-                </th>
-                <th>Name</th>
-                <th>Views</th>
-                <th>Album</th>
-                <th>Created</th>
-                <th>Duration</th>
-              </tr>
-              <tr>
-                <td></td>
-              </tr>
-              <tr>
-                <td></td>
-              </tr>
-              {list.map((item) => {
-                // item broke somehow
-                return (
-                  <SongRow
-                    key={item}
-                    song_id={item}
-                    song_list={list}
-                    forceUpdate={[coverUrl, playlistName, playlistPrivacy]}
-                  />
-                );
-              })}
+              <thead>
+                <tr>
+                  <th>
+                    <p style={{ color: "rgba(0, 0, 0, 0)", padding: "0" }}>p</p>
+                  </th>
+                  <th>Name</th>
+                  <th>Views</th>
+                  <th>Album</th>
+                  <th>Created</th>
+                  <th>Duration</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td></td>
+                </tr>
+
+                {fastList.map((item) => {
+                  //Do list.map if doing OG <SongRow>
+                  // item broke somehow
+                  return (
+                    // <SongRow
+                    //   key={item}
+                    //   song_id={item}
+                    //   song_list={list}
+                    //   forceUpdate={[coverUrl, playlistName, playlistPrivacy]}
+                    // />
+                    <FastSongRow
+                      key={item.song_id}
+                      song_data={item}
+                      song_list={list}
+                      forceUpdate={[coverUrl, playlistName, playlistPrivacy]}
+                    />
+                  );
+                })}
+              </tbody>
             </table>
 
             <div className="mobile-view mobile-song-view">
-              {list.map((item) => {
+              {fastList.map((item) => {
                 // item broke somehow
                 return (
                   <MobileSongRow
-                    key={item}
-                    song_id={item}
+                    key={item.song_id + "-mobile"}
+                    song_data={item}
                     song_list={list}
                     forceUpdate={[coverUrl, playlistName, playlistPrivacy]}
                   />

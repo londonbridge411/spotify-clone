@@ -20,21 +20,34 @@ export default function Artists() {
 
   useEffect(() => {
     supabase.rpc("getsubsnewestalbums").then((result) => {
-      //console.log(result.data);
-      setNewestAlbums(result.data);
+      let arr = [];
+
+      for (let i = 0; i < result.data?.length!; i++) {
+        arr.push(result.data?.at(i)?.id);
+      }
+
+      setNewestAlbums(arr as any);
     });
   }, []);
 
   useEffect(() => {
-    supabase
-      .from("Users")
-      .select("subscribed_artists")
-      .eq("id", authUserID)
-      .then((result) => {
-        //console.log(result.data?.at(0)?.subscribed_artists);
-        setArtists(result.data?.at(0)?.subscribed_artists);
-      });
-    //setArtists();
+    let get = async () => {
+      await supabase
+        .from("Subscribed_Artists")
+        .select("subscribed_to")
+        .eq("subscriber", authUserID)
+        .then((result) => {
+          let arr = [];
+
+          for (let i = 0; i < result.data?.length!; i++) {
+            arr.push(result.data?.at(i)?.subscribed_to);
+          }
+
+          setArtists(arr as any);
+        });
+    };
+
+    get();
   }, []);
 
   return (
@@ -47,8 +60,8 @@ export default function Artists() {
 
             <ul className="myAlbums">
               {newestAlbums.map((item: any) => (
-                <li key={item.id}>
-                  <PlaylistContainer playlist_id={item.id} />
+                <li key={item}>
+                  <PlaylistContainer playlist_id={item} />
                 </li>
               ))}
             </ul>

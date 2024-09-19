@@ -181,11 +181,9 @@ export default function MusicControl() {
       setCurrentTime("--:--");
       setMaxTime("--:--");
       await supabase
-        .from("Songs")
-        .select("title, view_count, artist_data, album_id")
-        .eq("id", player.song_id)
+        .rpc("getsongbyid", { songid: player.song_id })
         .then((result) => {
-          //console.log(result.data)
+          console.log(result.data);
           var row = result.data?.at(0);
 
           if (row != null) {
@@ -193,12 +191,18 @@ export default function MusicControl() {
             setViewCount(row.view_count);
 
             // Fill In artists"
+            let arr: string[] = row?.contributors;
+
             let myList = [] as Artist[];
-            for (let i = 0; i < row.artist_data.length; i++) {
+            for (let i = 0; i < (arr as string[]).length; i++) {
+              let s = arr[i] as string;
+              let info = s.split("=");
+
               let art: Artist = {
-                id: row?.artist_data[i].id,
-                username: row?.artist_data[i].username,
+                id: info[0],
+                username: info[1],
               };
+
               myList.push(art);
             }
             setArtists(myList);

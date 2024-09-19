@@ -33,36 +33,29 @@ export default function MobileSongRow(props: any) {
 
   // Set the states for the row
   useEffect(() => {
-    if (props.song_id != null) {
-      //console.log("Loading: " + props.song_id);
-      supabase
-        .from("Songs")
-        .select(
-          "title, artist_data, created_at, album_id, view_count, duration, Playlists(id, name, cover_url)"
-        )
-        .eq("id", props.song_id)
-        .then(async (result) => {
-          var row = result.data?.at(0);
-          var playlistData: any = row?.Playlists;
+    //console.log("Loading: " + props.song_id);
+    if (props.song_data != null) {
+      setSongName(props.song_data.title);
+      setAlbumName(props.song_data.name);
+      setAlbumID(props.song_data.album_id);
+      if (props.song_data.cover_url != "")
+        setAlbumCoverURL(props.song_data.cover_url);
 
-          if (row != null) {
-            setSongName(row.title);
-            setAlbumName(playlistData.name);
-            setAlbumID(row.album_id);
-            if (playlistData.cover_url != "")
-              setAlbumCoverURL(playlistData.cover_url);
+      let arr: string[] = props.song_data?.contributors;
 
-            let myList = [] as Artist[];
-            for (let i = 0; i < row.artist_data.length; i++) {
-              let art: Artist = {
-                id: row?.artist_data[i].id,
-                username: row?.artist_data[i].username,
-              };
-              myList.push(art);
-            }
-            setArtists(myList);
-          }
-        });
+      let myList = [] as Artist[];
+      for (let i = 0; i < (arr as string[]).length; i++) {
+        let s = arr[i] as string;
+        let info = s.split("=");
+
+        let art: Artist = {
+          id: info[0],
+          username: info[1],
+        };
+
+        myList.push(art);
+      }
+      setArtists(myList);
     }
   }, [props.forceUpdate]); // forceUpdate is a collection of states from the playlist. The idea is that whenever the cover or name updates, it updates in the song row.
 

@@ -212,7 +212,7 @@ export default function SongRow(props: any) {
             <div className="song-row-artists">
               {artists.map((item: any) => {
                 return (
-                  <li key={item.id}>
+                  <li>
                     <NavLink
                       className="customLink"
                       to={"../account/" + item.id}

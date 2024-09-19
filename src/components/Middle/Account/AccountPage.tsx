@@ -11,6 +11,7 @@ import SongRow from "../../Containers/SongRow";
 import { SwitchToPopup } from "../../../PopupControl";
 import "../../../mobile.css";
 import MobileSongRow from "../../Containers/MobileSongRow";
+import FastSongRow from "../../Containers/FastSongRow";
 
 /*
 Want to display icon, username, bio, followers, isVerified, upload song.
@@ -36,27 +37,50 @@ export default function AccountPage() {
   const [popularSongsList, setPopularSongsList] = useState([] as string[]);
   const [hideEverything, setHideEverything] = useState(true);
   const [loading, setLoading] = useState(true);
-
-  //setPopularSongsList(["2046f516-227f-4b86-b78d-4d3d14c7fea4"]);
+  const [dataList, setDataList] = useState([] as any[]);
 
   useEffect(() => {
-    supabase
-      .from("Users")
-      .select("subscribers, is_verified, username, pfp_url")
-      .eq("id", userID)
-      .then((result) => {
-        setFollowerCount(result.data?.at(0)?.subscribers.length);
-        setVerified(result.data?.at(0)?.is_verified);
-        setUsername(result.data?.at(0)?.username);
+    let get = async () => {
+      await supabase
+        .from("Users")
+        .select(
+          "is_verified, username, pfp_url, sub_to:Subscribed_Artists!Subscribed_Artists_subscribed_to_fkey(subscribed_to), sub:Subscribed_Artists!Subscribed_Artists_subscriber_fkey(subscriber)"
+        )
 
-        setPfpUrl(
-          result.data?.at(0)?.pfp_url != null &&
-            result.data?.at(0)?.pfp_url != ""
-            ? result.data?.at(0)?.pfp_url
-            : "../../../src/assets/default_user.png"
-        );
-        setIsFollowing(result.data?.at(0)?.subscribers.includes(authUserID));
-      });
+        //Subscribed_Artists!Subscribed_Artists_subscriber_fkey
+        .eq("id", userID)
+        .then((result) => {
+          //console.log(result.data);
+          let row = result.data?.at(0);
+          setFollowerCount((row?.sub_to as any[]).length);
+          setVerified(row?.is_verified);
+          setUsername(row?.username);
+
+          setPfpUrl(
+            row?.pfp_url != null && row?.pfp_url != ""
+              ? row?.pfp_url
+              : "../../../src/assets/default_user.png"
+          );
+        });
+    };
+
+    get();
+  }, [userID, username]);
+
+  // Set whether we are subscribed or not.
+  useEffect(() => {
+    let get = async () => {
+      await supabase
+        .from("Subscribed_Artists")
+        .select("*")
+        .eq("subscriber", authUserID)
+        .eq("subscribed_to", userID)
+        .then((result) => {
+          setIsFollowing(result.data?.length! > 0);
+        });
+    };
+
+    get();
   }, [userID, username]);
 
   // Exports the function so the popup control can see it.
@@ -68,17 +92,26 @@ export default function AccountPage() {
       setHideEverything(true);
       setPopularSongsList([]);
 
-      let a = JSON.stringify([{ id: userID }]);
-
       //user_id: '[{"id":' + userID + "}]" "{ user_id: a }"
-      await supabase.rpc("selecttop5songs", { uid: a }).then(async (result) => {
-        var songs: string[] = [];
+      await supabase
+        .rpc("selecttop5songs", { uid: userID })
+        .then(async (result) => {
+          var songs: string[] = [];
 
-        for (let i = 0; i < result.data.length; i++) {
-          songs.push(result.data?.at(i).songid);
-        }
-        setPopularSongsList(songs as string[]);
-      });
+          for (let i = 0; i < result.data.length; i++) {
+            songs.push(result.data?.at(i).songid);
+          }
+
+          setPopularSongsList(songs as string[]);
+
+          await supabase
+            .rpc("getsongs", {
+              song_ids: songs,
+            })
+            .then(async (result2) => {
+              setDataList(result2.data);
+            });
+        });
 
       setLoading(false);
       setHideEverything(false);
@@ -132,81 +165,34 @@ export default function AccountPage() {
   }, [userID, username]);
 
   function FollowUser() {
-    if (isFollowing == false && isOwner == false) {
-      // Add user as a sub
-      supabase
-        .from("Users")
-        .select("subscribers")
-        .eq("id", userID)
-        .then(async (result) => {
-          let subs: string[] = result.data?.at(0)?.subscribers;
+    let push = async () => {
+      if (isFollowing == false && isOwner == false) {
+        await supabase
+          .from("Subscribed_Artists")
+          .insert({ subscriber: authUserID, subscribed_to: userID });
 
-          subs.push(authUserID as string);
+        setIsFollowing(true);
+        SwitchToPopup("Popup_FollowingUser");
+      }
+    };
 
-          await supabase
-            .from("Users")
-            .update({ subscribers: subs })
-            .eq("id", userID);
-        });
-
-      // Add subscribed user into user row
-
-      supabase
-        .from("Users")
-        .select("subscribed_artists")
-        .eq("id", authUserID)
-        .then(async (result) => {
-          let subbed_artists: string[] = result.data?.at(0)?.subscribed_artists;
-
-          subbed_artists.push(userID as string);
-
-          await supabase
-            .from("Users")
-            .update({ subscribed_artists: subbed_artists })
-            .eq("id", authUserID);
-        });
-
-      setIsFollowing(true);
-      SwitchToPopup("Popup_FollowingUser");
-    }
+    push();
   }
 
   function UnfollowUser() {
-    if (isFollowing == true && isOwner == false) {
-      // Remove user as a sub
-      supabase
-        .from("Users")
-        .select("subscribers")
-        .eq("id", userID)
-        .then(async (result) => {
-          let subs: string[] = result.data?.at(0)?.subscribers;
+    let remove = async () => {
+      if (isFollowing == true && isOwner == false) {
+        await supabase
+          .from("Subscribed_Artists")
+          .delete()
+          .eq("subscriber", authUserID)
+          .eq("subscribed_to", userID);
 
-          subs.splice(subs.indexOf(authUserID as string), 1);
+        setIsFollowing(false);
+      }
+    };
 
-          await supabase
-            .from("Users")
-            .update({ subscribers: subs })
-            .eq("id", userID);
-        });
-
-      // Remove subscribed user into user row
-      supabase
-        .from("Users")
-        .select("subscribed_artists")
-        .eq("id", authUserID)
-        .then(async (result) => {
-          let subbed_artists: string[] = result.data?.at(0)?.subscribed_artists;
-
-          subbed_artists.splice(subbed_artists.indexOf(userID as string), 1);
-
-          await supabase
-            .from("Users")
-            .update({ subscribed_artists: subbed_artists })
-            .eq("id", authUserID);
-        });
-
-      setIsFollowing(false);
-    }
+    remove();
   }
 
   return (
@@ -287,57 +273,84 @@ export default function AccountPage() {
             <section hidden={popularSongsList.length == 0}>
               <h2>Popular Songs</h2>
               <div className="playlist-content" style={{ display: "flex" }}>
-                <table>
-                  <th style={{ color: "rgba(0, 0, 0, 0)" }}>?</th>
-                  <tr>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                  </tr>
-                  {popularSongsList.map((item, index) => {
-                    return (
-                      <tr>
-                        <td>{index + 1}.</td>
-                      </tr>
-                    );
-                  })}
+                <table style={{ borderCollapse: "collapse" }}>
+                  <thead>
+                    <tr>
+                      <th>
+                        <p
+                          style={{
+                            color: "rgba(0, 0, 0, 0)",
+                            padding: "0 5px",
+                          }}
+                        >
+                          p
+                        </p>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td></td>
+                    </tr>
+
+                    {popularSongsList.map((item, index) => {
+                      return (
+                        <tr key={index + 1}>
+                          <td>{index + 1}.</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
                 </table>
                 <table className="song-table playlist-content mobile-hidden">
-                  <tr>
-                    <th>
-                      <p style={{ color: "rgba(0, 0, 0, 0)", padding: "0" }}>
-                        p
-                      </p>
-                    </th>
-                    <th>Name</th>
-                    <th>Views</th>
-                    <th>Album</th>
-                    <th>Created</th>
-                    <th>Duration</th>
-                  </tr>
-                  <tr>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                  </tr>
-                  {popularSongsList.map((item, index) => {
-                    return (
-                      <>
-                        <SongRow song_id={item} song_list={popularSongsList} />
-                      </>
-                    );
-                  })}
+                  <thead>
+                    <tr>
+                      <th>
+                        <p style={{ color: "rgba(0, 0, 0, 0)", padding: "0" }}>
+                          p
+                        </p>
+                      </th>
+                      <th>Name</th>
+                      <th>Views</th>
+                      <th>Album</th>
+                      <th>Created</th>
+                      <th>Duration</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                    </tr>
+                    {dataList.map((item, index) => {
+                      return (
+                        <>
+                          <FastSongRow
+                            key={item.song_id}
+                            song_data={item}
+                            song_list={popularSongsList}
+                          />
+                        </>
+                      );
+                    })}
+                  </tbody>
                 </table>
               </div>
               <div className="mobile-view mobile-song-view">
-                {popularSongsList.map((item) => {
+                {dataList.map((item) => {
                   // item broke somehow
                   return (
                     <MobileSongRow
-                      key={item}
-                      song_id={item}
+                      key={item.song_id + "-mobileA"}
+                      song_data={item}
                       song_list={popularSongsList}
                     />
                   );

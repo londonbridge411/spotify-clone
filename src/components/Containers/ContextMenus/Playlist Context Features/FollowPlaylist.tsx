@@ -9,21 +9,25 @@ export default function ContextOption_FollowPlaylist(props: any) {
   function FollowPlaylist() {
     let run = async () => {
       await supabase
-        .from("Users")
-        .select("subscribed_playlists")
-        .eq("id", authUserID)
-        .then(async (result) => {
-          let list: string[] = result.data?.at(0)?.subscribed_playlists;
+        .from("Subscribed_Playlists")
+        .insert({ subscriber: authUserID, playlist_id: props.target });
 
-          list.push(props.target as string);
+      // await supabase
+      //   .from("Users")
+      //   .select("subscribed_playlists")
+      //   .eq("id", authUserID)
+      //   .then(async (result) => {
+      //     let list: string[] = result.data?.at(0)?.subscribed_playlists;
 
-          await supabase
-            .from("Users")
-            .update({ subscribed_playlists: list })
-            .eq("id", authUserID);
+      //     list.push(props.target as string);
 
-          //setprops.isFollowing(!props.isFollowing);
-        });
+      //     await supabase
+      //       .from("Users")
+      //       .update({ subscribed_playlists: list })
+      //       .eq("id", authUserID);
+
+      //     //setprops.isFollowing(!props.isFollowing);
+      //   });
     };
 
     run();
@@ -31,23 +35,15 @@ export default function ContextOption_FollowPlaylist(props: any) {
 
   function UnfollowPlaylist() {
     if (props.isFollowing == true && props.isOwner == false) {
-      // Remove user as a sub
-      supabase
-        .from("Users")
-        .select("subscribed_playlists")
-        .eq("id", authUserID)
-        .then(async (result) => {
-          let list: string[] = result.data?.at(0)?.subscribed_playlists;
+      let del = async () => {
+        await supabase
+          .from("Subscribed_Playlists")
+          .delete()
+          .eq("subscriber", authUserID)
+          .eq("playlist_id", props.target);
+      };
 
-          list.splice(list.indexOf(props.target as string), 1);
-
-          await supabase
-            .from("Users")
-            .update({ subscribed_playlists: list })
-            .eq("id", authUserID);
-        });
-
-      // .isFollowing(false);
+      del();
     }
   }
 
