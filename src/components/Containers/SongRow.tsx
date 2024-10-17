@@ -19,6 +19,10 @@ import SongContextControl, {
   ViewSongContextMenu,
 } from "./ContextMenus/SongContextMenu";
 // Song Row
+
+/**
+ * @deprecated Has been superseded by FastSongRow and MobileSongRow.
+ */
 export default function SongRow(props: any) {
   const [songName, setSongName] = useState("");
   const [artists, setArtists] = useState([] as Artist[]);

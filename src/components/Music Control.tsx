@@ -182,8 +182,8 @@ export default function MusicControl() {
       setMaxTime("--:--");
       await supabase
         .rpc("getsongbyid", { songid: player.song_id })
-        .then((result) => {
-          console.log(result.data);
+        .then(async (result) => {
+          //console.log(result.data);
           var row = result.data?.at(0);
 
           if (row != null) {
@@ -206,15 +206,21 @@ export default function MusicControl() {
               myList.push(art);
             }
             setArtists(myList);
-            supabase
-              .from("Users")
-              .select("liked_songs")
-              .eq("id", authUserID)
-              .then((result) => {
-                if (result.data?.at(0)?.liked_songs.includes(player.song_id))
-                  setLikeState("../../../src/assets/star-solid.svg");
-                else setLikeState("../../../src/assets/star-regular.svg");
+
+            await supabase
+              .from("Liked_Songs")
+              .select("*")
+              .eq("user_id", authUserID)
+              .eq("song_id", player.song_id)
+              .then((result2) => {
+                // Set like state
+                setLikeState(
+                  (result2.data?.length as any) > 0
+                    ? "../../../src/assets/star-solid.svg"
+                    : "../../../src/assets/star-regular.svg"
+                );
               });
+
             // Cover URL
             let albumID = result.data?.at(0)?.album_id;
             setAlbumID(albumID);
@@ -356,29 +362,36 @@ export default function MusicControl() {
       // Now we need to append ID to array in playlist
 
       await supabase
-        .from("Users")
-        .select("liked_songs")
-        .eq("id", authUserID)
+        .from("Liked_Songs")
+        .select("*")
+        .eq("user_id", authUserID)
+        .eq("song_id", player.song_id)
         .then(async (result) => {
-          var array: string[] = result.data?.at(0)?.liked_songs;
+          // Change like state and modify data in table.
 
           let icon = "";
-          // Guard Statement
-          if (array.includes(player.song_id)) {
-            // Unlike
-            array.splice(array.indexOf(player.song_id as string), 1);
+
+          if ((result.data?.length as any) > 0) {
+            // Exists in table. Unlike
             icon = "../../../src/assets/star-regular.svg";
+
+            // Delete from table
+            await supabase
+              .from("Liked_Songs")
+              .delete()
+              .eq("user_id", authUserID)
+              .eq("song_id", player.song_id);
           } else {
-            // Like
-            array.push(player.song_id as string);
+            // DNE in table. Like
             icon = "../../../src/assets/star-solid.svg";
+
+            // Insert into table
+            await supabase
+              .from("Liked_Songs")
+              .insert({ song_id: player.song_id, user_id: authUserID });
           }
 
-          await supabase
-            .from("Users")
-            .update({ liked_songs: array })
-            .eq("id", authUserID)
-            .then(() => setLikeState(icon));
+          setLikeState(icon);
         });
     };
 

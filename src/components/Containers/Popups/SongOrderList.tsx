@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { ClosePopup, SwitchToPopup } from "../../../PopupControl";
 import { useLocation, useParams } from "react-router-dom";
 import "./SongOrderList.css";
-import { setListRef } from "../../Middle/Playlist";
+//import { setListRef } from "../../Middle/Playlist";
 
 export default function SongOrderList() {
   const [list, setList] = useState([]);
@@ -18,12 +18,11 @@ export default function SongOrderList() {
 
   const dispatch = useDispatch();
 
-  //console.log(playlistID);
   useEffect(() => {
     supabase
-      .rpc("get_playlist_songs_edit", { uid: playlistID })
+      .rpc("get_playlist_songs_edit", { playlistid: playlistID })
       .then((result) => {
-        //console.log(result.data);
+        console.log(result.data);
         setLoaded(true);
         setList(result.data as any);
       });
@@ -68,8 +67,18 @@ export default function SongOrderList() {
     element.classList.remove("songOrderItem-Follow");
     event.target.classList.add("songOrderItem-Follow");
 
-    let item: any = list.find((i: any) => i?.id == selectedItem);
-
+    console.log(list);
+    // let item: any = null;
+    // for (let k = 0; k < list.length; k++) {
+    //   console.log((list[k] as any).song_id);
+    //   console.log(selectedItem);
+    //   if ((list[k] as any).song_id == selectedItem) {
+    //     item = list[k] as any;
+    //     break;
+    //   }
+    // }
+    let item: any = (list as any).find((i: any) => i?.song_id == selectedItem); // Should this not be song_id? For some reason song_id crashes it.
+    console.log(item);
     let arr: any[] = [...list];
 
     let oldIndex = arr.indexOf(item);
@@ -102,23 +111,17 @@ export default function SongOrderList() {
 
   function UpdateSongList() {
     let update = async () => {
-      let uploadList: string[] = [];
+      SwitchToPopup("uploadingWait");
+
       for (let i = 0; i < list.length; i++) {
-        uploadList.push((list[i] as any).id);
+        await supabase
+          .from("Songs_Playlists")
+          .update({ order: i })
+          .eq("song_id", (list[i] as any).song_id)
+          .eq("playlist_id", playlistID);
       }
 
-      SwitchToPopup("uploadingWait");
-      //console.log(uploadList);
-      await supabase
-        .from("Playlists")
-        .update({ song_ids: uploadList })
-        .eq("id", playlistID)
-        .then(() => {
-          setListRef(uploadList as any);
-          // Works, but think about a case where you are listening to one song, edit another playlist and then it updates. This would cause issues.
-          //dispatch(setSongList(uploadList));
-          ClosePopup();
-        });
+      window.location.reload();
     };
 
     update();
@@ -148,7 +151,7 @@ export default function SongOrderList() {
               key={index}
               className="songOrderItem"
               onMouseDown={(e) => {
-                SelectItem(item.id, e);
+                SelectItem(item.song_id, e);
 
                 //console.log("holding: " + item.id);
               }}

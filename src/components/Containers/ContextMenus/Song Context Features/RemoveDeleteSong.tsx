@@ -4,7 +4,6 @@ import { authUserID } from "../../../../main";
 import { useEffect, useState } from "react";
 import { CloseSongContextMenu } from "../SongContextMenu";
 import { SwitchToPopup } from "../../../../PopupControl";
-import { setListRef } from "../../../Middle/Playlist";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
 
@@ -60,24 +59,43 @@ export default function ContextOption_RemoveDeleteSong() {
   // Removes the song from the playlist
   function RemoveSong(song_id: string) {
     if (isPlaylistOwner && playlistType == "Playlist") {
-      supabase
-        .from("Playlists")
-        .select("song_ids")
-        .eq("id", playlistID)
-        .then(async (result) => {
-          let songs: string[] = result.data?.at(0)?.song_ids;
+      let remove = async () => {
+        // Fix ordering in playlist
+        await supabase
+          .from("Songs_Playlists")
+          .select("*")
+          .eq("playlist_id", playlistID)
+          .order("order")
+          .then(async (result) => {
+            if (result.data != null) {
+              let index = result.data?.findIndex(
+                (item) => songContext.currentSongID == item.song_id
+              );
 
-          console.log(songs);
-          songs.splice(songs.indexOf(song_id), 1); // Remove the song from the index
+              for (let i = index + 1; i < result.data?.length; i++) {
+                await supabase
+                  .from("Songs_Playlists")
+                  .update({ order: i })
+                  .eq("song_id", (result.data[i] as any).song_id--)
+                  .eq("playlist_id", playlistID);
+              }
+            }
+          });
 
-          await supabase
-            .from("Playlists")
-            .update({ song_ids: songs })
-            .eq("id", playlistID);
+        // Delete
+        await supabase
+          .from("Songs_Playlists")
+          .delete()
+          .eq("playlist_id", playlistID)
+          .eq("song_id", song_id)
+          .then(async (result) => {
+            //setListRef(songs);
+            window.location.reload();
+            CloseSongContextMenu();
+          });
+      };
 
-          setListRef(songs);
-          CloseSongContextMenu();
-        });
+      remove();
     } else {
       // Safeguard from modifying
       alert("Violation");
@@ -86,44 +104,79 @@ export default function ContextOption_RemoveDeleteSong() {
   }
 
   // Removes song from everything and deletes files.
-  function DeleteSong(song_id: string) {
-    if (isPlaylistOwner && playlistType == "Album") {
-      // Remove from each playlist that has it.
-      SwitchToPopup("uploadingWait");
-      supabase
-        .from("Playlists")
-        .select("id, song_ids")
-        .contains("song_ids", [song_id])
-        .then(async (result) => {
-          let playlists_with_song: object[] = result.data!;
+  function DeleteSong() {
+    //console.log("gay: " + songContext.currentSongID);
+    let del = async () => {
+      if (isPlaylistOwner && playlistType == "Album") {
+        SwitchToPopup("uploadingWait");
 
-          for (let i = 0; i < playlists_with_song.length; i++) {
-            // Printing out the first list
-            let songs: any = playlists_with_song[i];
-            songs.song_ids.splice(songs.song_ids.indexOf(song_id), 1); // Remove the song from the index
+        // Get every playlist this is a part of.
+        // await supabase
+        //   .from("Songs_Playlists")
+        //   .select("playlist_id")
+        //   .eq("song_id", songContext.currentSongID)
+        //   .then(async (result) => {
+        //     console.log(result);
 
-            await supabase
-              .from("Playlists")
-              .update({ song_ids: songs.song_ids })
-              .eq("id", songs.id);
-          }
+        //     if (result.data != null)
+        //     {
+        //       // Iterate over every playlist
+        //       for (let i = 0; i < result.data.length; i++)
+        //       {
+        //         let pid = result.data[i].playlist_id;
 
-          // Remove Song from Songs Table
-          await supabase.from("Songs").delete().eq("id", song_id);
+        //         // Fetch the playlist
+        //         await supabase
+        //         .from("Songs_Playlists")
+        //         .select("*")
+        //         .eq("playlist_id", pid)
+        //         .order("order")
+        //         .then(async (result) => {
+        //           console.log(result);
 
-          // Remove file associated with it.
-          supabase.storage
-            .from("music-files")
-            .remove(["audio-files/" + song_id]);
+        //           if (result.data != null) {
+        //             let index = result.data?.findIndex(
+        //               (item) => songContext.currentSongID == item.song_id
+        //             );
+        //             console.log(index);
 
-          window.location.reload();
-        });
-    } else {
-      // Sometimes happens if the page hasn't fully loaded
-      // Safeguard from modifying
-      alert("Violation");
-      window.location.reload();
-    }
+        //             // Decrement all above values
+        //             for (let j = index + 1; j < result.data?.length; j++) {
+        //               await supabase
+        //                 .from("Songs_Playlists")
+        //                 .update({ order: j })
+        //                 .eq("song_id", (result.data[j] as any).song_id--)
+        //                 .eq("playlist_id", pid);
+        //             }
+        //           }
+        //         }).;
+        //       }
+        //     }
+        //   });
+        // Get selected playist
+
+        // Delete from Song table
+        await supabase
+          .from("Songs")
+          .delete()
+          .eq("id", songContext.currentSongID)
+          .then(async () => {
+            // Remove file associated with it.
+            await supabase.storage
+              .from("music-files")
+              .remove(["audio-files/" + songContext.currentSongID]);
+
+            window.location.reload();
+          });
+      } else {
+        // Sometimes happens if the page hasn't fully loaded
+        // Safeguard from modifying
+        alert("Violation");
+        window.location.reload();
+      }
+    };
+
+    del();
   }
 
   return (

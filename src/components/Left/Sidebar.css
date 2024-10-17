@@ -10,6 +10,15 @@
   overflow-y: scroll;
 }
 
+.Sidebar .regbar {
+  height: 100%;
+}
+
+.Sidebar .supbar {
+  display: flex;
+  flex-direction: column;
+}
+
 div::-webkit-scrollbar-track {
   border-radius: 10px;
   background-color: rgba(0, 0, 0, 0);

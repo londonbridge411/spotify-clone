@@ -44,12 +44,13 @@ export default function FastSongRow(props: any) {
     //console.log("Loading: " + props.song_id);
     //console.log(props.song_data);
     if (props.song_data != null) {
-      setSongName(props.song_data.title);
-      setViews(props.song_data.view_count);
       setDuration(props.song_data.duration);
       setDateCreated(props.song_data.created_at);
-      setAlbumName(props.song_data.name);
+      setAlbumName(props.song_data.album_title);
       setAlbumID(props.song_data.album_id);
+      setSongName(props.song_data.title);
+      setViews(props.song_data.views);
+
       if (props.song_data.cover_url != "")
         setAlbumCoverURL(props.song_data.cover_url);
 
@@ -69,7 +70,9 @@ export default function FastSongRow(props: any) {
       }
       setArtists(myList);
     }
-  }, [props.forceUpdate]); // forceUpdate is a collection of states from the playlist. The idea is that whenever the cover or name updates, it updates in the song row.
+
+    //[coverUrl, playlistName, playlistPrivacy]
+  }, []); // props.forceUpdate is a collection of states from the playlist. The idea is that whenever the cover or name updates, it updates in the song row. Removing as it causes bugs
 
   // Change play icon
   useEffect(() => {

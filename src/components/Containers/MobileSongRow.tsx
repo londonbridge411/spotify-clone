@@ -33,11 +33,12 @@ export default function MobileSongRow(props: any) {
 
   // Set the states for the row
   useEffect(() => {
-    //console.log("Loading: " + props.song_id);
+    //console.log("Loading: " + props.song_data.song_id);
     if (props.song_data != null) {
-      setSongName(props.song_data.title);
-      setAlbumName(props.song_data.name);
+      setAlbumName(props.song_data.album_title);
       setAlbumID(props.song_data.album_id);
+      setSongName(props.song_data.title);
+
       if (props.song_data.cover_url != "")
         setAlbumCoverURL(props.song_data.cover_url);
 
@@ -61,10 +62,10 @@ export default function MobileSongRow(props: any) {
 
   // Change play icon
   useEffect(() => {
-    if (props.song_id == null) return;
-    //let nameArea = document.getElementById(props.song_id);
+    if (props.song_data.song_id == null) return;
+    //let nameArea = document.getElementById(props.song_data.song_id);
     let nameAreas = document.getElementsByClassName("mobile-song-row");
-    let nameArea = nameAreas.namedItem(props.song_id);
+    let nameArea = nameAreas.namedItem(props.song_data.song_id);
 
     if (player.song_id == nameArea?.id) {
       (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
@@ -90,9 +91,9 @@ export default function MobileSongRow(props: any) {
 
   // Change play icon
   useEffect(() => {
-    if (props.song_id == null) return;
+    if (props.song_data.song_id == null) return;
     let nameAreas = document.getElementsByClassName("mobile-song-row");
-    let nameArea = nameAreas.namedItem(props.song_id);
+    let nameArea = nameAreas.namedItem(props.song_data.song_id);
 
     if (player.song_id == nameArea?.id) {
       if (player.isPlaying) {
@@ -112,23 +113,23 @@ export default function MobileSongRow(props: any) {
   return (
     <>
       <div
-        id={props.song_id}
+        id={props.song_data.song_id}
         className="mobile-song-row"
         // On right click
         onContextMenu={(e) => {
           e.preventDefault();
 
           // Don't even have to do this. Just send the song_id to state
-          ViewSongContextMenu(props.song_id, e);
+          ViewSongContextMenu(props.song_data.song_id, e);
         }}
         // On left click
         onDoubleClick={() => {
-          let nameArea = document.getElementById(props.song_id);
+          let nameArea = document.getElementById(props.song_data.song_id);
           if (player.song_id != nameArea?.id) {
             if (props.song_list != null) dispatch(clearFullQueue());
 
             dispatch(setProperQueue(props.song_list));
-            dispatch(setSongID(props.song_id));
+            dispatch(setSongID(props.song_data.song_id));
           } else {
             let a = document.getElementById("audioControl") as HTMLAudioElement;
             a.currentTime = 0;
@@ -136,9 +137,9 @@ export default function MobileSongRow(props: any) {
           }
         }}
         onMouseEnter={() => {
-          if (props.song_id == null) return;
+          if (props.song_data.song_id == null) return;
 
-          let nameArea = document.getElementById(props.song_id);
+          let nameArea = document.getElementById(props.song_data.song_id);
           if (player.song_id != nameArea?.id) {
             (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
               "src",
@@ -147,9 +148,9 @@ export default function MobileSongRow(props: any) {
           }
         }}
         onMouseLeave={() => {
-          if (props.song_id == null) return;
+          if (props.song_data.song_id == null) return;
 
-          let nameArea = document.getElementById(props.song_id);
+          let nameArea = document.getElementById(props.song_data.song_id);
           if (player.song_id != nameArea?.id) {
             (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
               "src",
@@ -160,7 +161,7 @@ export default function MobileSongRow(props: any) {
       >
         <div
           onClick={() => {
-            let nameArea = document.getElementById(props.song_id);
+            let nameArea = document.getElementById(props.song_data.song_id);
             let a = document.getElementById("audioControl") as HTMLAudioElement;
             if (player.song_id == nameArea?.id) {
               if (player.isPlaying) a.pause();
@@ -179,14 +180,14 @@ export default function MobileSongRow(props: any) {
                 //dispatch(setPlaylistSongs(props.song_list));
               }
 
-              dispatch(setSongID(props.song_id));
+              dispatch(setSongID(props.song_data.song_id));
               dispatch(setIsPlaying(!player.isPlaying));
             }
           }}
         >
           <img
             src={
-              player.song_id != props.song_id
+              player.song_id != props.song_data.song_id
                 ? albumCoverURL
                 : "../../../src/assets/play-row.svg"
             }

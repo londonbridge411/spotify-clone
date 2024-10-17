@@ -21,7 +21,7 @@ import { SwitchToPopup } from "../../PopupControl";
 import MobileSongRow from "../Containers/MobileSongRow";
 import FastSongRow from "../Containers/FastSongRow";
 
-export var setListRef: any;
+//export var setListRef: any;
 
 export default function Playlist() {
   const dispatch = useDispatch();
@@ -84,7 +84,7 @@ export default function Playlist() {
       await supabase
         .from("Playlists")
         .select(
-          "song_ids, owner_id, cover_url, name, type, bg_url, Users!Playlists_owner_id_fkey(username)"
+          "owner_id, cover_url, name, type, bg_url, Users!Playlists_owner_id_fkey(username)"
         )
         .eq("id", playlistID)
         .then(async (result) => {
@@ -104,16 +104,54 @@ export default function Playlist() {
 
             setPlaylistAuthor(user_data.username);
             setOwner(authUserID == row.owner_id);
-            setList(row.song_ids);
 
+            // Check that playlist order is normal (No jumps from deletion)
+            await supabase
+              .from("Songs_Playlists")
+              .select()
+              .eq("playlist_id", playlistID)
+              .order("order")
+              .then(async (result) => {
+                //console.log(result);
+
+                if (result.data != null) {
+                  for (let i = 0; i < result.data.length; i++) {
+                    // Means order mismatch from deletion/removal
+                    if (result.data[i].order != i) {
+                      console.log("MISMATCH at " + i + ". Fixing order");
+                      // Decrement all above values
+                      for (
+                        let j = i, n = 0;
+                        j < result.data?.length;
+                        j++, n++
+                      ) {
+                        await supabase
+                          .from("Songs_Playlists")
+                          .update({ order: j + n })
+                          .eq("song_id", (result.data[j] as any).song_id)
+                          .eq("playlist_id", playlistID)
+                          .order("order");
+                      }
+                    }
+                  }
+                }
+              });
+
+            // Get playlist song data
             await supabase
               .rpc("getsongs", {
-                song_ids: result.data?.at(0)?.song_ids,
+                playlistid: playlistID,
               })
               .then(async (result2) => {
-                //console.log(result2);
                 setFastList(result2.data);
 
+                let songIDs = [];
+
+                for (let i = 0; i < result2.data.length; i++) {
+                  songIDs.push(result2.data?.at(i).song_id);
+                }
+
+                setList(songIDs as any);
                 setLoading(false);
                 if (result2.data.length == 0) {
                   setHideTable(true);
@@ -126,7 +164,7 @@ export default function Playlist() {
     };
 
     fetch();
-  }, []);
+  }, [coverUrl, playlistName, playlistPrivacy]); // Maybe remove
 
   // On song order change
   useEffect(() => {
@@ -161,7 +199,7 @@ export default function Playlist() {
   }, [playlistID]);
 
   // Song List
-  setListRef = setList;
+  //setListRef = setList;
 
   function FollowPlaylist() {
     if (isFollowing == false && isOwner == false) {
@@ -317,7 +355,6 @@ export default function Playlist() {
                       key={item.song_id}
                       song_data={item}
                       song_list={list}
-                      forceUpdate={[coverUrl, playlistName, playlistPrivacy]}
                     />
                   );
                 })}
@@ -326,7 +363,6 @@ export default function Playlist() {
 
             <div className="mobile-view mobile-song-view">
               {fastList.map((item) => {
-                // item broke somehow
                 return (
                   <MobileSongRow
                     key={item.song_id + "-mobile"}

@@ -29,6 +29,7 @@ import SupportApp from "./Support Application/SupportApp.tsx";
 import { CreateTicketPage } from "./Support Application/CreateTicketPage.tsx";
 import { SupportHome } from "./Support Application/SupportHome.tsx";
 import AdminTickets from "./Support Application/AdminTickets.tsx";
+import { Ticket } from "./Support Application/Ticket.tsx";
 
 export var isLoggedIn: boolean =
   (await supabase.auth.getSession()).data.session != null;
@@ -75,7 +76,7 @@ const router = createBrowserRouter(
         <Route path="new-ticket" element={<CreateTicketPage />} />
         <Route path="artists" element={<Artists />} />
         <Route path="playlists" element={<MyPlaylistPage />} />
-        <Route path="playlist/:playlistID" element={<Playlist />} />
+        <Route path="ticket/:ticketID" element={<Ticket />} />
         <Route path="playlists/liked-songs" element={<LikedSongsPlaylist />} />
       </Route>
 
@@ -119,4 +120,18 @@ export async function getInfo() {
   ).data?.at(0)?.id;
   //console.log("Username: " + username);
   //console.log("Email: " + email);
+}
+
+export async function IsAdmin(): Promise<boolean> {
+  const { data, error } = await supabase
+    .from("Users")
+    .select("is_admin")
+    .eq("id", authUserID);
+
+  if (error != null) {
+    console.error(error);
+    return false;
+  } else {
+    return data.at(0)?.is_admin;
+  }
 }

@@ -198,10 +198,7 @@ var POPUP_MAP = new Map<string, any>([
             <div style={{ display: "flex", flexDirection: "row" }}>
               <button
                 onClick={() => {
-                  const songContext = useSelector(
-                    (state: RootState) => state.songContext
-                  );
-                  DeleteSong_Exported(songContext.currentSongID);
+                  DeleteSong_Exported();
                 }}
               >
                 Yes

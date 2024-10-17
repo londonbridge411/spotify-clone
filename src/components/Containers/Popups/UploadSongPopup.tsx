@@ -112,30 +112,47 @@ export function UploadSongPopup(props: any) {
                 owner_id: (await supabase.auth.getUser()).data.user?.id,
                 album_id: playlistID!,
                 created_at: new Date(),
-                artist_data: hasMultipleArtists
-                  ? artists
-                  : [{ id: authUserID, username: username }],
                 duration: song_duration!,
               });
 
-              // Now we need to append ID to array in playlist
+              // Now we need to add it to song artists
 
+              if (hasMultipleArtists) {
+                for (let i = 0; i < artists.length; i++)
+                  await supabase
+                    .from("Songs_Artists")
+                    .insert({ song_id: id, user_id: artists[i].id });
+              } else {
+                await supabase.from("Songs_Artists").insert({
+                  song_id: id,
+                  user_id: (await supabase.auth.getUser()).data.user?.id,
+                });
+              }
+
+              // Get Count
               await supabase
-                .from("Playlists")
-                .select("song_ids")
-                .eq("id", playlistID)
+                .from("Songs_Playlists")
+                .select("*")
+                .eq("playlist_id", playlistID)
                 .then(async (result) => {
-                  var array: string[] = result.data?.at(0)?.song_ids;
+                  let dataCount = result.data?.length;
+                  let pos = dataCount != null && dataCount != 0 ? dataCount : 0;
 
-                  array.push(id as string);
+                  console.log(dataCount + ", pos: " + pos);
 
                   await supabase
-                    .from("Playlists")
-                    .update({ song_ids: array })
-                    .eq("id", playlistID);
-
-                  window.location.reload();
+                    .from("Songs_Playlists")
+                    .insert({
+                      song_id: id,
+                      playlist_id: playlistID,
+                      order: pos,
+                    })
+                    .then(() => window.location.reload());
                 });
+
+              // Insert into Songs_Playlists at the appropriate position
+
+              //.then(() => window.location.reload());
             };
           });
       };

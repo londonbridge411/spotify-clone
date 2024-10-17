@@ -36,35 +36,34 @@ export default function PlaylistList(props: any) {
   }, []);
 
   function AddToPlaylist(playlist_id: string, song_id: string) {
-    const insertIntoTable = async () => {
+    let insertIntoTable = async () => {
       // Now we need to append ID to array in playlist
 
       await supabase
-        .from("Playlists")
-        .select("song_ids")
-        .eq("id", playlist_id)
+        .from("Songs_Playlists")
+        .select("*")
+        .eq("playlist_id", playlist_id)
         .then(async (result) => {
-          var array: string[] = result.data?.at(0)?.song_ids;
-
-          console.log(array);
-          console.log("ID: " + song_id);
-          // Guard Statement
-          if (array.includes(song_id)) return;
-
-          console.log("Can add");
-          array.push(song_id as string);
+          let dataCount = result.data?.length;
+          let pos = dataCount != null && dataCount != 0 ? dataCount : 0;
 
           await supabase
-            .from("Playlists")
-            .update({ song_ids: array })
-            .eq("id", playlist_id);
+            .from("Songs_Playlists")
+            .insert({
+              song_id: song_id,
+              playlist_id: playlist_id,
+              order: pos,
+            })
+            .then(() => {
+              CloseSongContextMenu();
+              ClosePopup();
+            });
         });
     };
 
     insertIntoTable();
-    CloseSongContextMenu();
-    ClosePopup();
   }
+
   return (
     <>
       <ul>

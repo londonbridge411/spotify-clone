@@ -3,19 +3,41 @@ This page should contain reccomended songs, artists, playlists.
 AND recently played songs Search bar is here and in in discover
 */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Discover.css";
 import PlaylistContainer from "../Containers/Playlist Containers/PlaylistContainer";
 import { NavLink } from "react-router-dom";
 import SongRow from "../Containers/SongRow";
 import SearchBar from "../SearchBar";
 import ArtistContainer from "../Containers/Artist Containers/ArtistsContainer";
+import FastSongRow from "../Containers/FastSongRow";
+import MobileSongRow from "../Containers/MobileSongRow";
+import supabase from "../../config/supabaseClient";
 
 export default function Discover() {
   const [searchResults_Users, setSearchResults_Users] = useState([]);
-  const [searchResults_Songs, setSearchResults_Songs] = useState([]);
+  const [searchResults_Songs, setSearchResults_Songs] = useState([] as any[]);
   const [searchResults_Albums, setSearchResults_Albums] = useState([]);
   const [searchResults_Playlists, setSearchResults_Playlists] = useState([]);
+
+  const [songList, setSongList] = useState([] as any);
+
+  useEffect(() => {
+    let fetch = async () => {
+      // Takes the stuff from the search results and puts it in an array
+      let arr = [];
+      for (let i = 0; i < searchResults_Songs.length; i++) {
+        arr.push(searchResults_Songs[i].id);
+      }
+
+      await supabase.rpc("getsongs", { song_ids: arr }).then((result) => {
+        setSongList(result.data);
+      });
+    };
+
+    fetch();
+  }, [searchResults_Songs]);
+
   return (
     <>
       <div className="discover-page">
@@ -28,34 +50,67 @@ export default function Discover() {
             setSearchResults_Playlists={setSearchResults_Playlists}
           />
 
-          <section hidden={searchResults_Songs.length == 0}>
+          <section hidden={songList.length == 0}>
             <h2>Songs</h2>
-
-            <ul className="song-table">
-              <div style={{ color: "rgba(0, 0, 0, 0)" }}>
-                ?<hr></hr>
-              </div>
-              <div className="text-bold">
-                Name <hr></hr>
-              </div>
-              <div className="text-bold">
-                Views <hr></hr>
-              </div>
-              <div className="text-bold">
-                Album <hr></hr>
-              </div>
-              <div className="text-bold">
-                Created <hr></hr>
-              </div>
-              <div className="text-bold">
-                Duration <hr></hr>
-              </div>
-              {searchResults_Songs?.map((item: any) => {
+            <div
+              className="playlist-content mobile-hidden"
+              style={{ display: "flex" }}
+            >
+              <table className="song-table playlist-content mobile-hidden">
+                <thead>
+                  <tr>
+                    <th>
+                      <p style={{ color: "rgba(0, 0, 0, 0)", padding: "0" }}>
+                        p
+                      </p>
+                    </th>
+                    <th>Name</th>
+                    <th>Views</th>
+                    <th>Album</th>
+                    <th>Created</th>
+                    <th>Duration</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                  </tr>
+                  {songList?.map((item: any) => {
+                    //console.log(item);
+                    return (
+                      <>
+                        <FastSongRow
+                          key={item.song_id}
+                          song_data={item}
+                          song_list={null}
+                        />
+                      </>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            <div className="mobile-view mobile-song-view">
+              {songList.map((item: any) => {
+                // item broke somehow
                 return (
-                  <SongRow key={item.id} song_id={item.id} song_list={null} />
+                  <MobileSongRow
+                    key={item.song_id + "-mobileA"}
+                    song_data={item}
+                    song_list={null}
+                  />
                 );
               })}
-            </ul>
+            </div>
           </section>
 
           <section hidden={searchResults_Users?.length == 0}>

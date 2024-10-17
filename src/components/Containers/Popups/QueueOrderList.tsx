@@ -6,7 +6,6 @@ import { ClosePopup, SwitchToPopup } from "../../../PopupControl";
 import { enqueue, setNextQueue, setProperQueue } from "../../../PlayerSlice";
 import { useLocation, useParams } from "react-router-dom";
 import "./SongOrderList.css";
-import { setListRef } from "../../Middle/Playlist";
 import { RootState } from "../../../store";
 
 export default function QueueOrderList() {
@@ -39,9 +38,10 @@ export default function QueueOrderList() {
   useEffect(() => {
     supabase
       .from("Songs")
-      .select("title, album_id, Playlists(cover_url)")
+      .select("title, album_id, Playlists!Songs_album_id_fkey(cover_url)")
       .eq("id", player.song_id)
       .then((result) => {
+        console.log(result);
         setCurrentSong(result.data?.at(0) as any);
         var playlistData: any = result.data?.at(0)?.Playlists;
 

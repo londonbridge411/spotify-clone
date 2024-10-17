@@ -27,7 +27,6 @@ export default function AccountPage() {
   let isOwner: boolean = false;
   isOwner = userID == authUserID;
 
-  //if (isOwner) console.log("I am the owner");
   // Account stuff
   const [getFollowerCount, setFollowerCount] = useState(0);
   const [isFollowing, setIsFollowing] = useState(false);
@@ -50,7 +49,6 @@ export default function AccountPage() {
         //Subscribed_Artists!Subscribed_Artists_subscriber_fkey
         .eq("id", userID)
         .then((result) => {
-          //console.log(result.data);
           let row = result.data?.at(0);
           setFollowerCount((row?.sub_to as any[]).length);
           setVerified(row?.is_verified);
@@ -272,7 +270,10 @@ export default function AccountPage() {
             {/*Popular Songs*/}
             <section hidden={popularSongsList.length == 0}>
               <h2>Popular Songs</h2>
-              <div className="playlist-content" style={{ display: "flex" }}>
+              <div
+                className="playlist-content mobile-hidden"
+                style={{ display: "flex" }}
+              >
                 <table style={{ borderCollapse: "collapse" }}>
                   <thead>
                     <tr>
@@ -358,7 +359,7 @@ export default function AccountPage() {
               </div>
             </section>
 
-            {/*Albums Songs*/}
+            {/*Albums*/}
             <section hidden={albumList.length == 0}>
               <div
                 style={{
