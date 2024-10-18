@@ -1,0 +1,23 @@
+.Note {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5px;
+  margin-bottom: 15px;
+}
+
+.Note textarea {
+  resize: none;
+}
+
+.Note .note-buttons {
+  margin-top: 5px;
+  display: flex;
+}
+
+.Note .note-buttons button {
+  width: 100px;
+  align-self: center;
+  justify-self: center;
+}

@@ -3,6 +3,7 @@ import CustomInputField from "../components/CustomInputField";
 import supabase from "../config/supabaseClient";
 import { authUserID, IsAdmin } from "../main";
 import { useNavigate, useParams } from "react-router-dom";
+import Note from "./Note";
 
 export function Ticket() {
   const { ticketID } = useParams();
@@ -15,6 +16,7 @@ export function Ticket() {
   const [creatorID, setCreatorID] = useState("");
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
+  const [notes, setNotes] = useState([] as any[]);
 
   // Get ticket data
   useEffect(() => {
@@ -95,7 +97,7 @@ export function Ticket() {
         .eq("ticket_id", ticketID)
         .order("created_at")
         .then((result) => {
-          console.log(result.data);
+          setNotes(result.data!);
         });
     };
 
@@ -362,7 +364,7 @@ export function Ticket() {
           >
             <CustomInputField
               inputType={"textarea"}
-              placeholder={"Describe your issue"}
+              placeholder={"Enter text..."}
               label={"Create New Note:"}
               inputID={"add-ticket-note"}
               setType={"none"}
@@ -380,7 +382,11 @@ export function Ticket() {
               Post
             </button>
           </section>
-          <section>Posted Notes Go Here</section>
+          <section>
+            {notes.map((item) => {
+              return <Note data={item} />;
+            })}
+          </section>
         </div>
       </div>
     </>
