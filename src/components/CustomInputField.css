@@ -29,6 +29,7 @@ textarea {
   border-width: 1px;
 }
 
-#set-ticket-desc {
+#set-ticket-desc,
+#add-ticket-note {
   resize: none;
 }

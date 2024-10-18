@@ -87,6 +87,16 @@ export function Ticket() {
             navigate("../support/home");
           }
         });
+
+      // Fetch Notes
+      await supabase
+        .from("Ticket_Notes")
+        .select()
+        .eq("ticket_id", ticketID)
+        .order("created_at")
+        .then((result) => {
+          console.log(result.data);
+        });
     };
 
     fetch();
@@ -146,6 +156,33 @@ export function Ticket() {
 
     insertTicket();
   }
+
+  function PostNote() {
+    // Get text
+    let desc = (
+      document.getElementById("add-ticket-note") as HTMLTextAreaElement
+    )?.value;
+
+    // Guard statement
+    if (desc == "") return;
+
+    let post = async () => {
+      await supabase
+        .from("Ticket_Notes")
+        .insert({ ticket_id: ticketID, content: desc })
+        .then((result) => {
+          if (result.error != null) console.error(result.error);
+          else {
+            (
+              document.getElementById("add-ticket-note") as HTMLTextAreaElement
+            ).value = "";
+          }
+        });
+    };
+
+    post();
+  }
+
   return (
     <>
       <div className="account-page" hidden={!pageVisible}>
@@ -301,6 +338,8 @@ export function Ticket() {
               label={"Description:"}
               inputID={"set-ticket-desc"}
               setType={"none"}
+              textAreaRows={20}
+              textAreaCols={150}
             />
 
             <button
@@ -310,6 +349,38 @@ export function Ticket() {
               Update
             </button>
           </main>
+
+          <header>
+            <h2>Notes</h2>
+          </header>
+          <section
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <CustomInputField
+              inputType={"textarea"}
+              placeholder={"Describe your issue"}
+              label={"Create New Note:"}
+              inputID={"add-ticket-note"}
+              setType={"none"}
+              textAreaRows={5}
+              textAreaCols={150}
+            />
+            <button
+              onClick={PostNote}
+              style={{
+                width: "100px",
+                alignSelf: "center",
+                justifySelf: "center",
+              }}
+            >
+              Post
+            </button>
+          </section>
+          <section>Posted Notes Go Here</section>
         </div>
       </div>
     </>

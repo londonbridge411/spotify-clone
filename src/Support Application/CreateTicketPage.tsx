@@ -176,6 +176,8 @@ export function CreateTicketPage() {
               label={"Description:"}
               inputID={"set-ticket-desc"}
               setType={"none"}
+              textAreaRows={20}
+              textAreaCols={150}
             />
 
             <button

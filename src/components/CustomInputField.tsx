@@ -22,8 +22,8 @@ export default function CustomInputField(props: any) {
             placeholder={props.placeholder}
             hidden={props.inputType != "textarea"}
             onClick={props.OnSet}
-            rows={20}
-            cols={150}
+            rows={props.textAreaRows}
+            cols={props.textAreaCols}
           />
 
           <button hidden={props.setType != "button"} onClick={props.OnSet}>
