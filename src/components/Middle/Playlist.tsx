@@ -25,6 +25,8 @@ import UnbookmarkBtn from "../../../src/assets/unbookmark.png";
 import ShuffleBtn from "../../../src/assets/shuffle_button.png";
 import PlayBtn from "../../../src/assets/play_button.png";
 
+import Record from "../../../src/assets/small_record.svg";
+
 //export var setListRef: any;
 
 export default function Playlist() {
@@ -72,9 +74,7 @@ export default function Playlist() {
   const [loading, setLoading] = useState(true);
 
   const [backgroundUrl, setBG_URL] = useState("");
-  const [coverUrl, setCover_URL] = useState(
-    "../../../src/assets/small_record.svg"
-  );
+  const [coverUrl, setCover_URL] = useState(Record);
   const [list, setList] = useState([]);
 
   //----------------------------------------------------
