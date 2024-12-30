@@ -300,7 +300,7 @@ export default function AccountPage() {
                       <td></td>
                     </tr>
 
-                    {popularSongsList.map((index) => {
+                    {popularSongsList.map((_unused, index) => {
                       return (
                         <tr key={index + 1}>
                           <td>{index + 1}.</td>
