@@ -1,9 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { useDispatch } from "react-redux";
-import supabase from "./config/supabaseClient";
-import { authUserID } from "./main";
-import { store } from "./store";
 
 // Store
 interface SongContextState {

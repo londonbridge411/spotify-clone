@@ -160,7 +160,7 @@ const playerSlice = createSlice({
     },
 
     ClearPlayer(state) {
-      let a = document.getElementById("audioControl") as HTMLAudioElement;
+      const a = document.getElementById("audioControl") as HTMLAudioElement;
       a.pause();
       a.currentTime = 0;
       a.src = "";

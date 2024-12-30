@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import {
@@ -16,9 +16,7 @@ import AccountPage from "./components/Middle/Account/AccountPage.tsx";
 import Home from "./components/Middle/Home.tsx";
 import Discover from "./components/Middle/Discover.tsx";
 import Playlist from "./components/Middle/Playlist.tsx";
-import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
-import playerSlice from "./PlayerSlice.ts";
 import { store } from "./store.ts";
 import MyPlaylistPage from "./components/Middle/MyPlaylistPage.tsx";
 import Artists from "./components/Middle/Artists.tsx";
@@ -31,21 +29,21 @@ import { SupportHome } from "./Support Application/SupportHome.tsx";
 import AdminTickets from "./Support Application/AdminTickets.tsx";
 import { Ticket } from "./Support Application/Ticket.tsx";
 
-export var isLoggedIn: boolean =
+export let isLoggedIn: boolean =
   (await supabase.auth.getSession()).data.session != null;
 
-export var email: string = (await supabase.auth.getUser()).data.user
+export let email: string = (await supabase.auth.getUser()).data.user
   ?.email as string;
 
-export var username: String = (
+export let username: string = (
   await supabase.from("Users").select("username").eq("email", email)
 ).data?.at(0)?.username;
 
-export var authUserID: String = (
+export let authUserID: string = (
   await supabase.from("Users").select("id").eq("email", email)
 ).data?.at(0)?.id;
 
-export var isVerified: boolean = (
+export let isVerified: boolean = (
   await supabase.from("Users").select("is_verified").eq("email", email)
 ).data?.at(0)?.is_verified;
 

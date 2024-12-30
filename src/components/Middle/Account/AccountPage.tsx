@@ -1,13 +1,10 @@
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import "./AccountPage.css";
 import "../../AddPlaylistButton.css";
-import Popup from "../../Containers/Popup";
-import PlaylistCreation from "../../Containers/Popups/PlaylistCreation";
 import supabase from "../../../config/supabaseClient";
 import PlaylistContainer from "../../Containers/Playlist Containers/PlaylistContainer";
 import { useParams } from "react-router-dom";
 import { authUserID } from "../../../main";
-import SongRow from "../../Containers/SongRow";
 import { SwitchToPopup } from "../../../PopupControl";
 import "../../../mobile.css";
 import MobileSongRow from "../../Containers/MobileSongRow";
@@ -17,12 +14,11 @@ import FastSongRow from "../../Containers/FastSongRow";
 Want to display icon, username, bio, followers, isVerified, upload song.
 */
 
-export var UnfollowUser_Exported: any;
+export let UnfollowUser_Exported: any;
 
 export default function AccountPage() {
   const { userID } = useParams();
 
-  if (userID == null) return;
 
   let isOwner: boolean = false;
   isOwner = userID == authUserID;
@@ -39,7 +35,7 @@ export default function AccountPage() {
   const [dataList, setDataList] = useState([] as any[]);
 
   useEffect(() => {
-    let get = async () => {
+    const get = async () => {
       await supabase
         .from("Users")
         .select(
@@ -49,7 +45,7 @@ export default function AccountPage() {
         //Subscribed_Artists!Subscribed_Artists_subscriber_fkey
         .eq("id", userID)
         .then((result) => {
-          let row = result.data?.at(0);
+          const row = result.data?.at(0);
           setFollowerCount((row?.sub_to as any[]).length);
           setVerified(row?.is_verified);
           setUsername(row?.username);
@@ -67,14 +63,14 @@ export default function AccountPage() {
 
   // Set whether we are subscribed or not.
   useEffect(() => {
-    let get = async () => {
+    const get = async () => {
       await supabase
         .from("Subscribed_Artists")
         .select("*")
         .eq("subscriber", authUserID)
         .eq("subscribed_to", userID)
         .then((result) => {
-          setIsFollowing(result.data?.length! > 0);
+          setIsFollowing(result.data!.length > 0);
         });
     };
 
@@ -85,7 +81,7 @@ export default function AccountPage() {
   UnfollowUser_Exported = UnfollowUser;
 
   useEffect(() => {
-    let update = async () => {
+    const update = async () => {
       setLoading(true);
       setHideEverything(true);
       setPopularSongsList([]);
@@ -94,7 +90,7 @@ export default function AccountPage() {
       await supabase
         .rpc("selecttop5songs", { uid: userID })
         .then(async (result) => {
-          var songs: string[] = [];
+          const songs: string[] = [];
 
           for (let i = 0; i < result.data.length; i++) {
             songs.push(result.data?.at(i).songid);
@@ -128,9 +124,9 @@ export default function AccountPage() {
       .eq("owner_id", userID)
       .order("created_at")
       .then((result) => {
-        var albums = [];
-        var playlists = [];
-        var myData = result.data;
+        const albums = [];
+        const playlists = [];
+        const myData = result.data;
 
         if (myData != null) {
           for (let i = 0; i < myData.length; i++) {
@@ -162,8 +158,10 @@ export default function AccountPage() {
       });
   }, [userID, username]);
 
+  if (userID == null) return;
+
   function FollowUser() {
-    let push = async () => {
+    const push = async () => {
       if (isFollowing == false && isOwner == false) {
         await supabase
           .from("Subscribed_Artists")
@@ -178,7 +176,7 @@ export default function AccountPage() {
   }
 
   function UnfollowUser() {
-    let remove = async () => {
+    const remove = async () => {
       if (isFollowing == true && isOwner == false) {
         await supabase
           .from("Subscribed_Artists")
@@ -331,7 +329,7 @@ export default function AccountPage() {
                     <tr>
                       <td></td>
                     </tr>
-                    {dataList.map((item, index) => {
+                    {dataList.map((item) => {
                       return (
                         <>
                           <FastSongRow

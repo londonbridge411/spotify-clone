@@ -8,7 +8,7 @@ export function CreateTicketPage() {
   const [subcategory, setSubcategory] = useState("");
 
   const handleCategory = () => {
-    let category_value = (
+    const category_value = (
       document.getElementById("ticket-category") as HTMLSelectElement
     )?.value;
 
@@ -18,7 +18,7 @@ export function CreateTicketPage() {
   };
 
   const handleSubCategory = () => {
-    let subcategory_value = (
+    const subcategory_value = (
       document.getElementById("ticket-subcategory") as HTMLSelectElement
     )?.value;
 
@@ -26,11 +26,11 @@ export function CreateTicketPage() {
   };
 
   function SubmitTicket() {
-    let subject = (
+    const subject = (
       document.getElementById("set-ticket-subject") as HTMLInputElement
     )?.value;
 
-    let desc = (
+    const desc = (
       document.getElementById("set-ticket-desc") as HTMLTextAreaElement
     )?.value;
 
@@ -38,7 +38,7 @@ export function CreateTicketPage() {
     if (category == "" || subcategory == "" || subject == "" || desc == "")
       return;
 
-    let insertTicket = async () => {
+    const insertTicket = async () => {
       await supabase
         .from("Tickets")
         .insert({

@@ -3,19 +3,15 @@ import { NavLink, useNavigate, useParams } from "react-router-dom";
 import supabase from "../../config/supabaseClient";
 
 import "./Playlist.css";
-import Popup from "../Containers/Popup";
-import { authUserID, email, username } from "../../main";
-import * as uuid from "uuid";
+import { authUserID } from "../../main";
 import {
   setIsPlaying,
-  enqueue,
   setProperQueue,
   setSongID,
   shufflePlay,
   clearFullQueue,
 } from "../../PlayerSlice";
 import { useDispatch } from "react-redux";
-import SongRow from "../Containers/SongRow";
 import "../Containers/SongTable.css";
 import { SwitchToPopup } from "../../PopupControl";
 import MobileSongRow from "../Containers/MobileSongRow";
@@ -28,7 +24,6 @@ export default function Playlist() {
 
   const { playlistID } = useParams();
 
-  if (playlistID == null) return;
 
   const [isOwner, setOwner] = useState(false);
   const navigate = useNavigate();
@@ -50,7 +45,7 @@ export default function Playlist() {
       .select("privacy_setting, owner_id")
       .eq("id", playlistID)
       .then(async (result) => {
-        var row = result.data?.at(0);
+        const row = result.data?.at(0);
         if (row != null) {
           setPlaylistPrivacy(row.privacy_setting);
           if (row.owner_id != authUserID && row.privacy_setting == "Private") {
@@ -80,7 +75,7 @@ export default function Playlist() {
 
   // Inital Set
   useEffect(() => {
-    let fetch = async () => {
+    const fetch = async () => {
       await supabase
         .from("Playlists")
         .select(
@@ -88,8 +83,8 @@ export default function Playlist() {
         )
         .eq("id", playlistID)
         .then(async (result) => {
-          var row = result.data?.at(0);
-          var user_data: any = result.data?.at(0)?.Users;
+          const row = result.data?.at(0);
+          const user_data: any = result.data?.at(0)?.Users;
 
           if (row != null) {
             setPlaylistName(row.name);
@@ -145,7 +140,7 @@ export default function Playlist() {
               .then(async (result2) => {
                 setFastList(result2.data);
 
-                let songIDs = [];
+                const songIDs = [];
 
                 for (let i = 0; i < result2.data.length; i++) {
                   songIDs.push(result2.data?.at(i).song_id);
@@ -168,7 +163,7 @@ export default function Playlist() {
 
   // On song order change
   useEffect(() => {
-    let fetch = async () => {
+    const fetch = async () => {
       supabase
         .rpc("getsongs", {
           song_ids: list,
@@ -184,19 +179,21 @@ export default function Playlist() {
   //----------------------------------------------------
 
   useEffect(() => {
-    let fetch = async () => {
+    const fetch = async () => {
       await supabase
         .from("Subscribed_Playlists")
         .select("*")
         .eq("subscriber", authUserID)
         .eq("playlist_id", playlistID)
         .then((result) => {
-          setIsFollowing(result.data?.length! > 0);
+          setIsFollowing(result.data!.length > 0);
         });
     };
 
     fetch();
   }, [playlistID]);
+
+  if (playlistID == null) return;
 
   // Song List
   //setListRef = setList;

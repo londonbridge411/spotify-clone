@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 import "./TicketRow.css";
 
 export default function TicketRow(props: any) {
-  let date = new Date(props.data.created_at);
+  const date = new Date(props.data.created_at);
   return (
     <>
       <tr>

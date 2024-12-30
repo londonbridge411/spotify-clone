@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import supabase from "../../config/supabaseClient";
-import { SetLoginStatus, authUserID, email, username } from "../../main";
+import { SetLoginStatus, authUserID, username } from "../../main";
 import SidebarButton from "../Containers/SidebarButton";
 import "./Sidebar.css";
 import logo from "../../assets/react.svg";
@@ -12,8 +12,6 @@ import music from "../../assets/music-solid.svg";
 import user from "../../assets/user-solid.svg";
 import question from "../../assets/circle-question-regular.svg";
 import exit from "../../assets/right-from-bracket-solid.svg";
-import { ClearPlayer } from "../../PlayerSlice";
-import { store } from "../../store";
 import { ResetPlayer } from "../Music Control";
 
 export default function Sidebar() {

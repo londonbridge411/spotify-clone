@@ -15,25 +15,25 @@ function Signup() {
   });
 
   const register = async () => {
-    var first_name = document.getElementById("fn") as HTMLInputElement;
-    var fn_text = first_name?.value;
+    const first_name = document.getElementById("fn") as HTMLInputElement;
+    const fn_text = first_name?.value;
 
-    var last_name = document.getElementById("ln") as HTMLInputElement;
-    var ln_text = last_name?.value;
+    const last_name = document.getElementById("ln") as HTMLInputElement;
+    const ln_text = last_name?.value;
 
-    var username = document.getElementById("username") as HTMLInputElement;
-    var username_text = username?.value;
+    const username = document.getElementById("username") as HTMLInputElement;
+    const username_text = username?.value;
 
-    var pw_element = document.getElementById("password") as HTMLInputElement;
-    var pw_text = pw_element?.value;
+    const pw_element = document.getElementById("password") as HTMLInputElement;
+    const pw_text = pw_element?.value;
 
-    var email_element = document.getElementById("email") as HTMLInputElement;
-    var email_text = email_element?.value;
+    const email_element = document.getElementById("email") as HTMLInputElement;
+    const email_text = email_element?.value;
 
-    var verifypw_element = document.getElementById(
+    const verifypw_element = document.getElementById(
       "verify-password"
     ) as HTMLInputElement;
-    var verifypw_text = verifypw_element?.value;
+    const verifypw_text = verifypw_element?.value;
 
     console.log("email: " + email_text + "\n password: " + pw_text);
 
@@ -41,7 +41,7 @@ function Signup() {
       console.log("Passwords do not match.");
       return;
     }
-    let { error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email: email_text,
       password: pw_text,
     });

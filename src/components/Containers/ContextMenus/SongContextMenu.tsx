@@ -1,4 +1,4 @@
-import { authUserID, isVerified } from "../../../main";
+import { authUserID } from "../../../main";
 import "./SongContextMenu.css";
 import "./ContextButton.css";
 import ContextOption_RemoveDeleteSong from "./Song Context Features/RemoveDeleteSong";
@@ -14,14 +14,14 @@ import supabase from "../../../config/supabaseClient";
 
 export function CloseSongContextMenu() {
   //store.dispatch(OpenSongContextMenu("")); // This is being called and getting rid of the id.
-  var menu = document.getElementById("song-context-control") as HTMLElement;
+  const menu = document.getElementById("song-context-control") as HTMLElement;
   menu?.style.setProperty("display", "none");
 }
 
 export function ViewSongContextMenu(id: string, event: any) {
   store.dispatch(OpenSongContextMenu(id));
 
-  var menu = document.getElementById("song-context-control") as HTMLElement;
+  const menu = document.getElementById("song-context-control") as HTMLElement;
   //console.log(menu);
   menu.style.setProperty("display", "block");
   menu.style.setProperty("--mouse-x", event.clientX + "px");
@@ -39,7 +39,7 @@ export default function SongContextControl() {
   }, [location]);
 
   useEffect(() => {
-    let run = async () => {
+    const run = async () => {
       if (songContext.currentSongID != "") {
         await supabase
           .from("Songs")
@@ -58,9 +58,9 @@ export default function SongContextControl() {
 
   document.onmouseup = function (e) {
     if (songContext.active) {
-      var container = document.getElementById("song-context-control");
-      var addToPlaylistContainer = document.getElementById("AddToPlaylist");
-      var clickedHTML = e.target as HTMLElement;
+      const container = document.getElementById("song-context-control");
+      const addToPlaylistContainer = document.getElementById("AddToPlaylist");
+      const clickedHTML = e.target as HTMLElement;
 
       if (!container?.contains(clickedHTML)) {
         // Guard statement to keep cert

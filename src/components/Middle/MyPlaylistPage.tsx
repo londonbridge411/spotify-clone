@@ -19,8 +19,8 @@ export default function MyPlaylistPage() {
       .eq("type", "Playlist")
       .order("created_at")
       .then(async (result) => {
-        var array = [];
-        var myData = result.data;
+        const array = [];
+        const myData = result.data;
 
         if (myData != null) {
           for (let i = 0; i < myData.length; i++) {
@@ -34,7 +34,7 @@ export default function MyPlaylistPage() {
 
   const [sharedList, setSharedList] = useState([null]);
   useEffect(() => {
-    let get = async () => {
+    const get = async () => {
       await supabase
         .from("Subscribed_Playlists")
         .select(
@@ -43,11 +43,11 @@ export default function MyPlaylistPage() {
         .eq("subscriber", authUserID)
         .then(async (result) => {
           // Collection of Playlist IDs
-          var array: any[] = [];
+          const array: any[] = [];
 
-          if (result.data?.length! > 0) {
+          if (result.data!.length > 0) {
             for (let i = 0; i < result.data!.length; i++) {
-              let row = result.data!.at(i) as any;
+              const row = result.data!.at(i) as any;
 
               if (row?.privacy.privacy_setting != "Private") {
                 array.push(row?.playlist_id);

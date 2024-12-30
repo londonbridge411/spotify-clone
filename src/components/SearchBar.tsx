@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import supabase from "../config/supabaseClient";
-import { NavLink } from "react-router-dom";
 import CustomInputField from "./CustomInputField";
 
 enum Filter {
@@ -28,11 +27,11 @@ function SearchBar(props: any) {
     if (searchInput.length > 0) {
       // console.log("Searching...: " + searchInput);
 
-      let regex = searchInput + "%";
-      let searchCriteria =
-        "id.eq." + searchInput + ", username.eq." + searchInput;
+      // let regex = searchInput + "%";
+      // const searchCriteria =
+      //   "id.eq." + searchInput + ", username.eq." + searchInput;
 
-      let getData = async () => {
+      const getData = async () => {
         // Handle Filter
 
         if (filterBy == Filter.USERS || filterBy == Filter.ALL) {
@@ -55,7 +54,7 @@ function SearchBar(props: any) {
         }
 
         if (filterBy == Filter.ALBUMS || filterBy == Filter.ALL) {
-          let query = supabase.rpc("searchalbums", {
+          const query = supabase.rpc("searchalbums", {
             input: searchInput,
             threshhold: 0.35,
           });
@@ -87,7 +86,7 @@ function SearchBar(props: any) {
   }, [searchInput, filterBy]);
 
   const handleDropdown = () => {
-    let dropdown_value = (
+    const dropdown_value = (
       document.getElementById("search-filter") as HTMLSelectElement
     )?.value;
 

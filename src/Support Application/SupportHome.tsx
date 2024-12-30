@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import CustomInputField from "../components/CustomInputField";
 import supabase from "../config/supabaseClient";
 import { authUserID } from "../main";
 import "./SupportHome.css";
@@ -10,13 +9,13 @@ export function SupportHome() {
   const [list, setList] = useState([] as any[]);
 
   useEffect(() => {
-    let fetch = async () => {
+    const fetch = async () => {
       await supabase
         .from("Tickets")
         .select("*")
         .eq("created_by", authUserID)
         .then((response) => {
-          let data = response.data as any[];
+          const data = response.data as any[];
 
           setList(data);
         });

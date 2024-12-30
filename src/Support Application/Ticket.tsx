@@ -26,10 +26,10 @@ export function Ticket() {
         .select("*, Users(first_name, last_name, email)")
         .eq("id", ticketID)
         .then(async (result) => {
-          let info = result.data?.at(0) as any;
+          const info = result.data?.at(0) as any;
 
           // Find if is admin
-          let isAdmin: boolean = await IsAdmin();
+          const isAdmin: boolean = await IsAdmin();
 
           // Check ownership or admin rights
           if (info["created_by"] == authUserID || isAdmin) {
@@ -43,7 +43,7 @@ export function Ticket() {
             );
 
             // Set Category
-            let cat = document.getElementById(
+            const cat = document.getElementById(
               "ticket-category"
             ) as HTMLSelectElement;
 
@@ -51,7 +51,7 @@ export function Ticket() {
             setCategory(info["category"]);
 
             // Set Subcategory
-            let subCat = document.getElementById(
+            const subCat = document.getElementById(
               "ticket-subcategory"
             ) as HTMLSelectElement;
 
@@ -59,7 +59,7 @@ export function Ticket() {
             setSubcategory(info["subcategory"]);
 
             // Set Subcategory
-            let status_value = document.getElementById(
+            const status_value = document.getElementById(
               "ticket-status"
             ) as HTMLSelectElement;
 
@@ -68,13 +68,13 @@ export function Ticket() {
             setStatus(info["status"]);
 
             // Fetch Descriptions
-            let subject = document.getElementById(
+            const subject = document.getElementById(
               "set-ticket-subject"
             ) as HTMLInputElement;
 
             subject.value = info["subject"];
 
-            let desc = document.getElementById(
+            const desc = document.getElementById(
               "set-ticket-desc"
             ) as HTMLTextAreaElement;
 
@@ -106,7 +106,7 @@ export function Ticket() {
 
   // Ticket Modification
   const handleCategory = () => {
-    let category_value = (
+    const category_value = (
       document.getElementById("ticket-category") as HTMLSelectElement
     )?.value;
 
@@ -114,7 +114,7 @@ export function Ticket() {
   };
 
   const handleSubCategory = () => {
-    let subcategory_value = (
+    const subcategory_value = (
       document.getElementById("ticket-subcategory") as HTMLSelectElement
     )?.value;
 
@@ -122,7 +122,7 @@ export function Ticket() {
   };
 
   const handleStatus = () => {
-    let status_value = (
+    const status_value = (
       document.getElementById("ticket-status") as HTMLSelectElement
     )?.value;
 
@@ -130,11 +130,11 @@ export function Ticket() {
   };
 
   function UpdateTicket() {
-    let subject = (
+    const subject = (
       document.getElementById("set-ticket-subject") as HTMLInputElement
     )?.value;
 
-    let desc = (
+    const desc = (
       document.getElementById("set-ticket-desc") as HTMLTextAreaElement
     )?.value;
 
@@ -142,7 +142,7 @@ export function Ticket() {
     if (category == "" || subcategory == "" || subject == "" || desc == "")
       return;
 
-    let insertTicket = async () => {
+    const insertTicket = async () => {
       await supabase
         .from("Tickets")
         .update({
@@ -161,14 +161,14 @@ export function Ticket() {
 
   function PostNote() {
     // Get text
-    let desc = (
+    const desc = (
       document.getElementById("add-ticket-note") as HTMLTextAreaElement
     )?.value;
 
     // Guard statement
     if (desc == "") return;
 
-    let post = async () => {
+    const post = async () => {
       await supabase
         .from("Ticket_Notes")
         .insert({ ticket_id: ticketID, content: desc })

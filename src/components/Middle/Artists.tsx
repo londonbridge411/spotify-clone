@@ -7,9 +7,6 @@ import { useEffect, useState } from "react";
 import "./Artists.css";
 import "./MyPlaylistPage.css";
 import PlaylistContainer from "../Containers/Playlist Containers/PlaylistContainer";
-import { NavLink } from "react-router-dom";
-import SongRow from "../Containers/SongRow";
-import SearchBar from "../SearchBar";
 import supabase from "../../config/supabaseClient";
 import { authUserID } from "../../main";
 import ArtistContainer from "../Containers/Artist Containers/ArtistsContainer";
@@ -20,9 +17,9 @@ export default function Artists() {
 
   useEffect(() => {
     supabase.rpc("getsubsnewestalbums").then((result) => {
-      let arr = [];
+      const arr = [];
 
-      for (let i = 0; i < result.data?.length!; i++) {
+      for (let i = 0; i < result.data!.length; i++) {
         arr.push(result.data?.at(i)?.id);
       }
 
@@ -31,15 +28,15 @@ export default function Artists() {
   }, []);
 
   useEffect(() => {
-    let get = async () => {
+    const get = async () => {
       await supabase
         .from("Subscribed_Artists")
         .select("subscribed_to")
         .eq("subscriber", authUserID)
         .then((result) => {
-          let arr = [];
+          const arr = [];
 
-          for (let i = 0; i < result.data?.length!; i++) {
+          for (let i = 0; i < result.data!.length; i++) {
             arr.push(result.data?.at(i)?.subscribed_to);
           }
 

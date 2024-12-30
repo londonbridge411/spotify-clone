@@ -1,14 +1,13 @@
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState, store } from "./store";
 import { setPopup } from "./PopupSlice";
 import Popup from "./components/Containers/Popup";
 import PlaylistCreation from "./components/Containers/Popups/PlaylistCreation";
 import AccountEdit from "./components/Containers/Popups/AccountEdit";
-import { Dispatch, UnknownAction } from "@reduxjs/toolkit";
 import { UploadSongPopup } from "./components/Containers/Popups/UploadSongPopup";
 import PlaylistEdit from "./components/Containers/Popups/PlaylistEdit";
 import { useLocation } from "react-router-dom";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { UnfollowUser_Exported } from "./components/Middle/Account/AccountPage";
 import { DeleteSong_Exported } from "./components/Containers/ContextMenus/Song Context Features/RemoveDeleteSong";
 import PlaylistList from "./components/Containers/Playlist Containers/PlaylistList";
@@ -32,7 +31,7 @@ export function SwitchToPopup(key: string) {
 }
 
 // {keyName : HTML}
-var POPUP_MAP = new Map<string, any>([
+const POPUP_MAP = new Map<string, any>([
   ["", ""],
   [
     "Popup_Verification",

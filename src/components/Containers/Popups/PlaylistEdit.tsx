@@ -1,29 +1,25 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import "./PlaylistCreation.css";
-import PlaylistContainerHorizontal from "../Playlist Containers/PlaylistContainerHorizontal";
 import supabase from "../../../config/supabaseClient";
-import { email } from "../../../main";
-import * as uuid from "uuid";
-import Popup from "../Popup";
 import { useParams } from "react-router-dom";
-import testbg from "../../../assets/test_bg.jpg";
-import { useDispatch } from "react-redux";
 import CustomInputField from "../../CustomInputField";
 import { SwitchToPopup } from "../../../PopupControl";
 
 export default function PlaylistEdit() {
   const { playlistID } = useParams();
-
+  const [useLocalCover, setLocalCover] = useState(false);
+  const [useLocalBG, setLocalBG] = useState(false);
+  
   if (playlistID == null) return;
 
   async function UpdateName() {
     console.log("Updating Name");
 
-    var playlist_name = document.getElementById(
+    const playlist_name = document.getElementById(
       "edit-playlist-name"
     ) as HTMLInputElement;
 
-    var playlist_name_text = playlist_name?.value;
+    const playlist_name_text = playlist_name?.value;
 
     if (playlist_name_text != "") {
       await supabase
@@ -73,7 +69,7 @@ export default function PlaylistEdit() {
           cacheControl: "1",
           upsert: true,
         })
-        .then((result) => {
+        .then(() => {
           background_url = supabase.storage
             .from("music-files")
             .getPublicUrl("pictures/backgrounds/" + playlistID).data.publicUrl;
@@ -110,7 +106,7 @@ export default function PlaylistEdit() {
 
     SwitchToPopup("uploadingWait");
     //setLoading(true);
-    let update = async () => {
+    const update = async () => {
       await UpdateName(); // I can do this here because the query is so fast.
       await UpdateVisibility();
       await UpdateCover();
@@ -121,15 +117,13 @@ export default function PlaylistEdit() {
     update();
   }
 
-  var uploaded_cover: File;
-  var uploaded_bg: File;
-  var cover_url: string = "";
-  var background_url: string = "";
-  var dropdown_value: string = "";
+  let uploaded_cover: File;
+  let uploaded_bg: File;
+  let cover_url: string = "";
+  let background_url: string = "";
+  let dropdown_value: string = "";
 
   // Handlers (For OnChange)
-  const [useLocalCover, setLocalCover] = useState(false);
-  const [useLocalBG, setLocalBG] = useState(false);
 
   const handleLocalCover = () => {
     setLocalCover(!useLocalCover);

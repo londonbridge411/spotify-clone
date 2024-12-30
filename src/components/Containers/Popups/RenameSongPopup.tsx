@@ -1,13 +1,5 @@
-import { useEffect, useRef, useState } from "react";
 import supabase from "../../../config/supabaseClient";
-import SearchBar from "../../SearchBar";
-import Popup from "../Popup";
-import * as uuid from "uuid";
-import { useLocation, useParams } from "react-router-dom";
-import { PostgrestSingleResponse } from "@supabase/supabase-js";
-import { authUserID, username } from "../../../main";
 import CustomInputField from "../../CustomInputField";
-import { SwitchToPopup } from "../../../PopupControl";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 
@@ -17,8 +9,8 @@ export function RenameSongPopup() {
   //if (songContext.currentSongID == "") return;
 
   function RenameSong() {
-    let a = async () => {
-      var new_name: string = (
+    const a = async () => {
+      const new_name: string = (
         document.getElementById("rename-song-name") as HTMLInputElement
       )?.value;
 

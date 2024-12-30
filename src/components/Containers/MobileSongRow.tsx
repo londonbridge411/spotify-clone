@@ -3,26 +3,22 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   setSongID,
   setIsPlaying,
-  enqueue,
   setProperQueue,
   clearFullQueue,
 } from "../../PlayerSlice";
-import supabase from "../../config/supabaseClient";
-import { RootState, store } from "../../store";
+import { RootState } from "../../store";
 import { NavLink } from "react-router-dom";
 import { Artist } from "./Popups/UploadSongPopup";
 import "../../Links.css";
 import "../../mobile.css";
-import { OpenSongContextMenu } from "../../SongContextSlice";
-import SongContextControl, {
+import  {
   ViewSongContextMenu,
 } from "./ContextMenus/SongContextMenu";
 // Song Row
 export default function MobileSongRow(props: any) {
   const [songName, setSongName] = useState("");
   const [artists, setArtists] = useState([] as Artist[]);
-  const [albumName, setAlbumName] = useState("");
-  const [albumID, setAlbumID] = useState();
+
 
   const [albumCoverURL, setAlbumCoverURL] = useState(
     "../../../src/assets/small_record.svg"
@@ -35,21 +31,19 @@ export default function MobileSongRow(props: any) {
   useEffect(() => {
     //console.log("Loading: " + props.song_data.song_id);
     if (props.song_data != null) {
-      setAlbumName(props.song_data.album_title);
-      setAlbumID(props.song_data.album_id);
       setSongName(props.song_data.title);
 
       if (props.song_data.cover_url != "")
         setAlbumCoverURL(props.song_data.cover_url);
 
-      let arr: string[] = props.song_data?.contributors;
+      const arr: string[] = props.song_data?.contributors;
 
-      let myList = [] as Artist[];
+      const myList = [] as Artist[];
       for (let i = 0; i < (arr as string[]).length; i++) {
-        let s = arr[i] as string;
-        let info = s.split("=");
+        const s = arr[i] as string;
+        const info = s.split("=");
 
-        let art: Artist = {
+        const art: Artist = {
           id: info[0],
           username: info[1],
         };
@@ -64,8 +58,8 @@ export default function MobileSongRow(props: any) {
   useEffect(() => {
     if (props.song_data.song_id == null) return;
     //let nameArea = document.getElementById(props.song_data.song_id);
-    let nameAreas = document.getElementsByClassName("mobile-song-row");
-    let nameArea = nameAreas.namedItem(props.song_data.song_id);
+    const nameAreas = document.getElementsByClassName("mobile-song-row");
+    const nameArea = nameAreas.namedItem(props.song_data.song_id);
 
     if (player.song_id == nameArea?.id) {
       (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
@@ -92,8 +86,8 @@ export default function MobileSongRow(props: any) {
   // Change play icon
   useEffect(() => {
     if (props.song_data.song_id == null) return;
-    let nameAreas = document.getElementsByClassName("mobile-song-row");
-    let nameArea = nameAreas.namedItem(props.song_data.song_id);
+    const nameAreas = document.getElementsByClassName("mobile-song-row");
+    const nameArea = nameAreas.namedItem(props.song_data.song_id);
 
     if (player.song_id == nameArea?.id) {
       if (player.isPlaying) {
@@ -124,14 +118,14 @@ export default function MobileSongRow(props: any) {
         }}
         // On left click
         onDoubleClick={() => {
-          let nameArea = document.getElementById(props.song_data.song_id);
+          const nameArea = document.getElementById(props.song_data.song_id);
           if (player.song_id != nameArea?.id) {
             if (props.song_list != null) dispatch(clearFullQueue());
 
             dispatch(setProperQueue(props.song_list));
             dispatch(setSongID(props.song_data.song_id));
           } else {
-            let a = document.getElementById("audioControl") as HTMLAudioElement;
+            const a = document.getElementById("audioControl") as HTMLAudioElement;
             a.currentTime = 0;
             a.play();
           }
@@ -139,7 +133,7 @@ export default function MobileSongRow(props: any) {
         onMouseEnter={() => {
           if (props.song_data.song_id == null) return;
 
-          let nameArea = document.getElementById(props.song_data.song_id);
+          const nameArea = document.getElementById(props.song_data.song_id);
           if (player.song_id != nameArea?.id) {
             (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
               "src",
@@ -150,7 +144,7 @@ export default function MobileSongRow(props: any) {
         onMouseLeave={() => {
           if (props.song_data.song_id == null) return;
 
-          let nameArea = document.getElementById(props.song_data.song_id);
+          const nameArea = document.getElementById(props.song_data.song_id);
           if (player.song_id != nameArea?.id) {
             (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
               "src",
@@ -161,8 +155,8 @@ export default function MobileSongRow(props: any) {
       >
         <div
           onClick={() => {
-            let nameArea = document.getElementById(props.song_data.song_id);
-            let a = document.getElementById("audioControl") as HTMLAudioElement;
+            const nameArea = document.getElementById(props.song_data.song_id);
+            const a = document.getElementById("audioControl") as HTMLAudioElement;
             if (player.song_id == nameArea?.id) {
               if (player.isPlaying) a.pause();
               else a.play();

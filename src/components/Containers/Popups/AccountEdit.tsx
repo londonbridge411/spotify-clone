@@ -1,30 +1,27 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./PlaylistCreation.css";
-import PlaylistContainerHorizontal from "../Playlist Containers/PlaylistContainerHorizontal";
 import supabase from "../../../config/supabaseClient";
-import { email } from "../../../main";
-import * as uuid from "uuid";
-import Popup from "../Popup";
 import { useParams } from "react-router-dom";
-import testbg from "../../../assets/test_bg.jpg";
 import CustomInputField from "../../CustomInputField";
 import { SwitchToPopup } from "../../../PopupControl";
 
 export default function AccountEdit() {
   const { userID } = useParams();
+  const [useLocalCover, setLocalCover] = useState(false);
 
   if (userID == null) return;
 
-  var uploaded_cover: File;
-  var cover_url: string = "";
+  let uploaded_cover: File;
+  let cover_url: string = "";
+
   async function UpdateName() {
     console.log("Updating Name");
 
-    var account_name = document.getElementById(
+    const account_name = document.getElementById(
       "edit-account-name"
     ) as HTMLInputElement;
 
-    var account_name_text = account_name?.value;
+    const account_name_text = account_name?.value;
 
     if (account_name_text != "") {
       // Update the username in the users table
@@ -39,11 +36,11 @@ export default function AccountEdit() {
         .contains("artist_data", JSON.stringify([{ id: userID }]))
         .then(async (result) => {
           // Store the results
-          let songs: any[] = result.data as any[];
+          const songs: any[] = result.data as any[];
 
           for (let i = 0; i < songs.length; i++) {
             // Get current song's artist_data
-            let artistData: any[] = songs[i].artist_data;
+            const artistData: any[] = songs[i].artist_data;
 
             for (let j = 0; j < artistData.length; j++) {
               // When we find the position of the id
@@ -96,7 +93,7 @@ export default function AccountEdit() {
 
   function SaveSettings() {
     SwitchToPopup("uploadingWait");
-    let update = async () => {
+    const update = async () => {
       await UpdateName();
       await UpdateCover();
       window.location.reload();
@@ -104,7 +101,7 @@ export default function AccountEdit() {
 
     update();
   }
-  const [useLocalCover, setLocalCover] = useState(false);
+
   //const [useLocalBG, setLocalBG] = useState(false);
 
   const handleLocalCover = () => {
@@ -115,16 +112,12 @@ export default function AccountEdit() {
     uploaded_cover = (
       document.getElementById("edit-account-cover") as HTMLInputElement
     ).files![0];
-
-    console.log("change cover file");
   };
 
   const handleCoverURL = () => {
     cover_url = (
       document.getElementById("url-account-cover") as HTMLInputElement
     )?.value;
-
-    console.log("change cover url");
   };
 
   return (

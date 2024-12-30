@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import supabase from "../../../config/supabaseClient";
-import { authUserID } from "../../../main";
-import { useDispatch } from "react-redux";
-import { ClosePopup, SwitchToPopup } from "../../../PopupControl";
+import { SwitchToPopup } from "../../../PopupControl";
 import { useLocation, useParams } from "react-router-dom";
 import "./SongOrderList.css";
 //import { setListRef } from "../../Middle/Playlist";
@@ -15,8 +13,6 @@ export default function SongOrderList() {
   const [selectedItem, selectItem] = useState("");
   const location = useLocation();
   const [hasLoaded, setLoaded] = useState(false);
-
-  const dispatch = useDispatch();
 
   useEffect(() => {
     supabase
@@ -42,10 +38,10 @@ export default function SongOrderList() {
     //event.target.style.setProperty("background-color", "red");
   }
 
-  function DeselectItem(event: any) {
+  function DeselectItem() {
     //console.log(event.target); //where it is at
 
-    let element = document.getElementsByClassName(
+    const element = document.getElementsByClassName(
       "songOrderItem-Follow"
     )[0] as HTMLDivElement;
 
@@ -58,7 +54,7 @@ export default function SongOrderList() {
   }
 
   function SwapPosition(event: any, index: number) {
-    let element = document.getElementsByClassName(
+    const element = document.getElementsByClassName(
       "songOrderItem-Follow"
     )[0] as HTMLDivElement;
 
@@ -77,18 +73,18 @@ export default function SongOrderList() {
     //     break;
     //   }
     // }
-    let item: any = (list as any).find((i: any) => i?.song_id == selectedItem); // Should this not be song_id? For some reason song_id crashes it.
+    const item: any = (list as any).find((i: any) => i?.song_id == selectedItem); // Should this not be song_id? For some reason song_id crashes it.
     console.log(item);
-    let arr: any[] = [...list];
+    const arr: any[] = [...list];
 
-    let oldIndex = arr.indexOf(item);
+    const oldIndex = arr.indexOf(item);
 
     arr.splice(oldIndex, 1);
     arr.splice(index, 0, item);
 
-    let elem: any = document.getElementById("songOrderContainer");
+    const elem: any = document.getElementById("songOrderContainer");
 
-    let boundary = elem.getBoundingClientRect();
+    const boundary = elem.getBoundingClientRect();
 
     //console.log("Top: " + boundary.top);
     //console.log("mosuer: " +  event.clientY * 0.85);
@@ -110,7 +106,7 @@ export default function SongOrderList() {
   }
 
   function UpdateSongList() {
-    let update = async () => {
+    const update = async () => {
       SwitchToPopup("uploadingWait");
 
       for (let i = 0; i < list.length; i++) {
@@ -127,8 +123,8 @@ export default function SongOrderList() {
     update();
   }
 
-  document.onmouseup = (e) => {
-    DeselectItem(e);
+  document.onmouseup = () => {
+    DeselectItem();
   };
   return (
     <>

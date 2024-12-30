@@ -3,19 +3,16 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   setSongID,
   setIsPlaying,
-  enqueue,
   setProperQueue,
   clearFullQueue,
 } from "../../PlayerSlice";
-import supabase from "../../config/supabaseClient";
-import { RootState, store } from "../../store";
+import { RootState } from "../../store";
 import { NavLink } from "react-router-dom";
 import { Artist } from "./Popups/UploadSongPopup";
 import "../../Links.css";
 import "../../mobile.css";
 import "./SongRow.css";
-import { OpenSongContextMenu } from "../../SongContextSlice";
-import SongContextControl, {
+import {
   ViewSongContextMenu,
 } from "./ContextMenus/SongContextMenu";
 
@@ -54,14 +51,14 @@ export default function FastSongRow(props: any) {
       if (props.song_data.cover_url != "")
         setAlbumCoverURL(props.song_data.cover_url);
 
-      let arr: string[] = props.song_data?.contributors;
+      const arr: string[] = props.song_data?.contributors;
 
-      let myList = [] as Artist[];
+      const myList = [] as Artist[];
       for (let i = 0; i < (arr as string[]).length; i++) {
-        let s = arr[i] as string;
-        let info = s.split("=");
+        const s = arr[i] as string;
+        const info = s.split("=");
 
-        let art: Artist = {
+        const art: Artist = {
           id: info[0],
           username: info[1],
         };
@@ -77,7 +74,7 @@ export default function FastSongRow(props: any) {
   // Change play icon
   useEffect(() => {
     if (props.song_data == null) return;
-    let nameArea = document.getElementById(props.song_data.song_id);
+    const nameArea = document.getElementById(props.song_data.song_id);
 
     if (player.song_id == nameArea?.id) {
       (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
@@ -104,7 +101,7 @@ export default function FastSongRow(props: any) {
   // Change play icon
   useEffect(() => {
     if (props.song_data.song_id == null) return;
-    let nameArea = document.getElementById(props.song_data.song_id);
+    const nameArea = document.getElementById(props.song_data.song_id);
 
     if (player.song_id == nameArea?.id) {
       if (player.isPlaying) {
@@ -136,14 +133,14 @@ export default function FastSongRow(props: any) {
           }}
           // On left click
           onDoubleClick={() => {
-            let nameArea = document.getElementById(props.song_data.song_id);
+            const nameArea = document.getElementById(props.song_data.song_id);
             if (player.song_id != nameArea?.id) {
               if (props.song_list != null) dispatch(clearFullQueue());
 
               dispatch(setProperQueue(props.song_list));
               dispatch(setSongID(props.song_data.song_id));
             } else {
-              let a = document.getElementById(
+              const a = document.getElementById(
                 "audioControl"
               ) as HTMLAudioElement;
               a.currentTime = 0;
@@ -153,7 +150,7 @@ export default function FastSongRow(props: any) {
           onMouseEnter={() => {
             if (props.song_data.song_id == null) return;
 
-            let nameArea = document.getElementById(props.song_data.song_id);
+            const nameArea = document.getElementById(props.song_data.song_id);
             if (player.song_id != nameArea?.id) {
               (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
                 "src",
@@ -164,7 +161,7 @@ export default function FastSongRow(props: any) {
           onMouseLeave={() => {
             if (props.song_data.song_id == null) return;
 
-            let nameArea = document.getElementById(props.song_data.song_id);
+            const nameArea = document.getElementById(props.song_data.song_id);
             if (player.song_id != nameArea?.id) {
               (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
                 "src",
@@ -175,8 +172,8 @@ export default function FastSongRow(props: any) {
         >
           <td
             onClick={() => {
-              let nameArea = document.getElementById(props.song_data.song_id);
-              let a = document.getElementById(
+              const nameArea = document.getElementById(props.song_data.song_id);
+              const a = document.getElementById(
                 "audioControl"
               ) as HTMLAudioElement;
               if (player.song_id == nameArea?.id) {

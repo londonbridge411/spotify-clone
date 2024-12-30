@@ -1,5 +1,5 @@
 import { Outlet, useNavigate } from "react-router-dom";
-import { createContext, useEffect, useRef, useState } from "react";
+import {  useEffect, useRef, useState } from "react";
 import { isLoggedIn } from "./main";
 import Sidebar from "./components/Left/Sidebar";
 import MusicControl from "./components/Music Control";
@@ -8,9 +8,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "./store";
 import PopupControl from "./PopupControl";
 import SongContextControl from "./components/Containers/ContextMenus/SongContextMenu";
-import supabase from "./config/supabaseClient";
 
-var idleTimer = null;
+
+let idleTimer = null;
 
 export default function App() {
   const navigate = useNavigate();
@@ -45,7 +45,7 @@ export default function App() {
     }
   };
 
-  document.onmousemove = function (e) {
+  document.onmousemove = function () {
     if (document.fullscreenElement) {
       setIdleTime(0);
       clearInterval(idleTimer!);
@@ -120,7 +120,7 @@ function useInterval(callback: any, delay: number) {
       (savedCallback as any).current(); //Needs ()
     }
 
-    let id = setInterval(tick, delay);
+    const id = setInterval(tick, delay);
     return () => clearInterval(id);
   }, [delay]);
 }

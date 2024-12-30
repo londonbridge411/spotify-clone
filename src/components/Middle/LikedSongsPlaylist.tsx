@@ -1,23 +1,17 @@
 import { useEffect, useState } from "react";
-import { NavLink, useNavigate, useParams } from "react-router-dom";
 import supabase from "../../config/supabaseClient";
 
 import "./Playlist.css";
-import Popup from "../Containers/Popup";
-import { authUserID, email, username } from "../../main";
-import * as uuid from "uuid";
+import { authUserID } from "../../main";
 import {
   setIsPlaying,
-  enqueue,
   setProperQueue,
   setSongID,
   shufflePlay,
   clearFullQueue,
 } from "../../PlayerSlice";
 import { useDispatch } from "react-redux";
-import SongRow from "../Containers/SongRow";
 import "../Containers/SongTable.css";
-import { SwitchToPopup } from "../../PopupControl";
 import MobileSongRow from "../Containers/MobileSongRow";
 import FastSongRow from "../Containers/FastSongRow";
 
@@ -26,7 +20,6 @@ import FastSongRow from "../Containers/FastSongRow";
 export default function Playlist() {
   const dispatch = useDispatch();
 
-  const navigate = useNavigate();
 
   const [hideTable, setHideTable] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -38,7 +31,7 @@ export default function Playlist() {
 
   // Inital Set
   useEffect(() => {
-    let fetch = async () => {
+    const fetch = async () => {
       // Get liked song ids
       await supabase
         .from("Liked_Songs")
@@ -47,7 +40,7 @@ export default function Playlist() {
         .order("liked_at")
         .then(async (result: any) => {
           // Load ids into an array
-          let id_arr = [];
+          const id_arr = [];
 
           for (let i = 0; i < result.data?.length; i++) {
             id_arr.push(result.data[i].song_id);
@@ -60,7 +53,7 @@ export default function Playlist() {
             .then(async (result2) => {
               setFastList(result2.data);
 
-              let songIDs = [];
+              const songIDs = [];
 
               for (let i = 0; i < result2.data.length; i++) {
                 songIDs.push(result2.data?.at(i).song_id);

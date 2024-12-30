@@ -9,7 +9,7 @@ import PlaylistContextMenu, {
 } from "../ContextMenus/PlaylistContextMenu";
 
 export default function PlaylistContainer(props: any) {
-  if (props.playlist_id == null) return;
+
 
   const [playlistName, setPlaylistName] = useState("Loading...");
   const [artistName, setArtistName] = useState("Loading...");
@@ -19,7 +19,9 @@ export default function PlaylistContainer(props: any) {
   );
 
   const navigate = useNavigate();
+  
   useEffect(() => {
+    if (props.playlist_id == null) return;
     supabase
       .from("Playlists")
       .select(
@@ -36,7 +38,7 @@ export default function PlaylistContainer(props: any) {
         );
         setArtistID(result.data?.at(0)?.owner_id);
 
-        var userData: any = result.data?.at(0)?.Users;
+        const userData: any = result.data?.at(0)?.Users;
         setArtistName(userData.username);
       });
   }, []);

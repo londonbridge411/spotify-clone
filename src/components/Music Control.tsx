@@ -8,7 +8,7 @@ import pause from "../assets/circle-pause-solid.svg";
 import prev from "../assets/backward-step-solid.svg";
 import next from "../assets/forward-step-solid.svg";
 import bars from "../assets/bars-solid.svg";
-import shuffle from "../assets/shuffle-solid.svg";
+// import shuffle from "../assets/shuffle-solid.svg";
 import repeat from "../assets/repeat-solid.svg";
 import exitFS from "../assets/exit_fullscreen.svg";
 import enterFS from "../assets/enter_fullscreen.svg";
@@ -22,7 +22,6 @@ import {
   prevSong,
   setIsPlaying,
   setLooping,
-  setSongID,
   setVolume,
 } from "../PlayerSlice";
 import supabase from "../config/supabaseClient";
@@ -31,10 +30,10 @@ import { Artist } from "./Containers/Popups/UploadSongPopup";
 import { authUserID, getCookies, isLoggedIn } from "../main";
 import { SwitchToPopup } from "../PopupControl";
 
-var changingTime = false;
-var prevPlayState = false;
-var changeTimeInterval = null;
-var changeTimeIntervalResize = null;
+let changingTime = false;
+let prevPlayState = false;
+let changeTimeInterval = null;
+let changeTimeIntervalResize = null;
 
 export function ResetPlayer() {
   changingTime = false;
@@ -73,7 +72,7 @@ export default function MusicControl() {
         .select("album_id")
         .eq("id", player.song_id)
         .then((result) => {
-          let albumID = result.data?.at(0)?.album_id;
+          const albumID = result.data?.at(0)?.album_id;
 
           supabase
             .from("Playlists")
@@ -99,7 +98,7 @@ export default function MusicControl() {
   useInterval(() => {
     // Your custom logic here
     if (timeListened == 30) {
-      let update = async () => {
+      const update = async () => {
         await supabase
           .from("Songs")
           .update({ view_count: viewCount + 1 })
@@ -124,8 +123,8 @@ export default function MusicControl() {
   }
 
   function ClickProgressBar(event: any) {
-    var a = document.getElementById("audioControl") as HTMLAudioElement;
-    var clickPercent = event.clientX / window.innerWidth;
+    const a = document.getElementById("audioControl") as HTMLAudioElement;
+    const clickPercent = event.clientX / window.innerWidth;
     a.currentTime = clickPercent * a.duration;
 
     ChangeProgress(clickPercent);
@@ -133,7 +132,7 @@ export default function MusicControl() {
 
   function TogglePlay() {
     dispatch(setIsPlaying(!player.isPlaying));
-    let a = document.getElementById("audioControl") as HTMLAudioElement;
+    const a = document.getElementById("audioControl") as HTMLAudioElement;
 
     if (player.isPlaying) {
       a.pause();
@@ -145,8 +144,8 @@ export default function MusicControl() {
   }
 
   function UpdateVolume() {
-    let audio = document.getElementById("audioControl") as HTMLAudioElement;
-    let num = audio.volume * 100;
+    const audio = document.getElementById("audioControl") as HTMLAudioElement;
+    const num = audio.volume * 100;
 
     // Set in player
     dispatch(setVolume(num.toString()));
@@ -171,11 +170,11 @@ export default function MusicControl() {
   }
 
   // Storage and Effects
-  var audioUrl = supabase.storage
+  const audioUrl = supabase.storage
     .from("music-files")
     .getPublicUrl("audio-files/" + player.song_id);
 
-  var audio: HTMLAudioElement;
+  let audio: HTMLAudioElement;
   useEffect(() => {
     const getSong = async () => {
       setCurrentTime("--:--");
@@ -184,21 +183,21 @@ export default function MusicControl() {
         .rpc("getsongbyid", { songid: player.song_id })
         .then(async (result) => {
           //console.log(result.data);
-          var row = result.data?.at(0);
+          const row = result.data?.at(0);
 
           if (row != null) {
             setName(row.title);
             setViewCount(row.view_count);
 
             // Fill In artists"
-            let arr: string[] = row?.contributors;
+            const arr: string[] = row?.contributors;
 
-            let myList = [] as Artist[];
+            const myList = [] as Artist[];
             for (let i = 0; i < (arr as string[]).length; i++) {
-              let s = arr[i] as string;
-              let info = s.split("=");
+              const s = arr[i] as string;
+              const info = s.split("=");
 
-              let art: Artist = {
+              const art: Artist = {
                 id: info[0],
                 username: info[1],
               };
@@ -222,7 +221,7 @@ export default function MusicControl() {
               });
 
             // Cover URL
-            let albumID = result.data?.at(0)?.album_id;
+            const albumID = result.data?.at(0)?.album_id;
             setAlbumID(albumID);
 
             supabase
@@ -230,7 +229,7 @@ export default function MusicControl() {
               .select("cover_url")
               .eq("id", albumID)
               .then((result) => {
-                let cover = result.data?.at(0)?.cover_url;
+                const cover = result.data?.at(0)?.cover_url;
                 setImgURL(
                   cover == "" ? "../../../src/assets/small_record.svg" : cover
                 );
@@ -240,9 +239,9 @@ export default function MusicControl() {
             audio = document.getElementById("audioControl") as HTMLAudioElement;
             audio.load();
 
-            let cookies = getCookies();
+            const cookies = getCookies();
             audio.onloadedmetadata = () => {
-              setCurrentTime("0:00"); // Maybe delete this? It's meant to fix a bug
+              setCurrentTime("0:00"); // Maybe deconste this? It's meant to fix a bug
               MarqueeCheck();
 
               changeTimeInterval = setInterval(() => {
@@ -282,7 +281,7 @@ export default function MusicControl() {
               };
 
               // Volume Cookie
-              let cookie_volume = cookies["volume"];
+              const cookie_volume = cookies["volume"];
 
               if (cookie_volume != undefined && !Number.isNaN(cookie_volume)) {
                 audio.volume = parseInt(cookie_volume!) / 100; //Causes error????
@@ -291,10 +290,10 @@ export default function MusicControl() {
 
               // Loop Cookie
 
-              let cookie_loop = cookies["loop"];
+              const cookie_loop = cookies["loop"];
 
               if (cookie_loop != undefined) {
-                let cookie_value: boolean = cookie_loop === "true";
+                const cookie_value: boolean = cookie_loop === "true";
                 dispatch(setLooping(cookie_value));
               }
 
@@ -325,8 +324,8 @@ export default function MusicControl() {
   // Allows play/pause on mouse click whenever full screen as long as it's not on the control bar.
   document.onpointerdown = (e) => {
     if (document.fullscreenElement) {
-      var container = document.getElementById("main-fullscreen");
-      var clickedHTML = e.target as HTMLElement;
+      const container = document.getElementById("main-fullscreen");
+      const clickedHTML = e.target as HTMLElement;
 
       if (container?.contains(clickedHTML)) {
         TogglePlay();
@@ -337,9 +336,9 @@ export default function MusicControl() {
   window.onresize = MarqueeCheck;
 
   function MarqueeCheck() {
-    let name_area = document.getElementById("player-name-area") as HTMLElement;
+    const name_area = document.getElementById("player-name-area") as HTMLElement;
 
-    let name_text_element = document.getElementById(
+    const name_text_element = document.getElementById(
       "name-area-text"
     ) as HTMLDivElement;
     name_text_element.classList.remove("marquee");
@@ -375,7 +374,7 @@ export default function MusicControl() {
             // Exists in table. Unlike
             icon = "../../../src/assets/star-regular.svg";
 
-            // Delete from table
+            // Deconste from table
             await supabase
               .from("Liked_Songs")
               .delete()
@@ -399,7 +398,7 @@ export default function MusicControl() {
   }
 
   function ToggleMute() {
-    let audio = document.getElementById("audioControl") as HTMLAudioElement;
+    const audio = document.getElementById("audioControl") as HTMLAudioElement;
     audio.volume = audio.volume > 0 ? 0 : 0.5;
     //UpdateVolume();
   }
@@ -407,7 +406,7 @@ export default function MusicControl() {
     //console.log(changingTime);
     if (changingTime && player.hasLoaded) {
       changingTime = false;
-      let a = document.getElementById("audioControl") as HTMLAudioElement;
+      const a = document.getElementById("audioControl") as HTMLAudioElement;
 
       if (prevPlayState == true) a.play();
     }
@@ -415,7 +414,7 @@ export default function MusicControl() {
 
   onpointermove = (event) => {
     if (player.hasLoaded && isLoggedIn) {
-      let handle: any = document.getElementById("progress-bar-handle");
+      const handle: any = document.getElementById("progress-bar-handle");
       if (changingTime) {
         handle.style.visibility = "visible";
         ClickProgressBar(event);
@@ -436,7 +435,7 @@ export default function MusicControl() {
         onPointerDown={(event) => {
           prevPlayState = player.isPlaying;
           changingTime = true;
-          let a = document.getElementById("audioControl") as HTMLAudioElement;
+          const a = document.getElementById("audioControl") as HTMLAudioElement;
           a.pause();
           //setPlayIcon(play);
           ClickProgressBar(event);
@@ -523,7 +522,7 @@ export default function MusicControl() {
                 ) {
                   dispatch(prevSong());
                 } else {
-                  let a = document.getElementById(
+                  const a = document.getElementById(
                     "audioControl"
                   ) as HTMLAudioElement;
                   a.currentTime = 0;
@@ -631,7 +630,7 @@ export default function MusicControl() {
             max="100"
             value={player.volume}
             onChange={(e) => {
-              let audio = document.getElementById(
+              const audio = document.getElementById(
                 "audioControl"
               ) as HTMLAudioElement;
               audio.volume = parseInt(e.target.value) / 100;
@@ -655,7 +654,7 @@ function useInterval(callback: any, delay: number) {
       (savedCallback as any).current(); //Needs ()
     }
 
-    let id = setInterval(tick, delay);
+    const id = setInterval(tick, delay);
     return () => clearInterval(id);
   }, [delay]);
 }

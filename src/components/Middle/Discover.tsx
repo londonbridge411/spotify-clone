@@ -6,8 +6,6 @@ AND recently played songs Search bar is here and in in discover
 import { useEffect, useState } from "react";
 import "./Discover.css";
 import PlaylistContainer from "../Containers/Playlist Containers/PlaylistContainer";
-import { NavLink } from "react-router-dom";
-import SongRow from "../Containers/SongRow";
 import SearchBar from "../SearchBar";
 import ArtistContainer from "../Containers/Artist Containers/ArtistsContainer";
 import FastSongRow from "../Containers/FastSongRow";
@@ -23,9 +21,9 @@ export default function Discover() {
   const [songList, setSongList] = useState([] as any);
 
   useEffect(() => {
-    let fetch = async () => {
+    const fetch = async () => {
       // Takes the stuff from the search results and puts it in an array
-      let arr = [];
+      const arr = [];
       for (let i = 0; i < searchResults_Songs.length; i++) {
         arr.push(searchResults_Songs[i].id);
       }

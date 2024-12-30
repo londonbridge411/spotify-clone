@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import supabase from "./config/supabaseClient";
 import { NavLink, NavigateFunction, useNavigate } from "react-router-dom";
 import { SetLoginStatus, getInfo, isLoggedIn } from "./main";
@@ -52,14 +52,14 @@ function Login() {
 
 // Logs in the user and takes them to the home page.
 function LoginUser(navigate: NavigateFunction) {
-  var email_element = document.getElementById("email") as HTMLInputElement;
-  var email_text = email_element?.value;
+  const email_element = document.getElementById("email") as HTMLInputElement;
+  const email_text = email_element?.value;
 
-  var pw_element = document.getElementById("password") as HTMLInputElement;
-  var pw_text = pw_element?.value;
+  const pw_element = document.getElementById("password") as HTMLInputElement;
+  const pw_text = pw_element?.value;
 
   const login = async () => {
-    let { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email: email_text,
       password: pw_text,
     });

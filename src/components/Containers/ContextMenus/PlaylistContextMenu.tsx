@@ -1,19 +1,17 @@
 import { authUserID, isVerified } from "../../../main";
 import "./PlaylistContextMenu.css";
 import "./ContextButton.css";
-import ContextOption_RemoveDeleteSong from "./Song Context Features/RemoveDeleteSong";
-import ContextOption_AddToPlaylist from "./Song Context Features/AddToPlaylist";
 import ContextOption_DeletePlaylist from "./Playlist Context Features/DeletePlaylist";
 import ContextOption_FollowPlaylist from "./Playlist Context Features/FollowPlaylist";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import supabase from "../../../config/supabaseClient";
 import ContextOption_RenamePlaylist from "./Playlist Context Features/RenamePlaylist";
 
-var ID: string;
-var runExported: any;
+let ID: string;
+let runExported: any;
 
 export function ClosePlaylistContextMenu() {
-  var menu = window.document.getElementById(ID) as HTMLElement;
+  const menu = window.document.getElementById(ID) as HTMLElement;
   menu?.style.setProperty("display", "none");
 }
 
@@ -21,7 +19,7 @@ export default function PlaylistContextMenu(props: any) {
   const [isFollowing, setIsFollowing] = useState(false);
   const [isOwner, setOwnership] = useState(true);
 
-  let run = async () => {
+  const run = async () => {
     // There might be a possible join to do, but it ain't easy
     await supabase
       .from("Playlists")
@@ -30,7 +28,7 @@ export default function PlaylistContextMenu(props: any) {
       .eq("id", props.playlistID)
       .then((result) => {
         //console.log(result);
-        setOwnership(result.data?.length! > 0);
+        setOwnership(result.data!.length > 0);
       });
 
     await supabase
@@ -40,7 +38,7 @@ export default function PlaylistContextMenu(props: any) {
       .eq("playlist_id", props.playlistID)
       .then((result) => {
         //console.log(result);
-        setIsFollowing(result.data?.length! > 0);
+        setIsFollowing(result.data!.length > 0);
       });
   };
   run();
@@ -58,8 +56,8 @@ export default function PlaylistContextMenu(props: any) {
     // ID SOMETIMES GETS STUCK CAUSING IT FREEZE???
 
     //console.log("click: " + ID);
-    var container = window.document.getElementById(ID);
-    var clickedHTML = e.target as HTMLElement;
+    const container = window.document.getElementById(ID);
+    const clickedHTML = e.target as HTMLElement;
 
     if (!container?.contains(clickedHTML)) {
       ClosePlaylistContextMenu();
@@ -106,7 +104,7 @@ export function ViewPlaylistContextMenu(id: string, event: any) {
   runExported();
   ClosePlaylistContextMenu(); // Maybe fixed the issue of freezing?
   //console.log("View " + id);
-  var menu = document.getElementById(id) as HTMLElement;
+  const menu = document.getElementById(id) as HTMLElement;
 
   ID = id;
 

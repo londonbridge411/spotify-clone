@@ -1,33 +1,27 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import "./PlaylistCreation.css";
-import PlaylistContainerHorizontal from "../Playlist Containers/PlaylistContainerHorizontal";
 import supabase from "../../../config/supabaseClient";
-import { email } from "../../../main";
 import * as uuid from "uuid";
-import Popup from "../Popup";
-import { useParams } from "react-router-dom";
-import testbg from "../../../assets/test_bg.jpg";
-import { useDispatch } from "react-redux";
 import CustomInputField from "../../CustomInputField";
-import { ClosePopup, SwitchToPopup } from "../../../PopupControl";
+import { ClosePopup } from "../../../PopupControl";
 
 export default function PlaylistCreation(props: any) {
-  var uploaded_cover: File;
-  var uploaded_bg: File;
-  var cover_url: string = "";
-  var background_url: string = "";
-  var dropdown_value: string = "";
+  let uploaded_cover: File;
+  let uploaded_bg: File;
+  let cover_url: string = "";
+  let background_url: string = "";
+  let dropdown_value: string = "";
 
   function UploadPlaylist() {
-    let id = uuid.v4();
+    const id = uuid.v4();
 
     handleDropdown();
     const insertIntoTable = async () => {
-      var playlist_name = document.getElementById(
+      const playlist_name = document.getElementById(
         "upload-playlist-name"
       ) as HTMLInputElement;
 
-      var playlist_name_text = playlist_name?.value;
+      const playlist_name_text = playlist_name?.value;
 
       // Guard Statement
       if (playlist_name_text == "") return;
@@ -99,7 +93,7 @@ export default function PlaylistCreation(props: any) {
           cacheControl: "3600",
           upsert: true,
         })
-        .then((result) => {
+        .then(() => {
           background_url = supabase.storage
             .from("music-files")
             .getPublicUrl("pictures/backgrounds/" + playlistID).data.publicUrl;

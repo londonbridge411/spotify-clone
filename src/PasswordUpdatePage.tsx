@@ -12,19 +12,19 @@ export default function PasswordUpdatePage() {
   });
 
   function updatePassword() {
-    let a = async () => {
-      var pw_element = document.getElementById("password") as HTMLInputElement;
-      var pw_text = pw_element?.value;
+    const a = async () => {
+      const pw_element = document.getElementById("password") as HTMLInputElement;
+      const pw_text = pw_element?.value;
 
-      var verifypw_element = document.getElementById(
+      const verifypw_element = document.getElementById(
         "verify-password"
       ) as HTMLInputElement;
-      var verifypw_text = verifypw_element?.value;
+      const verifypw_text = verifypw_element?.value;
 
       if (pw_text == verifypw_text) {
         await supabase.auth
           .updateUser({ password: pw_text })
-          .then((result) => navigate("../app/home"));
+          .then(() => navigate("../app/home"));
       } else {
         verifypw_element.value = "";
       }

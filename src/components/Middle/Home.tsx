@@ -1,11 +1,5 @@
 import { useEffect, useState } from "react";
-import PlaylistList from "../Containers/Playlist Containers/PlaylistList";
-import SearchBar from "../SearchBar";
-import { NavLink } from "react-router-dom";
-import SongRow from "../Containers/SongRow";
-
 import "./Home.css";
-import PlaylistContainer from "../Containers/Playlist Containers/PlaylistContainer";
 import supabase from "../../config/supabaseClient";
 import ArtistContainer from "../Containers/Artist Containers/ArtistsContainer";
 /*
@@ -21,8 +15,8 @@ export default function Home() {
 
   useEffect(() => {
     supabase.rpc("selecttop10artists").then((result) => {
-      let data = result.data;
-      let arr = [];
+      const data = result.data;
+      const arr = [];
 
       for (let i = 0; i < data.length; i++) {
         arr.push(data[i]?.id);

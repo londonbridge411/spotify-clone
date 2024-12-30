@@ -1,6 +1,3 @@
-import { useState } from "react";
-import PlaylistList from "../Containers/Playlist Containers/PlaylistList";
-
 /*
 SHOULD CONTAIN:
 * Search bar

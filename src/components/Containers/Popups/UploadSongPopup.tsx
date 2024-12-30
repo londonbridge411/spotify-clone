@@ -1,11 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import supabase from "../../../config/supabaseClient";
-import SearchBar from "../../SearchBar";
-import Popup from "../Popup";
 import * as uuid from "uuid";
 import { useParams } from "react-router-dom";
-import { PostgrestSingleResponse } from "@supabase/supabase-js";
-import { authUserID, username } from "../../../main";
 import CustomInputField from "../../CustomInputField";
 import { SwitchToPopup } from "../../../PopupControl";
 
@@ -14,24 +10,24 @@ export interface Artist {
   username: string;
 }
 
-export function UploadSongPopup(props: any) {
+export function UploadSongPopup() {
   // Get Playlist ID
   const { playlistID } = useParams();
-  if (playlistID == null) return;
 
   // States
+  const [hasMultipleArtists, setMultipleArtists] = useState(false);
   const [artists, setArtists] = useState([] as Artist[]);
   const list: Artist[] = [];
 
-  // Functions
+  if (playlistID == null) return;
 
   // Adds user to list
   function AddUser() {
-    let identifier = (
+    const identifier = (
       document.getElementById("upload-song-artists") as HTMLInputElement
     ).value;
 
-    let fetch = async () => {
+    const fetch = async () => {
       await supabase
         .from("Users")
         .select("id, username")
@@ -41,7 +37,7 @@ export function UploadSongPopup(props: any) {
           // Have to do it this way, otherwise you can inject a song/playlist identifier and it will pass
           if (result.data?.at(0)!.id == identifier) {
             console.log(identifier + " passed");
-            let item = result.data?.at(0);
+            const item = result.data?.at(0);
 
             for (let i = 0; i < artists.length; i++) {
               if (artists[i].id == item?.id) {
@@ -61,7 +57,7 @@ export function UploadSongPopup(props: any) {
     fetch();
   }
 
-  var uploaded_song: File;
+  let uploaded_song: File;
   // Uploads the song
   function UploadSong() {
     if (hasMultipleArtists && artists.length == 0) {
@@ -75,17 +71,18 @@ export function UploadSongPopup(props: any) {
       document.getElementById("uploaded_song") as HTMLInputElement
     ).files![0];
 
-    let id = uuid.v4();
+    const id = uuid.v4();
 
     if (uploaded_song != null) {
       SwitchToPopup("uploadingWait");
       const insertIntoTable = async () => {
-        var song_name = document.getElementById(
+        const song_name = document.getElementById(
           "upload-song-name"
         ) as HTMLInputElement;
 
-        var song_name_text = song_name?.value;
-        var song_duration: string;
+        const song_name_text = song_name?.value;
+        let song_duration: string;
+
         await supabase.storage
           .from("music-files")
           .upload("/audio-files/" + id, uploaded_song, {
@@ -93,11 +90,11 @@ export function UploadSongPopup(props: any) {
             upsert: false,
           })
           .then((result) => {
-            let a = supabase.storage
+            const a = supabase.storage
               .from("music-files")
-              .getPublicUrl(result.data?.path!).data.publicUrl;
+              .getPublicUrl(result.data!.path).data.publicUrl;
 
-            let au = new Audio(a);
+              const au = new Audio(a);
 
             au.onloadedmetadata = async () => {
               const minutes = Math.floor(au.duration / 60);
@@ -135,8 +132,8 @@ export function UploadSongPopup(props: any) {
                 .select("*")
                 .eq("playlist_id", playlistID)
                 .then(async (result) => {
-                  let dataCount = result.data?.length;
-                  let pos = dataCount != null && dataCount != 0 ? dataCount : 0;
+                  const dataCount = result.data?.length;
+                  const pos = dataCount != null && dataCount != 0 ? dataCount : 0;
 
                   console.log(dataCount + ", pos: " + pos);
 
@@ -160,7 +157,6 @@ export function UploadSongPopup(props: any) {
       insertIntoTable();
     }
   }
-  const [hasMultipleArtists, setMultipleArtists] = useState(false);
   const handleMultipleArtists = () => {
     setMultipleArtists(!hasMultipleArtists);
     setArtists([]);

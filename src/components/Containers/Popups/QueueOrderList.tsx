@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
 import supabase from "../../../config/supabaseClient";
-import { authUserID } from "../../../main";
 import { useDispatch, useSelector } from "react-redux";
-import { ClosePopup, SwitchToPopup } from "../../../PopupControl";
 import { enqueue, setNextQueue, setProperQueue } from "../../../PlayerSlice";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import "./SongOrderList.css";
 import { RootState } from "../../../store";
 
@@ -43,7 +41,7 @@ export default function QueueOrderList() {
       .then((result) => {
         console.log(result);
         setCurrentSong(result.data?.at(0) as any);
-        var playlistData: any = result.data?.at(0)?.Playlists;
+        const playlistData: any = result.data?.at(0)?.Playlists;
 
         setPlaylistCover(playlistData.cover_url);
       });
@@ -63,7 +61,7 @@ export default function QueueOrderList() {
       .then((result) => {
         setLoaded(true);
 
-        let tempList = result.data.slice(player.listPosition + 1);
+        const tempList = result.data.slice(player.listPosition + 1);
         setProperList(tempList as any);
       });
   }, [location, player.song_id, player.properQueue]);
@@ -84,7 +82,7 @@ export default function QueueOrderList() {
   }
 
   function DeselectItem(event: any) {
-    let element = document.getElementsByClassName(
+    const element = document.getElementsByClassName(
       "songOrderItem-Follow"
     )[0] as HTMLDivElement;
 
@@ -97,7 +95,7 @@ export default function QueueOrderList() {
   }
 
   function SwapPosition(event: any, index: number) {
-    let element = document.getElementsByClassName(
+    const element = document.getElementsByClassName(
       "songOrderItem-Follow"
     )[0] as HTMLDivElement;
 
@@ -113,26 +111,26 @@ export default function QueueOrderList() {
     // Make sure the lists are the same
     if (selectedQueue == hoveredQueue) {
       // Check list
-      let chosenList =
+      const chosenList =
         selectedQueue == QueueType.PROPER ? properList : nextList;
 
       // Get Clicked Item
-      let clickedItem: any = chosenList.find(
+      const clickedItem: any = chosenList.find(
         (i: any) => i?.song_id == selectedItem
       );
 
       // Get arr version of toList
-      let arr: any[] = [...chosenList]; // Not string[], song[]
+      const arr: any[] = [...chosenList]; // Not string[], song[]
 
-      let oldIndex = arr.indexOf(clickedItem);
+      const oldIndex = arr.indexOf(clickedItem);
 
       arr.splice(oldIndex, 1);
       arr.splice(index, 0, clickedItem);
 
       // Bunch of boundary checking and moving
-      let elem: any = document.getElementById("songOrderContainer");
+      const elem: any = document.getElementById("songOrderContainer");
 
-      let boundary = elem.getBoundingClientRect();
+      const boundary = elem.getBoundingClientRect();
 
       if (
         event.clientY > boundary.bottom * 0.9 ||
@@ -147,7 +145,7 @@ export default function QueueOrderList() {
         }
       }
 
-      let songIdArr: string[] = [];
+      const songIdArr: string[] = [];
       for (let i = 0; i < arr.length; i++) {
         songIdArr.push(arr[i].song_id);
       }
@@ -167,17 +165,17 @@ export default function QueueOrderList() {
   */
   function RemoveSong(item_id: string) {
     // Chooses the queue to remove song from.
-    let queue: any[] = hoveredQueue == QueueType.NEXT ? nextList : properList;
+    const queue: any[] = hoveredQueue == QueueType.NEXT ? nextList : properList;
 
     // Gets the index of the song in that queue
-    let index = queue.findIndex((x) => x.song_id == item_id);
+    const index = queue.findIndex((x) => x.song_id == item_id);
 
     // Copies queue into modifiable array. Then remove elem at index.
-    let newArr: any[] = [...queue];
+    const newArr: any[] = [...queue];
     newArr.splice(index, 1);
 
     // Take the ids from queue (any[]) and put into a string[] that the player slice can read.
-    let convertedArr: string[] = [];
+    const convertedArr: string[] = [];
 
     for (let i = 0; i < newArr.length; i++) {
       convertedArr.push(newArr[i].song_id);
@@ -233,7 +231,7 @@ export default function QueueOrderList() {
           <span
             hidden={hideNext}
             id="nextQueueBox"
-            onMouseEnter={(e) => {
+            onMouseEnter={() => {
               setHoveredQueue(QueueType.NEXT);
             }}
           >
@@ -268,7 +266,7 @@ export default function QueueOrderList() {
           </p>
           <span
             id="properQueueBox"
-            onMouseEnter={(e) => {
+            onMouseEnter={() => {
               setHoveredQueue(QueueType.PROPER);
             }}
           >
@@ -281,7 +279,7 @@ export default function QueueOrderList() {
                     setSelectedQueue(QueueType.PROPER);
                     SelectItem(item.song_id, e);
                   }}
-                  onDoubleClick={(e) => {
+                  onDoubleClick={() => {
                     // Add to queue
                     dispatch(enqueue(item.song_id));
                   }}
