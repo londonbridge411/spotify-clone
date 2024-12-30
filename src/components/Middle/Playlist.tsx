@@ -17,13 +17,14 @@ import { SwitchToPopup } from "../../PopupControl";
 import MobileSongRow from "../Containers/MobileSongRow";
 import FastSongRow from "../Containers/FastSongRow";
 
+import EditPlaylistBtn from "../../../src/assets/edit_button.png";
+
 //export var setListRef: any;
 
 export default function Playlist() {
   const dispatch = useDispatch();
 
   const { playlistID } = useParams();
-
 
   const [isOwner, setOwner] = useState(false);
   const navigate = useNavigate();
@@ -253,7 +254,7 @@ export default function Playlist() {
           <div className="playlist-button-bar">
             <img
               className="mobile-hidden"
-              src="../../../src/assets/edit_button.png"
+              src={EditPlaylistBtn}
               hidden={!isOwner}
               onClick={() => {
                 SwitchToPopup("uploadPlaylistEdit");
