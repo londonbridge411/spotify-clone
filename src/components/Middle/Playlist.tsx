@@ -18,6 +18,12 @@ import MobileSongRow from "../Containers/MobileSongRow";
 import FastSongRow from "../Containers/FastSongRow";
 
 import EditPlaylistBtn from "../../../src/assets/edit_button.png";
+import AddButton from "../../../src/assets/add_button.png";
+import ShareBtn from "../../../src/assets/share.png";
+import BookmarkBtn from "../../../src/assets/bookmark_button.png";
+import UnbookmarkBtn from "../../../src/assets/unbookmark.png";
+import ShuffleBtn from "../../../src/assets/shuffle_button.png";
+import PlayBtn from "../../../src/assets/play_button.png";
 
 //export var setListRef: any;
 
@@ -263,7 +269,7 @@ export default function Playlist() {
 
             <img
               className="mobile-hidden"
-              src="../../../src/assets/add_button.png"
+              src={AddButton}
               hidden={!isOwner || playlistType == "Playlist"}
               onClick={() => {
                 SwitchToPopup("uploadSongPopup");
@@ -271,7 +277,7 @@ export default function Playlist() {
             />
 
             <img
-              src="../../../src/assets/play_button.png"
+              src={PlayBtn}
               onClick={() => {
                 if (list != null) dispatch(clearFullQueue());
 
@@ -283,7 +289,7 @@ export default function Playlist() {
             />
 
             <img
-              src="../../../src/assets/shuffle_button.png"
+              src={ShuffleBtn}
               onClick={() => {
                 //dispatch(setPlaylistSongs(list as string[]));
                 dispatch(clearFullQueue());
@@ -296,20 +302,20 @@ export default function Playlist() {
             />
 
             <img
-              src="../../../src/assets/bookmark_button.png"
+              src={BookmarkBtn}
               hidden={isOwner || isFollowing}
               onClick={FollowPlaylist}
             />
 
             <img
-              src="../../../src/assets/unbookmark.png"
+              src={UnbookmarkBtn}
               hidden={!isFollowing}
               onClick={UnfollowPlaylist}
             />
 
             <img
               hidden={playlistPrivacy == "Private"}
-              src="../../../src/assets/share.png"
+              src={ShareBtn}
               onClick={() => {
                 SwitchToPopup("sharePlaylist");
                 const url = location.href;
