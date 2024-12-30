@@ -1,13 +1,9 @@
-import { useParams } from "react-router-dom";
 import supabase from "../../../../config/supabaseClient";
-import { authUserID } from "../../../../main";
-import { useEffect, useState } from "react";
 import { CloseSongContextMenu } from "../SongContextMenu";
 import { SwitchToPopup } from "../../../../PopupControl";
-import Playlist, { setListRef } from "../../../Middle/Playlist";
-import { DeleteSong_Exported } from "../Song Context Features/RemoveDeleteSong";
+import { useState } from "react";
 
-export var DeletePlaylist_Exported: any;
+export let DeletePlaylist_Exported: any;
 
 export default function ContextOption_DeletePlaylist(props: any) {
   DeletePlaylist_Exported = DeletePlaylist;
@@ -26,7 +22,7 @@ export default function ContextOption_DeletePlaylist(props: any) {
         .eq("id", props.target)
         .then(async (result) => {
           // Get the data
-          let data = result.data?.at(0);
+          const data = result.data?.at(0);
 
           //Delete images
           if (data.cover_url != "" || data.bg_url != "") {
@@ -56,14 +52,14 @@ export default function ContextOption_DeletePlaylist(props: any) {
             .select("id, subscribed_playlists")
             .contains("subscribed_playlists", [props.target])
             .then(async (result) => {
-              let subs = result.data;
+              const subs = result.data;
 
               if (subs != null) {
                 //console.log(subs);
                 for (let i = 0; i < subs?.length; i++) {
                   //console.log(subs.at(i)?.subscribed_playlists);
 
-                  let subbed_playlists: string[] =
+                  const subbed_playlists: string[] =
                     subs.at(i)?.subscribed_playlists;
 
                   subbed_playlists.splice(
@@ -105,11 +101,11 @@ export default function ContextOption_DeletePlaylist(props: any) {
       .select("id, song_ids")
       .contains("song_ids", [song_id])
       .then(async (result) => {
-        let playlists_with_song: object[] = result.data!;
+        const playlists_with_song: object[] = result.data!;
 
         for (let i = 0; i < playlists_with_song.length; i++) {
           // Printing out the first list
-          let songs: any = playlists_with_song[i];
+          const songs: any = playlists_with_song[i];
           songs.song_ids.splice(songs.song_ids.indexOf(song_id), 1); // Remove the song from the index
 
           await supabase
@@ -135,6 +131,7 @@ export default function ContextOption_DeletePlaylist(props: any) {
           <div
             onClick={() => {
               setID(props.target);
+              console.log(id);
               CloseSongContextMenu();
               SwitchToPopup("DeletePlaylist");
             }}

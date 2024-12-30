@@ -1,20 +1,16 @@
-import { useLocation, useParams } from "react-router-dom";
 import supabase from "../../../../config/supabaseClient";
-import { authUserID } from "../../../../main";
-import { useEffect, useState } from "react";
-import { CloseSongContextMenu } from "../SongContextMenu";
+import { useState } from "react";
 import { SwitchToPopup } from "../../../../PopupControl";
-import { setListRef } from "../../../Middle/Playlist";
 import { ClosePlaylistContextMenu } from "../PlaylistContextMenu";
 
-export var RenamePlaylist_Exported: any;
+export let RenamePlaylist_Exported: any;
 
 export default function ContextOption_RenamePlaylist(props: any) {
   const [id, setID] = useState(""); // Used in onclick to update the props.target. For some reason, I need this
 
   function RenamePlaylist() {
-    let run = async () => {
-      var new_name: string = (
+    const run = async () => {
+      const new_name: string = (
         document.getElementById("rename-playlist-name") as HTMLInputElement
       )?.value;
 
@@ -41,6 +37,7 @@ export default function ContextOption_RenamePlaylist(props: any) {
         hidden={!props.isOwner}
         onClick={() => {
           setID(props.target);
+          console.log(id);
           ClosePlaylistContextMenu();
           SwitchToPopup("RenamePlaylist");
         }}

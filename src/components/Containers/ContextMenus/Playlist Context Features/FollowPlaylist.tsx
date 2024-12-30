@@ -1,13 +1,10 @@
-import { CloseSongContextMenu } from "../SongContextMenu";
-import { SwitchToPopup } from "../../../../PopupControl";
-import { useEffect, useState } from "react";
 import supabase from "../../../../config/supabaseClient";
 import { authUserID } from "../../../../main";
 import { ClosePlaylistContextMenu } from "../PlaylistContextMenu";
 
 export default function ContextOption_FollowPlaylist(props: any) {
   function FollowPlaylist() {
-    let run = async () => {
+    const run = async () => {
       await supabase
         .from("Subscribed_Playlists")
         .insert({ subscriber: authUserID, playlist_id: props.target });
@@ -35,7 +32,7 @@ export default function ContextOption_FollowPlaylist(props: any) {
 
   function UnfollowPlaylist() {
     if (props.isFollowing == true && props.isOwner == false) {
-      let del = async () => {
+      const del = async () => {
         await supabase
           .from("Subscribed_Playlists")
           .delete()

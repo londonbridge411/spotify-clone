@@ -1,16 +1,16 @@
 import { useParams } from "react-router-dom";
 import supabase from "../../../../config/supabaseClient";
 import { authUserID } from "../../../../main";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { CloseSongContextMenu } from "../SongContextMenu";
 import { SwitchToPopup } from "../../../../PopupControl";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
 
-var isPlaylistOwner: boolean = false;
-var playlistType: string = "undefined";
+let isPlaylistOwner: boolean = false;
+let playlistType: string = "undefined";
 
-export var DeleteSong_Exported: any;
+export let DeleteSong_Exported: any;
 
 export default function ContextOption_RemoveDeleteSong() {
   const { playlistID } = useParams();
@@ -23,7 +23,7 @@ export default function ContextOption_RemoveDeleteSong() {
 
   //console.log(songContext.currentSongID);
 
-  let run = () => {
+  const run = () => {
     // Why is songContext.currentSongID breaking everything????????????????
     supabase
       .from("Playlists")
@@ -59,7 +59,7 @@ export default function ContextOption_RemoveDeleteSong() {
   // Removes the song from the playlist
   function RemoveSong(song_id: string) {
     if (isPlaylistOwner && playlistType == "Playlist") {
-      let remove = async () => {
+      const remove = async () => {
         // Fix ordering in playlist
         await supabase
           .from("Songs_Playlists")
@@ -68,7 +68,7 @@ export default function ContextOption_RemoveDeleteSong() {
           .order("order")
           .then(async (result) => {
             if (result.data != null) {
-              let index = result.data?.findIndex(
+              const index = result.data?.findIndex(
                 (item) => songContext.currentSongID == item.song_id
               );
 
@@ -88,7 +88,7 @@ export default function ContextOption_RemoveDeleteSong() {
           .delete()
           .eq("playlist_id", playlistID)
           .eq("song_id", song_id)
-          .then(async (result) => {
+          .then(async () => {
             //setListRef(songs);
             window.location.reload();
             CloseSongContextMenu();
@@ -106,7 +106,7 @@ export default function ContextOption_RemoveDeleteSong() {
   // Removes song from everything and deletes files.
   function DeleteSong() {
     //console.log("gay: " + songContext.currentSongID);
-    let del = async () => {
+    const del = async () => {
       if (isPlaylistOwner && playlistType == "Album") {
         SwitchToPopup("uploadingWait");
 
