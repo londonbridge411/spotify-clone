@@ -5,8 +5,8 @@ import ViewPlaylistContextMenu from "./Containers/ContextMenus/PlaylistContextMe
 
 export default function AddPlaylistButton(props: any) {
 
-  const [playlistName, setPlaylistName] = useState(null);
-  const [coverUrl, setCover_URL] = useState(
+  const [playlistName] = useState(null);
+  const [coverUrl] = useState(
     "../../../src/assets/circle-plus-solid.svg"
   );
   if (props.playlist_id == null) return;
