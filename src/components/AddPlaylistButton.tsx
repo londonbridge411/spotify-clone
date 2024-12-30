@@ -1,18 +1,15 @@
-import { useEffect, useState } from "react";
-import supabase from "../config/supabaseClient";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { useState } from "react";
 import "./AddPlaylistButton.css";
-import { NavLink } from "react-router-dom";
-import PlaylistContextMenu, {
-  ViewPlaylistContextMenu,
-} from "./Containers/ContextMenus/PlaylistContextMenu";
+import ViewPlaylistContextMenu from "./Containers/ContextMenus/PlaylistContextMenu";
 
 export default function AddPlaylistButton(props: any) {
-  if (props.playlist_id == null) return;
 
   const [playlistName, setPlaylistName] = useState(null);
   const [coverUrl, setCover_URL] = useState(
     "../../../src/assets/circle-plus-solid.svg"
   );
+  if (props.playlist_id == null) return;
 
   //
   return (
@@ -24,7 +21,7 @@ export default function AddPlaylistButton(props: any) {
           e.preventDefault();
 
           // Don't even have to do this. Just send the song_id to state
-          ViewPlaylistContextMenu("Playlist_ContextMenu", e);
+          ViewPlaylistContextMenu("Playlist_ContextMenu");
         }}
       >
         <img src={coverUrl} />
