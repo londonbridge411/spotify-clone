@@ -12,9 +12,11 @@ import { Artist } from "./Popups/UploadSongPopup";
 import "../../Links.css";
 import "../../mobile.css";
 import "./SongRow.css";
-import {
-  ViewSongContextMenu,
-} from "./ContextMenus/SongContextMenu";
+import { ViewSongContextMenu } from "./ContextMenus/SongContextMenu";
+
+import Record from "../../../src/assets/small_record.svg";
+import AudioGIF from "../../../src/assets/audio.gif";
+import PlayRow from "../../../src/assets/play-row.svg";
 
 // Fast Song Row
 /*
@@ -29,9 +31,7 @@ export default function FastSongRow(props: any) {
   const [duration, setDuration] = useState("");
   const [albumID, setAlbumID] = useState();
 
-  const [albumCoverURL, setAlbumCoverURL] = useState(
-    "../../../src/assets/small_record.svg"
-  );
+  const [albumCoverURL, setAlbumCoverURL] = useState(Record);
 
   const player = useSelector((state: RootState) => state.player);
   const dispatch = useDispatch();
@@ -79,7 +79,7 @@ export default function FastSongRow(props: any) {
     if (player.song_id == nameArea?.id) {
       (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
         "src",
-        "../../../src/assets/audio.gif"
+        AudioGIF
       );
       (nameArea?.children[0].children[0] as HTMLElement).classList.add(
         "audioGIF"
@@ -107,12 +107,12 @@ export default function FastSongRow(props: any) {
       if (player.isPlaying) {
         (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
           "src",
-          "../../../src/assets/audio.gif"
+          AudioGIF
         );
       } else {
         (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
           "src",
-          "../../../src/assets/play-row.svg"
+          PlayRow
         );
       }
     }
@@ -154,7 +154,7 @@ export default function FastSongRow(props: any) {
             if (player.song_id != nameArea?.id) {
               (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
                 "src",
-                "../../../src/assets/play-row.svg"
+                PlayRow
               );
             }
           }}
@@ -202,7 +202,7 @@ export default function FastSongRow(props: any) {
               src={
                 player.song_id != props.song_data.song_id
                   ? albumCoverURL
-                  : "../../../src/assets/play-row.svg"
+                  : PlayRow
               }
             />
           </td>

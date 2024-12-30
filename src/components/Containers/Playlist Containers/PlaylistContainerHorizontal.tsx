@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import supabase from "../../../config/supabaseClient";
 import "./PlaylistContainerHorizontal.css";
 
+import Record from "../../../../src/assets/small_record.svg";
+
 export default function PlaylistContainerHorizontal(props: any) {
   const [playlistName, setPlaylistName] = useState();
   const [coverUrl, setCover_URL] = useState(
@@ -17,7 +19,7 @@ export default function PlaylistContainerHorizontal(props: any) {
         setPlaylistName(result.data?.at(0)?.name);
         setCover_URL(
           result.data?.at(0)?.cover_url == ""
-            ? "../../../src/assets/small_record.svg"
+            ? Record
             : result.data?.at(0)?.cover_url
         );
       });

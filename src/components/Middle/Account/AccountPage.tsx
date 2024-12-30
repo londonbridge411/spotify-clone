@@ -10,6 +10,15 @@ import "../../../mobile.css";
 import MobileSongRow from "../../Containers/MobileSongRow";
 import FastSongRow from "../../Containers/FastSongRow";
 
+// Images
+import AccountPFP from "../../../../src/assets/default_user.png";
+import FollowingCheck from "../../../../src/assets/square-check-regular.svg";
+import EditBtn from "../../../../src/assets/edit_button.png";
+import FollowBtn from "../../../../src/assets/add_person.png";
+import AddPlaylist from "../../../../src/assets/circle-plus-solid.svg";
+import UnfollowBtn from "../../../../src/assets/unadd_person.png";
+import ShareProfile from "../../../../src/assets/share.png";
+
 /*
 Want to display icon, username, bio, followers, isVerified, upload song.
 */
@@ -19,7 +28,6 @@ export let UnfollowUser_Exported: any;
 export default function AccountPage() {
   const { userID } = useParams();
 
-
   let isOwner: boolean = false;
   isOwner = userID == authUserID;
 
@@ -28,7 +36,7 @@ export default function AccountPage() {
   const [isFollowing, setIsFollowing] = useState(false);
   const [userVerified, setVerified] = useState(false);
   const [username, setUsername] = useState("");
-  const [pfpUrl, setPfpUrl] = useState("../../../src/assets/default_user.png");
+  const [pfpUrl, setPfpUrl] = useState(AccountPFP);
   const [popularSongsList, setPopularSongsList] = useState([] as string[]);
   const [hideEverything, setHideEverything] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -53,7 +61,7 @@ export default function AccountPage() {
           setPfpUrl(
             row?.pfp_url != null && row?.pfp_url != ""
               ? row?.pfp_url
-              : "../../../src/assets/default_user.png"
+              : AccountPFP
           );
         });
     };
@@ -211,7 +219,7 @@ export default function AccountPage() {
               <div className="profileName">
                 <h1>{username}</h1>
                 <img
-                  src="../../../src/assets/square-check-regular.svg"
+                  src={FollowingCheck}
                   style={{
                     width: "50px",
                     height: "50px",
@@ -226,7 +234,7 @@ export default function AccountPage() {
           </header>
           <div className="playlist-button-bar">
             <img
-              src="../../../src/assets/edit_button.png"
+              src={EditBtn}
               hidden={!isOwner}
               onClick={() => {
                 SwitchToPopup("account-edit");
@@ -234,19 +242,19 @@ export default function AccountPage() {
             />
 
             <img
-              src="../../../src/assets/add_person.png"
+              src={FollowBtn}
               hidden={isOwner || isFollowing}
               onClick={FollowUser}
             />
 
             <img
-              src="../../../src/assets/unadd_person.png"
+              src={UnfollowBtn}
               hidden={!isFollowing}
               onClick={() => SwitchToPopup("Popup_UnfollowingUser")}
             />
 
             <img
-              src="../../../src/assets/share.png"
+              src={ShareProfile}
               onClick={() => {
                 SwitchToPopup("shareAccount");
                 const url = location.href;
@@ -368,7 +376,7 @@ export default function AccountPage() {
                 <h2> Albums</h2>
                 <img
                   className="addPlaylist mobile-hidden"
-                  src="../../../src/assets/circle-plus-solid.svg"
+                  src={AddPlaylist}
                   hidden={!userVerified || !isOwner}
                   onClick={() => {
                     SwitchToPopup("Popup_UploadAlbum");

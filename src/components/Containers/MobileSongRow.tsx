@@ -11,18 +11,18 @@ import { NavLink } from "react-router-dom";
 import { Artist } from "./Popups/UploadSongPopup";
 import "../../Links.css";
 import "../../mobile.css";
-import  {
-  ViewSongContextMenu,
-} from "./ContextMenus/SongContextMenu";
+import { ViewSongContextMenu } from "./ContextMenus/SongContextMenu";
+
+import Record from "../../../src/assets/small_record.svg";
+import AudioGIF from "../../../src/assets/audio.gif";
+import PlayRow from "../../../src/assets/play-row.svg";
+
 // Song Row
 export default function MobileSongRow(props: any) {
   const [songName, setSongName] = useState("");
   const [artists, setArtists] = useState([] as Artist[]);
 
-
-  const [albumCoverURL, setAlbumCoverURL] = useState(
-    "../../../src/assets/small_record.svg"
-  );
+  const [albumCoverURL, setAlbumCoverURL] = useState(Record);
 
   const player = useSelector((state: RootState) => state.player);
   const dispatch = useDispatch();
@@ -64,7 +64,7 @@ export default function MobileSongRow(props: any) {
     if (player.song_id == nameArea?.id) {
       (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
         "src",
-        "../../../src/assets/audio.gif"
+        AudioGIF
       );
       (nameArea?.children[0].children[0] as HTMLElement).classList.add(
         "audioGIF"
@@ -93,12 +93,12 @@ export default function MobileSongRow(props: any) {
       if (player.isPlaying) {
         (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
           "src",
-          "../../../src/assets/audio.gif"
+          AudioGIF
         );
       } else {
         (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
           "src",
-          "../../../src/assets/play-row.svg"
+          PlayRow
         );
       }
     }
@@ -125,7 +125,9 @@ export default function MobileSongRow(props: any) {
             dispatch(setProperQueue(props.song_list));
             dispatch(setSongID(props.song_data.song_id));
           } else {
-            const a = document.getElementById("audioControl") as HTMLAudioElement;
+            const a = document.getElementById(
+              "audioControl"
+            ) as HTMLAudioElement;
             a.currentTime = 0;
             a.play();
           }
@@ -137,7 +139,7 @@ export default function MobileSongRow(props: any) {
           if (player.song_id != nameArea?.id) {
             (nameArea?.children[0].children[0] as HTMLElement).setAttribute(
               "src",
-              "../../../src/assets/play-row.svg"
+              PlayRow
             );
           }
         }}
@@ -156,7 +158,9 @@ export default function MobileSongRow(props: any) {
         <div
           onClick={() => {
             const nameArea = document.getElementById(props.song_data.song_id);
-            const a = document.getElementById("audioControl") as HTMLAudioElement;
+            const a = document.getElementById(
+              "audioControl"
+            ) as HTMLAudioElement;
             if (player.song_id == nameArea?.id) {
               if (player.isPlaying) a.pause();
               else a.play();
@@ -183,7 +187,7 @@ export default function MobileSongRow(props: any) {
             src={
               player.song_id != props.song_data.song_id
                 ? albumCoverURL
-                : "../../../src/assets/play-row.svg"
+                : PlayRow
             }
           />
         </div>

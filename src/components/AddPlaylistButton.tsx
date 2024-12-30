@@ -2,13 +2,11 @@
 import { useState } from "react";
 import "./AddPlaylistButton.css";
 import ViewPlaylistContextMenu from "./Containers/ContextMenus/PlaylistContextMenu";
+import Record from "../../../src/assets/circle-plus-solid.svg";
 
 export default function AddPlaylistButton(props: any) {
-
   const [playlistName] = useState(null);
-  const [coverUrl] = useState(
-    "../../../src/assets/circle-plus-solid.svg"
-  );
+  const [coverUrl] = useState(Record);
   if (props.playlist_id == null) return;
 
   //

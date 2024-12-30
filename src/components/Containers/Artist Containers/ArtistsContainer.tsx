@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import "./ArtistsContainer.css";
 import supabase from "../../../config/supabaseClient";
+import DefaultAccountPFP from "../../../../src/assets/default_user.png";
 
 export default function ArtistContainer(props: any) {
-  const [pfpURL, setPfpURL] = useState("../../../src/assets/default_user.png");
+  const [pfpURL, setPfpURL] = useState(DefaultAccountPFP);
   const [artistName, setArtistName] = useState("");
 
   useEffect(() => {
@@ -18,7 +19,7 @@ export default function ArtistContainer(props: any) {
         setPfpURL(
           result.data?.at(0)?.pfp_url == "" ||
             result.data?.at(0)?.pfp_url == null
-            ? "../../../src/assets/default_user.png"
+            ? DefaultAccountPFP
             : result.data?.at(0)?.pfp_url
         );
       });

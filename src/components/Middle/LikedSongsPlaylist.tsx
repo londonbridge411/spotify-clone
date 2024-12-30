@@ -14,12 +14,13 @@ import { useDispatch } from "react-redux";
 import "../Containers/SongTable.css";
 import MobileSongRow from "../Containers/MobileSongRow";
 import FastSongRow from "../Containers/FastSongRow";
-
+import Record from "../../../src/assets/small_record.svg";
+import PlayBtn from "../../../src/assets/play_button.png";
+import ShuffleBtn from "../../../src/assets/shuffle_button.png";
 //export var setListRef: any;
 
 export default function Playlist() {
   const dispatch = useDispatch();
-
 
   const [hideTable, setHideTable] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -83,7 +84,7 @@ export default function Playlist() {
       >
         <div className="Playlist-Layout">
           <header className="playlistHeader">
-            <img src={"../../../src/assets/small_record.svg"} />
+            <img src={Record} />
             <div className="info">
               <h1>Liked Songs</h1>
             </div>
@@ -91,7 +92,7 @@ export default function Playlist() {
 
           <div className="playlist-button-bar">
             <img
-              src="../../../src/assets/play_button.png"
+              src={PlayBtn}
               onClick={() => {
                 if (list != null) dispatch(clearFullQueue());
 
@@ -103,7 +104,7 @@ export default function Playlist() {
             />
 
             <img
-              src="../../../src/assets/shuffle_button.png"
+              src={ShuffleBtn}
               onClick={() => {
                 //dispatch(setPlaylistSongs(list as string[]));
                 dispatch(clearFullQueue());

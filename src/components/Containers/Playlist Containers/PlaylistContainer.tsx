@@ -8,18 +8,16 @@ import PlaylistContextMenu, {
   ViewPlaylistContextMenu,
 } from "../ContextMenus/PlaylistContextMenu";
 
+import Record from "../../../../src/assets/small_record.svg";
+
 export default function PlaylistContainer(props: any) {
-
-
   const [playlistName, setPlaylistName] = useState("Loading...");
   const [artistName, setArtistName] = useState("Loading...");
   const [artistID, setArtistID] = useState("");
-  const [coverUrl, setCover_URL] = useState(
-    "../../../src/assets/small_record.svg"
-  );
+  const [coverUrl, setCover_URL] = useState(Record);
 
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     if (props.playlist_id == null) return;
     supabase
@@ -33,7 +31,7 @@ export default function PlaylistContainer(props: any) {
         setPlaylistName(result.data?.at(0)?.name);
         setCover_URL(
           result.data?.at(0)?.cover_url == ""
-            ? "../../../src/assets/small_record.svg"
+            ? Record
             : result.data?.at(0)?.cover_url
         );
         setArtistID(result.data?.at(0)?.owner_id);

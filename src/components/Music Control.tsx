@@ -30,6 +30,17 @@ import { Artist } from "./Containers/Popups/UploadSongPopup";
 import { authUserID, getCookies, isLoggedIn } from "../main";
 import { SwitchToPopup } from "../PopupControl";
 
+// Images
+import VolIconNone from "../../src/assets/vol-none.png";
+import NotLikedIcon from "../../src/assets/star-regular.svg";
+import LikedIcon from "../../src/assets/star-regular.svg";
+import Record from "../../src/assets/small_record.svg";
+
+import VolMute from "../../src/assets/vol-muted.png";
+import VolLow from "../../src/assets/vol-low.png";
+import VolMed from "../../src/assets/vol-mid.png";
+import VolHigh from "../../src/assets/vol-high.png";
+
 let changingTime = false;
 let prevPlayState = false;
 let changeTimeInterval = null;
@@ -52,16 +63,12 @@ export default function MusicControl() {
   const [maxTime, setMaxTime] = useState("--:--");
   const [viewCount, setViewCount] = useState(0);
   const [playIcon, setPlayIcon] = useState(play);
-  const [imgURL, setImgURL] = useState("../../../src/assets/small_record.svg");
+  const [imgURL, setImgURL] = useState(Record);
   const [artists, setArtists] = useState([] as Artist[]);
   const [albumID, setAlbumID] = useState("");
-  const [likeState, setLikeState] = useState(
-    "../../../src/assets/star-regular.svg"
-  );
+  const [likeState, setLikeState] = useState(NotLikedIcon);
 
-  const [volIconState, SetVolIconState] = useState(
-    "../../../src/assets/vol-none.png"
-  );
+  const [volIconState, SetVolIconState] = useState(VolIconNone);
 
   const [backgroundUrl, setBG_URL] = useState("");
 
@@ -154,16 +161,16 @@ export default function MusicControl() {
     let icon_path: string = "";
 
     if (num == 0) {
-      icon_path = "../../../src/assets/vol-muted.png";
+      icon_path = VolMute;
     } else if (num > 0 && num <= 32) {
       // Vol Low
-      icon_path = "../../../src/assets/vol-low.png";
+      icon_path = VolLow;
     } else if (num >= 32 && num <= 66) {
       // Vol Med
-      icon_path = "../../../src/assets/vol-mid.png";
+      icon_path = VolMed;
     } else if (num >= 63 && num <= 100) {
       // Vol High
-      icon_path = "../../../src/assets/vol-high.png";
+      icon_path = VolHigh;
     }
 
     SetVolIconState(icon_path);
@@ -214,9 +221,7 @@ export default function MusicControl() {
               .then((result2) => {
                 // Set like state
                 setLikeState(
-                  (result2.data?.length as any) > 0
-                    ? "../../../src/assets/star-solid.svg"
-                    : "../../../src/assets/star-regular.svg"
+                  (result2.data?.length as any) > 0 ? LikedIcon : NotLikedIcon
                 );
               });
 
@@ -230,9 +235,7 @@ export default function MusicControl() {
               .eq("id", albumID)
               .then((result) => {
                 const cover = result.data?.at(0)?.cover_url;
-                setImgURL(
-                  cover == "" ? "../../../src/assets/small_record.svg" : cover
-                );
+                setImgURL(cover == "" ? Record : cover);
               });
 
             // Audio
@@ -336,7 +339,9 @@ export default function MusicControl() {
   window.onresize = MarqueeCheck;
 
   function MarqueeCheck() {
-    const name_area = document.getElementById("player-name-area") as HTMLElement;
+    const name_area = document.getElementById(
+      "player-name-area"
+    ) as HTMLElement;
 
     const name_text_element = document.getElementById(
       "name-area-text"
@@ -372,7 +377,7 @@ export default function MusicControl() {
 
           if ((result.data?.length as any) > 0) {
             // Exists in table. Unlike
-            icon = "../../../src/assets/star-regular.svg";
+            icon = NotLikedIcon;
 
             // Deconste from table
             await supabase
@@ -382,7 +387,7 @@ export default function MusicControl() {
               .eq("song_id", player.song_id);
           } else {
             // DNE in table. Like
-            icon = "../../../src/assets/star-solid.svg";
+            icon = LikedIcon;
 
             // Insert into table
             await supabase
@@ -497,9 +502,7 @@ export default function MusicControl() {
               className="tooltiptext tt-top"
               style={{ marginLeft: "20%", bottom: "65px" }}
             >
-              {likeState == "../../../src/assets/star-solid.svg"
-                ? "Unlike"
-                : "Like"}
+              {likeState == LikedIcon ? "Unlike" : "Like"}
             </span>
           </div>
         </div>

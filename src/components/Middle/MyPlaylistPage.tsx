@@ -8,6 +8,9 @@ import "../AddPlaylistButton.css";
 import { SwitchToPopup } from "../../PopupControl";
 import { useNavigate } from "react-router-dom";
 
+import AddPlaylistButton from "../../../src/assets/circle-plus-solid.svg";
+import Favorite from "../../../src/assets/star-solid.svg";
+
 export default function MyPlaylistPage() {
   const navigate = useNavigate();
   const [list, setList] = useState([null]);
@@ -82,7 +85,7 @@ export default function MyPlaylistPage() {
                 <h2> My Playlists</h2>
                 <img
                   className="addPlaylist"
-                  src="../../../src/assets/circle-plus-solid.svg"
+                  src={AddPlaylistButton}
                   onClick={() => {
                     SwitchToPopup("Popup_UploadPlaylist");
                   }}
@@ -92,7 +95,7 @@ export default function MyPlaylistPage() {
               <div className="myAlbums">
                 <li className="addPlaylist">
                   <img
-                    src="../../../src/assets/star-solid.svg"
+                    src={Favorite}
                     style={{
                       width: "150px",
                       height: "100px",
