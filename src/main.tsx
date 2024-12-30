@@ -29,23 +29,29 @@ import { SupportHome } from "./Support Application/SupportHome.tsx";
 import AdminTickets from "./Support Application/AdminTickets.tsx";
 import { Ticket } from "./Support Application/Ticket.tsx";
 
-export let isLoggedIn: boolean =
-  (await supabase.auth.getSession()).data.session != null;
+export let isLoggedIn: boolean;
+export let email: string;
+export let username: string;
+export let authUserID: string;
+export let isVerified: boolean;
 
-export let email: string = (await supabase.auth.getUser()).data.user
-  ?.email as string;
+async function LoadData() {
+  isLoggedIn = (await supabase.auth.getSession()).data.session != null;
+  email = (await supabase.auth.getUser()).data.user?.email as string;
+  username = (
+    await supabase.from("Users").select("username").eq("email", email)
+  ).data?.at(0)?.username;
 
-export let username: string = (
-  await supabase.from("Users").select("username").eq("email", email)
-).data?.at(0)?.username;
+  authUserID = (
+    await supabase.from("Users").select("id").eq("email", email)
+  ).data?.at(0)?.id;
 
-export let authUserID: string = (
-  await supabase.from("Users").select("id").eq("email", email)
-).data?.at(0)?.id;
+  isVerified = (
+    await supabase.from("Users").select("is_verified").eq("email", email)
+  ).data?.at(0)?.is_verified;
+}
 
-export let isVerified: boolean = (
-  await supabase.from("Users").select("is_verified").eq("email", email)
-).data?.at(0)?.is_verified;
+LoadData();
 
 export function SetLoginStatus(b: boolean) {
   isLoggedIn = b;
@@ -90,7 +96,7 @@ const router = createBrowserRouter(
     </Route>
   )
 );
-console.log("Auth Status: " + isLoggedIn);
+//console.log("Auth Status: " + isLoggedIn);
 
 //console.log((await supabase.auth.getSession()).data.session);
 ReactDOM.createRoot(document.getElementById("root")!).render(
