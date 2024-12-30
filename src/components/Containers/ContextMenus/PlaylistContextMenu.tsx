@@ -21,14 +21,19 @@ export default function PlaylistContextMenu(props: any) {
 
   const run = async () => {
     // There might be a possible join to do, but it ain't easy
+
+    if (props.playlistID == null)
+      return;
+
     await supabase
       .from("Playlists")
       .select("id, owner_id")
       .eq("owner_id", authUserID)
       .eq("id", props.playlistID)
       .then((result) => {
-        //console.log(result);
-        setOwnership(result.data!.length > 0);
+        if (result != null)
+          if (result.data != null)
+            setOwnership(result.data.length > 0);
       });
 
     await supabase
@@ -37,8 +42,9 @@ export default function PlaylistContextMenu(props: any) {
       .eq("subscriber", authUserID)
       .eq("playlist_id", props.playlistID)
       .then((result) => {
-        //console.log(result);
-        setIsFollowing(result.data!.length > 0);
+        if (result != null)
+          if (result.data != null)
+            setIsFollowing(result.data.length > 0);
       });
   };
   run();
