@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
-import supabase from "./config/supabaseClient";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { SetLoginStatus, isLoggedIn } from "./main";
+import { isLoggedIn } from "./main";
 
 function Authentication() {
   console.log("Authenticating...");
