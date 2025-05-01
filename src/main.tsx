@@ -33,6 +33,7 @@ export let isLoggedIn: boolean;
 export let email: string;
 export let username: string;
 export let authUserID: string;
+
 export let isVerified: boolean;
 
 async function LoadData() {
@@ -51,7 +52,7 @@ async function LoadData() {
   ).data?.at(0)?.is_verified;
 }
 
-LoadData();
+await LoadData();
 
 export function SetLoginStatus(b: boolean) {
   isLoggedIn = b;

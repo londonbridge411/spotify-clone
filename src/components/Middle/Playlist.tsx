@@ -35,6 +35,7 @@ export default function Playlist() {
   const { playlistID } = useParams();
 
   const [isOwner, setOwner] = useState(false);
+
   const navigate = useNavigate();
   useEffect(() => {
     supabase
@@ -187,6 +188,8 @@ export default function Playlist() {
 
   useEffect(() => {
     const fetch = async () => {
+
+      console.log("ffffff " + authUserID)
       await supabase
         .from("Subscribed_Playlists")
         .select("*")
