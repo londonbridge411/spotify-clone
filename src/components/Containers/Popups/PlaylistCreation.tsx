@@ -38,7 +38,6 @@ export default function PlaylistCreation(props: any) {
           id: id,
           name: playlist_name_text,
           owner_id: (await supabase.auth.getUser()).data.user?.id,
-          song_ids: [],
           type: props.playlistType, //Figure out a way to change this
           created_at: new Date(),
           cover_url: cover_url,
