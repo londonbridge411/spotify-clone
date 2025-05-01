@@ -6,6 +6,7 @@
   align-items: flex-start;
   width: 100%;
   text-align: left;
+  table-layout: fixed; /* Ensures that column widths are respected */
 }
 
 .song-table th,
@@ -22,38 +23,41 @@
   border-spacing: 30px;
 }
 
-.song-table td:nth-child(1) {
-  width: 50px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.song-table td {
+  overflow: hidden;  /* Prevent content overflow */
+  white-space: nowrap;  /* Prevent wrapping in all columns */
+  text-overflow: ellipsis; /* Apply ellipsis to overflowing text */
+}
+
+.song-table th:nth-child(1) {
+  width: 65px; /* Image column */
+}
+
+.song-table th:nth-child(2) {
+  width: 25%; /* Song name column */
 }
 
 .song-table td:nth-child(2) {
-  width: 650px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  padding-right: 10px;
 }
 
-.song-table td:nth-child(3) {
-  width: 200px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.song-table th:nth-child(3) {
+  width: 10%; /* Views column */
 }
 
-.song-table td:nth-child(4) {
-  width: 400px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.song-table th:nth-child(4) {
+  width: 40%; /* Album column */
 }
 
-.song-table td:nth-child(5) {
-  width: 200px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.song-table th:nth-child(5) {
+  width: 20%; /* Date created column */
 }
 
-.song-table td:nth-child(6) {
-  width: 25px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.song-table th:nth-child(6) {
+  width: 10%; /* Duration column */
+}
+
+.song-table td:nth-child(4), .song-table td:nth-child(5) {
+  word-wrap: break-word;  /* Allow wrapping in album and date columns */
+  white-space: normal; /* Allow text wrapping in these columns */
 }

@@ -232,9 +232,10 @@ export default function FastSongRow(props: any) {
             {views}
           </td>
           <td className="song-row-album song-row-item mobile-hidden">
-            <NavLink className="customLink" to={"../playlist/" + albumID}>
+            <NavLink className="overflow-ellipsis customLink" to={"../playlist/" + albumID}>
               {albumName}
             </NavLink>
+
           </td>
           <td className="song-row-date song-row-item mobile-hidden">
             {dateCreated}

@@ -230,9 +230,10 @@ export default function SongRow(props: any) {
         </td>
         <td className="song-row-views song-row-item mobile-hidden">{views}</td>
         <td className="song-row-album song-row-item mobile-hidden">
-          <NavLink className="customLink" to={"../playlist/" + albumID}>
-            {albumName}
-          </NavLink>
+            <NavLink className="customLink" to={"../playlist/" + albumID}>
+              {albumName}
+            </NavLink>
+
         </td>
         <td className="song-row-date song-row-item mobile-hidden">
           {dateCreated}
