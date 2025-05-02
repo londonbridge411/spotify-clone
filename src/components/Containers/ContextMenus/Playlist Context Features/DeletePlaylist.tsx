@@ -39,13 +39,6 @@ export default function ContextOption_DeletePlaylist(props: any) {
               .remove(["pictures/backgrounds/" + props.target]);
           }
 
-          // Delete Songs if album
-          if (data.type == "Album") {
-            for (let i = 0; i < data.song_ids.length; i++) {
-              await DeleteSong(data.song_ids[i]);
-            }
-          }
-
           // Delete followers
           await supabase
             .from("Users")
