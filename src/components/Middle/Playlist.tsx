@@ -24,8 +24,11 @@ import BookmarkBtn from "../../../src/assets/bookmark_button.png";
 import UnbookmarkBtn from "../../../src/assets/unbookmark.png";
 import ShuffleBtn from "../../../src/assets/shuffle_button.png";
 import PlayBtn from "../../../src/assets/play_button.png";
+import DownloadBtn from "../../../src/assets/download.svg";
 
 import Record from "../../../src/assets/small_record.svg";
+import JSZip from "jszip";
+import { ID3Writer } from "browser-id3-writer";
 
 //export var setListRef: any;
 
@@ -188,8 +191,7 @@ export default function Playlist() {
 
   useEffect(() => {
     const fetch = async () => {
-
-      console.log("ffffff " + authUserID)
+      console.log("ffffff " + authUserID);
       await supabase
         .from("Subscribed_Playlists")
         .select("*")
@@ -232,6 +234,155 @@ export default function Playlist() {
           setIsFollowing(false);
         });
     }
+  }
+
+  // Interface for song data
+  interface Mp3SongData {
+    song_id: string;
+    title: string;
+    album_title: string;
+    cover_image: Blob;
+    track_number: number;
+    owner: string;
+    contributing_artists?: string[];
+  }
+
+  // Download Playlist as a zip file
+  // Uses JSZip and ID3Writer to add album art to MP3 files
+  async function DownloadPlaylist() {
+    const mimeToExt: any = {
+      "audio/mpeg": "mp3",
+      "audio/wav": "wav",
+      "audio/ogg": "ogg",
+      "audio/x-wav": "wav",
+      "audio/mp4": "m4a",
+      "audio/webm": "webm",
+      "audio/aac": "aac",
+    };
+
+    const zipFile = new JSZip();
+
+    // Create a zip file with all songs in the playlist
+    const filePromises = fastList.map(async (song, index) => {
+      const { data } = supabase.storage
+        .from("music-files")
+        .getPublicUrl("audio-files/" + song.song_id);
+
+      let coverImageBlob;
+
+      try {
+        coverImageBlob = await fetch(song.cover_url).then((r) => r.blob());
+      } catch (error) {
+        console.error(`Error fetching cover image for song: ${song.song_id}`, error);
+        coverImageBlob = new Blob(); // Fallback to an empty blob if the cover image fails to load
+      }
+
+      // Check if the public URL exists
+      if (!data.publicUrl) {
+        console.error(`No public URL for song: ${song.song_id}`);
+        return;
+      }
+
+      let contributing_artists: string[] = [];
+
+      // Fetch contributing artists for the song
+      await supabase
+        .from("Songs_Artists")
+        .select("user_id, Users(username)")
+        .eq("song_id", song.song_id)
+        .then((result) => {
+          if (result.data != null) {
+            for (let i = 0; i < result.data?.length; i++) {
+              let user = result.data?.at(i);
+              let username = (user?.Users as any).username || "Unknown Artist";
+
+              contributing_artists.push(username);
+            }
+          }
+        });
+
+      // Create metadata for the song
+      let metadata: Mp3SongData = {
+        song_id: song.song_id,
+        title: song.title,
+        album_title: song.album_title,
+        cover_image: coverImageBlob,
+        track_number: index + 1, // get this
+        owner:
+          (
+            await supabase
+              .from("Users")
+              .select("username")
+              .eq("id", song.owner_id)
+          ).data?.at(0)?.username || "Unknown Artist",
+        contributing_artists: contributing_artists,
+      };
+
+      const response = await fetch(data.publicUrl);
+      const blob = await response.blob();
+
+      let finalBlob = blob;
+
+      const mimeType = blob.type;
+      const ext = mimeToExt[mimeType] || "bin"; // fallback to .bin if unknown
+
+      // If the file is an MP3, edit its metadata
+      if (mimeType === "audio/mpeg") {
+        finalBlob = await editMP3Metadata(blob, metadata);
+      }
+
+      // Create a safe filename by replacing invalid characters
+      const safeTitle = song.title.replace(/[\/\\:*?"<>|]/g, "_");
+
+      zipFile.file(`${safeTitle}.${ext}`, finalBlob);
+      console.log(`Added: ${song.title}`);
+    });
+
+    // Wait for all files to be added
+    await Promise.all(filePromises);
+
+    // Now it's safe to generate the zip
+    const content = await zipFile.generateAsync({ type: "blob" });
+
+    const url = URL.createObjectURL(content);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = playlistName + ".zip";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // Edits the MP3 metadata using ID3Writer
+  async function editMP3Metadata(mp3Blob: Blob, metadata: Mp3SongData) {
+    const arrayBuffer = await mp3Blob.arrayBuffer();
+    const writer = new ID3Writer(arrayBuffer);
+
+    const coverArrayBuffer = await metadata.cover_image.arrayBuffer();
+
+    (writer as any)
+      .setFrame("TIT2", metadata.title)
+      .setFrame("TALB", metadata.album_title)
+      .setFrame("TRCK", metadata.track_number.toString())
+      .setFrame("TPE2", metadata.owner)
+      .setFrame("TPE1", metadata.contributing_artists);
+
+    if (metadata.cover_image.size > 0) {
+      // Only add cover if it exists
+      (writer as any).setFrame("APIC", {
+        type: 3, // front cover
+        data: new Uint8Array(coverArrayBuffer),
+        description: "Album cover",
+        useUnicodeEncoding: false,
+        mimeType: metadata.cover_image.type, // e.g., 'image/jpeg'
+      });
+    }
+
+    writer.addTag();
+
+    const taggedBlob = writer.getBlob();
+    return taggedBlob;
   }
 
   return (
@@ -324,6 +475,12 @@ export default function Playlist() {
                 const url = location.href;
                 navigator.clipboard.writeText(url);
               }}
+            />
+
+            <img
+              src={DownloadBtn}
+              hidden={!isOwner}
+              onClick={DownloadPlaylist}
             />
           </div>
           <main>
